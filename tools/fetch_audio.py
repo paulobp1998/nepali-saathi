@@ -5,7 +5,7 @@ Run from the app folder:  python3 tools/fetch_audio.py   (safe to re-run; skips 
 import os, re, sys, time, urllib.parse, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SOURCES = ["content.js", "content-more.js", "app.js"]
+SOURCES = ["content.js", "content-more.js", "trail.js", "games.js", "app.js"]
 EXTRA = ["नमस्ते! तपाईंलाई कस्तो छ?", "बिस्तारै बोल्नुहोस् न।"]
 
 def fnv(s):
@@ -17,7 +17,9 @@ def fnv(s):
 
 texts = list(EXTRA)
 for f in SOURCES:
-    texts += re.findall(r'\bne: "([^"]+)"', open(os.path.join(ROOT, f), encoding="utf-8").read())
+    src = open(os.path.join(ROOT, f), encoding="utf-8").read()
+    texts += re.findall(r'\bne: "([^"]+)"', src)
+    texts += re.findall(r'\b\d+: "([^"]*[\u0900-\u097F][^"]*)"', src)  # bazaar prices
 texts = sorted({t.strip() for t in texts})
 out = os.path.join(ROOT, "audio")
 os.makedirs(out, exist_ok=True)

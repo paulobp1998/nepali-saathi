@@ -1,8 +1,8 @@
 // Offline support: caches the app and its recordings. Bump V when publishing changes.
-const V = "saathi-v2";
+const V = "saathi-v3";
 const TTS = "saathi-tts";
 importScripts("audio-list.js");
-const SHELL = ["./", "index.html", "app.js", "content.js", "content-more.js", "audio-list.js", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png"];
+const SHELL = ["./", "index.html", "app.js", "content.js", "content-more.js", "trail.js", "games.js", "audio-list.js", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png"];
 
 self.addEventListener("install", e => {
   self.skipWaiting();
