@@ -71,7 +71,7 @@ window.COURSE = {
       id: "num", title: "Numbers & money", sub: "1 to 1000, how much?",
       tips: [
         "Prices are in rupees: <b>rupaiyaan</b>. <b>saya</b> = hundred, <b>hajaar</b> = thousand.",
-        "Listen for the difference between <b>chha</b> (six) and <b>saat</b> (seven), and between <b>tin</b> (three) and <b>tis</b> (thirty).",
+        "Listen for the difference between <b>bis</b> (twenty) and <b>tis</b> (thirty), and between <b>tin</b> (three) and <b>tis</b> (thirty).",
         "<b>kati?</b> = how much / how many?"
       ],
       phrases: [
@@ -134,7 +134,7 @@ window.COURSE = {
         { id: "s7", ne: "ठूलो", ro: "thulo", en: "Big" },
         { id: "s8", ne: "सानो", ro: "saano", en: "Small" },
         { id: "s9", ne: "यहाँ सिम कार्ड पाइन्छ?", ro: "yahaan sim kaard paainchha?", en: "Can I get a SIM card here?" },
-        { id: "s10", ne: "हेर्दै छु मात्र।", ro: "herdai chhu maatra.", en: "I'm just looking." }
+        { id: "s10", ne: "हेर्दै मात्र छु।", ro: "herdai maatra chhu.", en: "I'm just looking." }
       ]
     },
     {
@@ -157,7 +157,7 @@ window.COURSE = {
         { id: "m10", ne: "यहाँ रोक्नुहोस्।", ro: "yahaan roknuhos.", en: "Stop here, please." },
         { id: "m11", ne: "बिस्तारै चलाउनुहोस्।", ro: "bistaarai chalaaunuhos.", en: "Please drive slowly." },
         { id: "m12", ne: "बस कहिले आउँछ?", ro: "bas kahile aaunchha?", en: "When does the bus come?" },
-        { id: "m13", ne: "म बाटो बिराएँ।", ro: "ma baato biraaen.", en: "I'm lost.", note: "Literally: I lost the way." }
+        { id: "m13", ne: "मैले बाटो बिराएँ।", ro: "maile baato biraaen.", en: "I'm lost.", note: "Literally: I lost the way." }
       ]
     },
     {
@@ -322,7 +322,7 @@ window.COURSE = {
       id: "d6", unit: "shop", title: "Bargaining for a scarf",
       scene: "A pashmina shop in Bhaktapur.",
       lines: [
-        { who: "A", ne: "आउनुहोस् दिदी, हेर्नुहोस्।", ro: "aaunuhos didi, hernuhos.", en: "Come in sister, have a look." },
+        { who: "A", ne: "आउनुहोस् दाइ, हेर्नुहोस्।", ro: "aaunuhos daai, hernuhos.", en: "Come in brother, have a look." },
         { who: "B", ne: "यो कति हो?", ro: "yo kati ho?", en: "How much is this?" },
         { who: "A", ne: "दुई हजार रुपैयाँ।", ro: "dui hajaar rupaiyaan.", en: "Two thousand rupees." },
         { who: "B", ne: "धेरै महँगो भयो। अलि सस्तो गर्नुहोस् न।", ro: "dherai mahango bhayo. ali sasto garnuhos na.", en: "That's too expensive. Make it a bit cheaper, please." },
@@ -349,7 +349,7 @@ window.COURSE = {
       id: "d8", unit: "time", title: "Making plans",
       scene: "Your friend Ram wants to meet up.",
       lines: [
-        { who: "A", ne: "भोलि के गर्दै हुनुहुन्छ?", ro: "bholi ke gardai hunuhunchha?", en: "What are you doing tomorrow?" },
+        { who: "A", ne: "भोलि के गर्नुहुन्छ?", ro: "bholi ke garnuhunchha?", en: "What are you doing tomorrow?" },
         { who: "B", ne: "थाहा छैन। किन?", ro: "thaahaa chhaina. kina?", en: "I don't know. Why?" },
         { who: "A", ne: "सँगै चिया खाऔँ न।", ro: "sangai chiyaa khaaun na.", en: "Let's have tea together." },
         { who: "B", ne: "हुन्छ! कति बजे?", ro: "hunchha! kati baje?", en: "Sure! At what time?" },

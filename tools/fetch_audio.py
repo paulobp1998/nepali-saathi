@@ -46,6 +46,10 @@ for i, t in enumerate(texts):
     if i % 50 == 0:
         print(f"{i}/{len(texts)}", flush=True)
 
+want = {fnv(t) for t in texts}
+for f in os.listdir(out):
+    if f.endswith(".mp3") and f[:-4] not in want:
+        os.remove(os.path.join(out, f))  # phrase was changed or removed
 have = sorted(f[:-4] for f in os.listdir(out) if f.endswith(".mp3"))
 open(os.path.join(ROOT, "audio-list.js"), "w").write("self.AUDIO_FILES=" + repr(have).replace("'", '"') + ";\n")
 print(f"done: {len(texts)} phrases, {got} downloaded, {fail} failed, {len(have)} files total", flush=True)

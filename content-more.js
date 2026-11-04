@@ -34,7 +34,7 @@ C.units.push(
     phrases: [
       { id: "fu1", ne: "भोलि के गर्ने?", ro: "bholi ke garne?", en: "What shall we do tomorrow?" },
       { id: "fu2", ne: "अर्को हप्ता म पोखरा जाँदैछु।", ro: "arko haptaa ma pokharaa jaandaichhu.", en: "Next week I'm going to Pokhara." },
-      { id: "fu3", ne: "म हिमाल हेर्न जाने बिचारमा छु।", ro: "ma himaal herna jaane bichaarmaa chhu.", en: "I'm thinking of going to see the mountains." },
+      { id: "fu3", ne: "म हिमाल हेर्न जाने विचारमा छु।", ro: "ma himaal herna jaane bichaarmaa chhu.", en: "I'm thinking of going to see the mountains." },
       { id: "fu4", ne: "तपाईंको के योजना छ?", ro: "tapaainko ke yojanaa chha?", en: "What's your plan?" },
       { id: "fu5", ne: "मैले काम गर्नुपर्छ।", ro: "maile kaam garnuparchha.", en: "I have to work." },
       { id: "fu6", ne: "अब मलाई जानुपर्छ।", ro: "aba malaai jaanuparchha.", en: "I have to go now." },
@@ -79,7 +79,7 @@ C.units.push(
       { id: "ro5", ne: "बेलुका म खाना पकाउँछु।", ro: "belukaa ma khaanaa pakaaunchhu.", en: "In the evening I cook." },
       { id: "ro6", ne: "म राति एघार बजे सुत्छु।", ro: "ma raati eghaara baje sutchhu.", en: "I go to bed at eleven at night." },
       { id: "ro7", ne: "म सधैँ चिया पिउँछु।", ro: "ma sadhain chiyaa piunchhu.", en: "I always drink tea." },
-      { id: "ro8", ne: "म कहिलेकाहीँ दौडिन्छु।", ro: "ma kahilekaahin daudinchhu.", en: "I sometimes go running." },
+      { id: "ro8", ne: "म कहिलेकाहीँ दौडन्छु।", ro: "ma kahilekaahin daudanchhu.", en: "I sometimes go running." },
       { id: "ro9", ne: "म कहिल्यै ढिलो उठ्दिनँ।", ro: "ma kahilyai dhilo uthdina.", en: "I never get up late." },
       { id: "ro10", ne: "आज म व्यस्त छु।", ro: "aaja ma byasta chhu.", en: "I'm busy today." },
       { id: "ro11", ne: "मसँग समय छैन।", ro: "masanga samaya chhaina.", en: "I don't have time.", note: "masanga = with me. This is how Nepali says \"I have\"." },
@@ -101,7 +101,7 @@ C.units.push(
       { id: "de7", ne: "त्यो होटल फोहोर छ।", ro: "tyo hotal phohor chha.", en: "That hotel is dirty." },
       { id: "de8", ne: "यो घर नयाँ हो कि पुरानो?", ro: "yo ghar nayaan ho ki puraano?", en: "Is this house new or old?" },
       { id: "de9", ne: "उसको कपाल लामो छ।", ro: "usko kapaal laamo chha.", en: "His / her hair is long." },
-      { id: "de10", ne: "तपाईं थकित देखिनुहुन्छ।", ro: "tapaain thakit dekhinuhunchha.", en: "You look tired." },
+      { id: "de10", ne: "तपाईं थाकेको जस्तो देखिनुहुन्छ।", ro: "tapaain thaakeko jasto dekhinuhunchha.", en: "You look tired." },
       { id: "de11", ne: "कस्तो राम्रो!", ro: "kasto raamro!", en: "How nice!" },
       { id: "de12", ne: "नेपाली सजिलो छैन, तर रमाइलो छ।", ro: "nepaali sajilo chhaina, tara ramaailo chha.", en: "Nepali isn't easy, but it's fun." }
     ] },
@@ -179,7 +179,7 @@ C.units.push(
       { id: "cu5", ne: "टीका लगाउन आउनुहोस्।", ro: "tikaa lagaauna aaunuhos.", en: "Come and receive tika." },
       { id: "cu6", ne: "जुत्ता बाहिर खोल्नुहोस्।", ro: "juttaa baahira kholnuhos.", en: "Please take your shoes off outside." },
       { id: "cu7", ne: "दाहिने हातले खानुहोस्।", ro: "daahine haatle khaanuhos.", en: "Eat with your right hand." },
-      { id: "cu8", ne: "के म फोटो खिच्न सक्छु?", ro: "ke ma photo khichna sakchhu?", en: "May I take a photo?" },
+      { id: "cu8", ne: "फोटो खिच्न मिल्छ?", ro: "photo khichna milchha?", en: "May I take a photo?" },
       { id: "cu9", ne: "मन्दिरभित्र जान मिल्छ?", ro: "mandirbhitra jaana milchha?", en: "Is it OK to go inside the temple?" },
       { id: "cu10", ne: "बधाई छ!", ro: "badhaai chha!", en: "Congratulations!" },
       { id: "cu11", ne: "स्वागत छ!", ro: "swaagat chha!", en: "Welcome!" },
@@ -250,7 +250,7 @@ C.units.push(
   { id: "work", level: "B1", title: "Work & study", sub: "Your job, research, meetings",
     tips: [
       "<b>-dekhi ... -samma</b> = from ... until: <b>naudekhi paanch bajesamma</b> = from nine to five.",
-      "<b>-dai chhu</b> with a time span = have been doing: <b>dherai barshadekhi gardaichhu</b> = I've been doing it for years.",
+      "<b>-dai aaeko chhu</b> = have been doing (for a while): <b>dherai barshadekhi gardai aaeko chhu</b> = I've been doing it for years.",
       "<b>-haru</b> makes plurals: <b>bidyaarthi</b> (student) → <b>bidyaarthiharu</b> (students)."
     ],
     phrases: [
@@ -265,7 +265,7 @@ C.units.push(
       { id: "wk9", ne: "म यसमा काम गर्दैछु।", ro: "ma yasmaa kaam gardaichhu.", en: "I'm working on it." },
       { id: "wk10", ne: "तपाईंले के पढ्नुभयो?", ro: "tapaainle ke padhnubhayo?", en: "What did you study?" },
       { id: "wk11", ne: "मैले जीवविज्ञान पढेँ।", ro: "maile jeewabigyaan padhen.", en: "I studied biology." },
-      { id: "wk12", ne: "म यो काम धेरै वर्षदेखि गर्दैछु।", ro: "ma yo kaam dherai barshadekhi gardaichhu.", en: "I've been doing this job for many years." }
+      { id: "wk12", ne: "म यो काम धेरै वर्षदेखि गर्दै आएको छु।", ro: "ma yo kaam dherai barshadekhi gardai aaeko chhu.", en: "I've been doing this job for many years." }
     ] },
   { id: "health", level: "B1", title: "Health care", sub: "Vaccines, infection, hygiene",
     tips: [
@@ -309,7 +309,7 @@ C.units.push(
     ] },
   { id: "ifthen", level: "B1", title: "If and even if", sub: "Conditions, would, before, after",
     tips: [
-      "<b>... bhane</b> = if: <b>paani paryo bhane</b> = if it rains. The verb before it is in the past form.",
+      "<b>... bhane</b> = if: <b>paani paryo bhane</b> = if it rains. The verb before it is usually in the past form (<b>paryo bhane</b>), but the present also works (<b>milchha bhane</b>).",
       "Unreal \"would\": <b>-eko bhae ... -thyo/-then</b>. <b>paisaa bhaeko bhae, ma kinthen</b> = if I had money, I would buy.",
       "<b>-epachhi</b> = after, <b>-nuaghi</b> = before, <b>bhae pani</b> = even if."
     ],
@@ -321,7 +321,7 @@ C.units.push(
       { id: "if5", ne: "मिल्छ भने भोलि भेटौँ।", ro: "milchha bhane bholi bhetaun.", en: "If it suits you, let's meet tomorrow." },
       { id: "if6", ne: "जति छिटो, त्यति राम्रो।", ro: "jati chhito, tyati raamro.", en: "The sooner the better." },
       { id: "if7", ne: "तपाईंले भन्नुभएजस्तै गर्छु।", ro: "tapaainle bhannubhaejastai garchhu.", en: "I'll do as you said." },
-      { id: "if8", ne: "म भएको भए, त्यसो गर्दिनथेँ।", ro: "ma bhaeko bhae, tyaso gardinathen.", en: "If I were you, I wouldn't do that." },
+      { id: "if8", ne: "तपाईंको ठाउँमा म भएको भए, त्यसो गर्दिनथेँ।", ro: "tapaainko thaaunmaa ma bhaeko bhae, tyaso gardinathen.", en: "If I were you, I wouldn't do that." },
       { id: "if9", ne: "नेपाल पुगेपछि म्यासेज गर्नुहोस्।", ro: "nepaal pugepachhi myaasej garnuhos.", en: "Send a message once you reach Nepal." },
       { id: "if10", ne: "खाना खानुअघि हात धुनुहोस्।", ro: "khaanaa khaanuaghi haat dhunuhos.", en: "Wash your hands before eating." },
       { id: "if11", ne: "जे भए पनि म आउँछु।", ro: "je bhae pani ma aaunchhu.", en: "Whatever happens, I'll come." },
@@ -331,7 +331,7 @@ C.units.push(
     tips: [
       "Most emotions \"strike\" you: <b>malaai dar laagchha</b> = I'm scared, <b>laaj laagyo</b> = I felt embarrassed.",
       "<b>yaad aayo</b> = (the memory) came: <b>gharko yaad aayo</b> = I miss home.",
-      "<b>-irahechhu</b> = keep doing: <b>samjhiraheko chhu</b> = I keep thinking of (you)."
+      "<b>-iraheko chhu</b> = keep doing / have been doing: <b>samjhiraheko chhu</b> = I keep thinking of (you)."
     ],
     phrases: [
       { id: "em1", ne: "म तपाईंलाई सम्झिरहेको छु।", ro: "ma tapaainlaai samjhiraheko chhu.", en: "I've been thinking of you." },
@@ -344,7 +344,7 @@ C.units.push(
       { id: "em8", ne: "अचम्म लाग्यो!", ro: "achamma laagyo!", en: "What a surprise!" },
       { id: "em9", ne: "तपाईं मेरो मिल्ने साथी हुनुहुन्छ।", ro: "tapaain mero milne saathi hunuhunchha.", en: "You're my close friend." },
       { id: "em10", ne: "चिन्ताको कुरा केही छैन।", ro: "chintaako kuraa kehi chhaina.", en: "There's nothing to worry about." },
-      { id: "em11", ne: "मलाई तपाईंमाथि गर्व छ।", ro: "malaai tapaainmaathi garba chha.", en: "I'm proud of you." },
+      { id: "em11", ne: "मलाई तपाईंप्रति गर्व छ।", ro: "malaai tapaainprati garba chha.", en: "I'm proud of you." },
       { id: "em12", ne: "आफ्नो ख्याल राख्नुहोस्।", ro: "aaphno khyaal raakhnuhos.", en: "Take care of yourself." }
     ] },
   { id: "news", level: "B1", title: "News & society", sub: "Government, prices, migration",
@@ -361,7 +361,7 @@ C.units.push(
       { id: "nw5", ne: "बाढी र पहिरोले धेरै क्षति भयो।", ro: "baadhi ra pahirole dherai kshati bhayo.", en: "Floods and landslides caused a lot of damage." },
       { id: "nw6", ne: "धेरै युवा विदेश जाँदैछन्।", ro: "dherai yuwaa bidesh jaandaichhan.", en: "Many young people are going abroad." },
       { id: "nw7", ne: "पर्यटन बढेको छ।", ro: "paryatan badheko chha.", en: "Tourism has grown." },
-      { id: "nw8", ne: "मौसम पूर्वानुमानअनुसार भोलि पानी पर्छ।", ro: "mausam purwaanumaanaanusaar bholi paani parchha.", en: "According to the forecast, it will rain tomorrow." },
+      { id: "nw8", ne: "मौसम पूर्वानुमानअनुसार भोलि पानी पर्छ।", ro: "mausam purwaanumaananusaar bholi paani parchha.", en: "According to the forecast, it will rain tomorrow." },
       { id: "nw9", ne: "यो विषयमा धेरै बहस भइरहेको छ।", ro: "yo bishayamaa dherai bahas bhairaheko chha.", en: "There's a lot of debate about this." },
       { id: "nw10", ne: "सडक बन्द भएको छ।", ro: "sadak banda bhaeko chha.", en: "The road is closed." },
       { id: "nw11", ne: "विद्यार्थीहरूले आन्दोलन गरे।", ro: "bidyaarthiharule aandolan gare.", en: "The students held a protest." },
@@ -492,6 +492,6 @@ C.resources = [
   { level: "B2", title: "Nepali podcasts", body: "Long, natural conversations by Nepali hosts, for example The Sushant Pradhan Podcast on YouTube. Listen while commuting; you won't understand everything, and that's fine.", url: "https://www.youtube.com/results?search_query=sushant+pradhan+podcast" },
   { level: "B2", title: "TV news on YouTube", body: "Nepali TV channels post full news bulletins daily. Formal, fast and clear: ideal for training your ear at B2.", url: "https://www.youtube.com/results?search_query=kantipur+tv+news" },
   { level: "C1", title: "Nepali films and TV series", body: "Watch with Nepali subtitles once you can read Devanagari. Comedies are the hardest and the best for C1.", url: "https://www.youtube.com/results?search_query=nepali+full+movie" },
-  { level: "C1", title: "Kantipur and Onlinekhabar", body: "Daily newspapers. Reading the news every day makes the leap from C1 to C2.", url: "https://ekantipur.com/" }
+  { level: "C1", title: "Kantipur and Onlinekhabar", body: "Kantipur is a national daily and Onlinekhabar a major news site. Reading the news every day makes the leap from C1 to C2.", url: "https://ekantipur.com/" }
 ];
 })();

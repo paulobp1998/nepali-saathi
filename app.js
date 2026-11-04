@@ -8,7 +8,7 @@ const $app = document.getElementById("app");
 
 /* ---------- storage ---------- */
 const KEY = "nepali-saathi-v1";
-const DEF = { srs: {}, done: {}, dlg: {}, story: {}, xp: {}, imm: {}, mine: [], stats: {}, daily: {}, badges: {}, best: {}, settings: { voice: "auto", slow: 0.7, script: false, goal: 30, drill: "ne-en", gap: 2, sfx: true } };
+const DEF = { srs: {}, done: {}, dlg: {}, story: {}, xp: {}, imm: {}, mine: [], stats: {}, daily: {}, badges: {}, best: {}, freezes: 0, frozen: {}, settings: { voice: "auto", slow: 0.7, script: false, goal: 30, drill: "ne-en", gap: 2, sfx: true } };
 let S = load();
 let ALL = [], BY_ID = {}, UNIT = {};
 function indexAll() {
@@ -34,10 +34,19 @@ function addXP(n) {
   else if (had < S.settings.goal && S.xp[t] >= S.settings.goal) { setTimeout(() => { celebrate(); Sfx.win(); toast("Daily goal reached. Syaabaas!"); }, 300); }
 }
 function streak() {
-  let n = 0; const d = new Date();
-  if (!S.xp[day(d)]) d.setDate(d.getDate() - 1);
-  while (S.xp[day(d)]) { n++; d.setDate(d.getDate() - 1); }
+  let n = 0; const d = new Date(), on = k => S.xp[k] || S.frozen[k];
+  if (!on(day(d))) d.setDate(d.getDate() - 1);
+  while (on(day(d))) { n++; d.setDate(d.getDate() - 1); }
   return n;
+}
+// A streak freeze (earned by finishing all daily quests) covers one missed day.
+function applyFreeze() {
+  const y = new Date(); y.setDate(y.getDate() - 1); const y2 = new Date(); y2.setDate(y2.getDate() - 2);
+  const k = day(y), k2 = day(y2);
+  if (!S.xp[k] && !S.frozen[k] && (S.xp[k2] || S.frozen[k2]) && S.freezes > 0) {
+    S.frozen[k] = 1; S.freezes--; save();
+    setTimeout(() => toast("You missed yesterday. A streak freeze kept your streak alive."), 900);
+  }
 }
 
 /* ---------- spaced repetition (Leitner boxes) ---------- */
@@ -122,7 +131,9 @@ const Voice = {
       const v = lang === "en" ? this.en : (this.ne || this.hi);
       if (v) { u.voice = v; u.lang = v.lang; } else u.lang = lang === "en" ? "en-GB" : "ne-NP";
       u.rate = lang === "en" ? 1 : rate * 0.9;
-      const fin = () => { if (this.done === fin) this.done = null; res(); };
+      // Some browsers never fire onend, so don't wait forever.
+      const guard = setTimeout(() => fin(), 2500 + text.length * 150);
+      const fin = () => { clearTimeout(guard); if (this.done === fin) this.done = null; res(); };
       u.onend = u.onerror = fin; this.done = fin;
       speechSynthesis.speak(u);
     });
@@ -292,9 +303,10 @@ const Sfx = {
       o.connect(v).connect(c.destination); o.start(t); o.stop(t + len);
     });
   },
-  good(combo = 1) { if (this.on) this.bell(523.25 * Math.pow(2, Math.min(combo - 1, 9) / 12)); },
+  buzz(p) { try { if (navigator.vibrate) navigator.vibrate(p); } catch (e) {} },
+  good(combo = 1) { if (!this.on) return; this.buzz(12); this.bell(523.25 * Math.pow(2, Math.min(combo - 1, 9) / 12)); },
   bad() {
-    if (!this.on) return; const c = this.ac(); if (!c) return;
+    if (!this.on) return; this.buzz([25, 40, 25]); const c = this.ac(); if (!c) return;
     const t = c.currentTime, o = c.createOscillator(), v = c.createGain(); o.type = "triangle";
     o.frequency.setValueAtTime(220, t); o.frequency.exponentialRampToValueAtTime(140, t + 0.22);
     v.gain.setValueAtTime(0.1, t); v.gain.exponentialRampToValueAtTime(0.0001, t + 0.28);
@@ -396,7 +408,11 @@ function checkQuests() {
   qs.forEach(q => {
     if (d.q[q.id] || (d[q.key] || 0) < q.n) return;
     d.q[q.id] = 1; save(); Sfx.win(); toast("Quest complete: " + q.text + ". +10 XP"); addXP(10);
-    if (qs.every(x => d.q[x.id])) { setTimeout(() => { celebrate(140); Sfx.bowl(); modal(`${habre("happy", 100)}<p class="eyebrow">Daily quests</p><h1>All three done!</h1><p class="muted">+20 bonus XP. See you tomorrow for new quests.</p>`); }, 900); addXP(20); }
+    if (qs.every(x => d.q[x.id])) {
+      const gotFreeze = S.freezes < 2; if (gotFreeze) { S.freezes++; save(); }
+      setTimeout(() => { celebrate(140); Sfx.bowl(); modal(`${habre("happy", 100)}<p class="eyebrow">Daily quests</p><h1>All three done!</h1><p class="muted">+20 bonus XP${gotFreeze ? " and a streak freeze. A freeze protects your streak if you miss a day" : ""}. See you tomorrow for new quests.</p>`); }, 900);
+      addXP(20);
+    }
   });
 }
 const reachedAll = lv => C.units.filter(u => u.level === lv).every(u => S.done[u.id + ":speak"]);
@@ -478,14 +494,14 @@ VIEWS.home = () => {
     <div class="rankbar">
       <div class="row split">
         <span><span class="eyebrow">Rank</span><br><b class="rank-name">${esc(rk.en)}</b> <button class="ro-chip" data-say="${esc(rk.ne)}">${esc(rk.ro)}</button></span>
-        <span class="streak ${st ? "lit" : ""}" title="Days in a row">${I.flame}<b>${st}</b><small>day${st === 1 ? "" : "s"}</small></span>
+        <span class="streak ${st ? "lit" : ""}" title="Days in a row">${I.flame}<b>${st}</b><small>day${st === 1 ? "" : "s"}${S.freezes ? `<br>${S.freezes} freeze${S.freezes > 1 ? "s" : ""}` : ""}</small></span>
       </div>
       <div class="progress"><i style="width:${nx ? Math.round((xpAll - rk.xp) / (nx.xp - rk.xp) * 100) : 100}%"></i></div>
       <p class="muted small">${nx ? `${xpAll} XP · ${nx.xp - xpAll} more to ${esc(nx.en)}` : `${xpAll} XP · top rank`}</p>
     </div>
   </section>
   <section class="quests">
-    <div class="row split"><h2>Today's quests</h2><span class="muted small">+10 XP each · +20 for all three</span></div>
+    <div class="row split"><h2>Today's quests</h2><span class="muted small">+10 XP each · all three: +20 XP and a streak freeze</span></div>
     ${questsFor().map(q => { const v = Math.min(q.n, d[q.key] || 0), ok = qd[q.id]; return `
       <div class="quest ${ok ? "ok" : ""}"><span class="qicon">${ok ? I.check : I.target}</span><span class="qbody"><span>${esc(q.text)}</span><span class="progress"><i style="width:${v / q.n * 100}%"></i></span></span><span class="qn">${v}/${q.n}</span></div>`; }).join("")}
   </section>
@@ -1089,8 +1105,8 @@ VIEWS.settings = () => {
   <section><h1>Settings</h1></section>
   <section>
     <div class="field"><label for="voice">Voice</label>
-      <select id="voice"><option value="auto" ${st.voice === "auto" ? "selected" : ""}>Online Nepali voice, device voice when offline</option><option value="device" ${st.voice === "device" ? "selected" : ""}>Device voice only</option></select>
-      <p class="muted">The online voice is Google Translate's free Nepali voice. Most Macs and iPhones have no Nepali voice, so offline they fall back to Hindi, which is close but not exact.</p>
+      <select id="voice"><option value="auto" ${st.voice === "auto" ? "selected" : ""}>Nepali recordings (recommended)</option><option value="device" ${st.voice === "device" ? "selected" : ""}>Device voice only</option></select>
+      <p class="muted">Every lesson phrase has a built-in recording of a Nepali voice, which also works offline. Phrases you add yourself use Google's free online Nepali voice. "Device voice only" uses your phone's own voice, which may be Hindi on some devices: close, but not exact.</p>
       <div class="row"><button class="btn small" id="test">${I.speaker}Test voice</button><span class="muted" id="vlabel">${esc(Voice.label())}</span></div></div>
     <div class="field"><label for="slow">Slow speed: <span id="slowv">${Math.round(st.slow * 100)}%</span></label><input type="range" id="slow" min="0.5" max="0.9" step="0.05" value="${st.slow}"></div>
     <div class="field"><label class="switch"><input type="checkbox" id="script" ${st.script ? "checked" : ""}> Show Nepali script (Devanagari)</label><p class="muted">Off by default. Romanized text is enough for listening and speaking.</p></div>
@@ -1146,6 +1162,7 @@ const API = {
   setCleanup: f => { cleanup = f; },
   pool(min = 8) { const s = seenList().filter(p => !p.own && p.en.length < 60); return s.length >= min ? s : C.units.slice(0, 3).flatMap(u => u.phrases); }
 };
+applyFreeze();
 Object.entries(window.GAMES || {}).forEach(([k, f]) => { VIEWS[k] = arg => f(API, arg); });
 if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
   navigator.serviceWorker.register("sw.js").catch(() => {});
