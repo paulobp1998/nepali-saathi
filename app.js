@@ -8,7 +8,7 @@ const $app = document.getElementById("app");
 
 /* ---------- storage ---------- */
 const KEY = "nepali-saathi-v1";
-const DEF = { srs: {}, done: {}, dlg: {}, story: {}, xp: {}, imm: {}, mine: [], stats: {}, daily: {}, badges: {}, best: {}, freezes: 0, frozen: {}, settings: { voice: "auto", slow: 0.7, script: false, goal: 30, drill: "ne-en", gap: 2, sfx: true } };
+const DEF = { srs: {}, done: {}, dlg: {}, story: {}, xp: {}, imm: {}, mine: [], stats: {}, daily: {}, badges: {}, best: {}, gram: {}, freezes: 0, frozen: {}, settings: { voice: "auto", slow: 0.7, script: false, goal: 30, drill: "ne-en", gap: 2, sfx: true, remind: { on: false, time: "19:00" } } };
 let S = load();
 let ALL = [], BY_ID = {}, UNIT = {};
 function indexAll() {
@@ -29,6 +29,7 @@ function addXP(n) {
   if (!n) return;
   const t = day(), before = rankOf(totalXP()), had = S.xp[t] || 0;
   S.xp[t] = had + n; save(); header(); track("xp", n);
+  if (!had && typeof Remind !== "undefined") Remind.sync();
   const after = rankOf(totalXP());
   if (after !== before) levelUp(after);
   else if (had < S.settings.goal && S.xp[t] >= S.settings.goal) { setTimeout(() => { celebrate(); Sfx.win(); toast("Daily goal reached. Syaabaas!"); }, 300); }
@@ -387,7 +388,8 @@ const QUESTS = [
   { id: "review", text: "Finish a review", key: "review", n: 1 },
   { id: "convo", text: "Finish a conversation or story", key: "convo", n: 1 },
   { id: "drill", text: "Hear 15 phrases in the hands-free drill", key: "drill", n: 15 },
-  { id: "momo", text: "Serve 10 momos in Momo Rush", key: "momo", n: 10 }
+  { id: "momo", text: "Serve 10 momos in Momo Rush", key: "momo", n: 10 },
+  { id: "gram", text: "Pass a grammar chapter check", key: "gram", n: 1 }
 ];
 function questsFor(t = day()) {
   let seed = 7; for (const ch of t) seed = (seed * 31 + ch.charCodeAt(0)) >>> 0;
@@ -437,6 +439,9 @@ const BADGES = [
   { id: "stories", name: "Storyteller", desc: "Finish every listening story", test: () => (C.stories || []).every(s => S.story[s.id]) },
   { id: "miner", name: "Sentence miner", desc: "Add 10 phrases of your own", test: () => S.mine.length >= 10 },
   { id: "imm10", name: "Into the wild", desc: "Log 10 hours of real-world Nepali", test: () => immHours() >= 10 },
+  { id: "gram5", name: "Rule follower", desc: "Pass 5 grammar chapters", test: () => gramCount() >= 5 },
+  { id: "gramB1", name: "Sentence builder", desc: "Pass every A1 to B1 grammar chapter", test: () => (C.grammar || []).filter(g => ["A1", "A2", "B1"].includes(g.level)).every(g => gramPassed(g.id)) },
+  { id: "gramAll", name: "Grammarian", desc: "Pass every grammar chapter, A1 to C2", test: () => (C.grammar || []).length > 0 && gramCount() === C.grammar.length },
   { id: "night", name: "Night owl", desc: "Practise after 10 pm", test: () => !!S.stats.night },
   { id: "early", name: "Early bird", desc: "Practise before 7 am", test: () => !!S.stats.early }
 ];
@@ -507,6 +512,7 @@ VIEWS.home = () => {
   </section>
   <section class="cards">
     <button class="card lead" data-go="${nextMode}-${next.id}"><span class="k">Continue the trek</span><h3>${esc(stop.place || next.title)}</h3><span class="muted">${esc(next.title)} · ${verb}</span></button>
+    <button class="card" data-go="grammar"><span class="k">How Nepali works</span><h3>Grammar</h3><span class="muted">${gramCount()} of ${(C.grammar || []).length} chapters · A1 → C2</span></button>
     <button class="card" data-go="games"><span class="k">Play</span><h3>Games</h3><span class="muted">Momo Rush, Memory Match, Bargain Bazaar</span></button>
     <button class="card" data-go="review"><span class="k">Review</span><h3>${due ? due + " phrases due" : "Nothing due"}</h3><span class="muted">Bring phrases back before you forget</span></button>
     <button class="card" data-go="drill"><span class="k">Hands-free</span><h3>Listening drill</h3><span class="muted">Audio only, for walks and commutes</span></button>
@@ -523,6 +529,7 @@ VIEWS.home = () => {
     <button class="card" data-go="mine"><span class="k">Sentence mining</span><h3>My phrases</h3><span class="muted">${S.mine.length ? S.mine.length + " phrases you added" : "Add phrases you hear in real life"}</span></button>
     <button class="card" data-go="sounds"><span class="k">Ear training</span><h3>Sounds of Nepali</h3><span class="muted">The sounds English doesn't have</span></button>
     <button class="card" data-go="settings"><span class="k">Voice, sound &amp; backup</span><h3>Settings</h3><span class="muted">${esc(Voice.label())}</span></button>
+    ${S.settings.remind && S.settings.remind.on ? "" : `<button class="card" data-go="settings-remind"><span class="k">Stay on track</span><h3>Daily reminder</h3><span class="muted">Get a nudge on days you haven't practised</span></button>`}
   </section>`;
 };
 
@@ -613,6 +620,7 @@ VIEWS.path = () => {
       <p class="muted">${esc(l.can)}</p>
       <div class="progress"><i style="width:${pct}%"></i></div>
       <p class="muted" style="font-size:.85rem">${LEVELS.includes(l.id) ? "Earn all five flags on every " + l.id + " lesson to complete it." : "Goal: " + IMM_GOALS[l.id] + " hours of real-world Nepali in total (a rough guide, not a rule)."}</p>
+      ${(() => { const gs = (C.grammar || []).filter(g => g.level === l.id); return gs.length ? `<button class="btn small ghost" data-go="grammar" style="justify-self:start">Grammar: ${gs.filter(g => gramPassed(g.id)).length} of ${gs.length} ${esc(l.id)} chapters passed</button>` : ""; })()}
     </div>`; }).join("")}</section>
   <section class="tips">
     <h3>Log real-world Nepali</h3>
@@ -1097,13 +1105,184 @@ VIEWS.sounds = () => {
   });
 };
 
+/* ---------- grammar ---------- */
+const GLEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
+const GRAM = Object.fromEntries((C.grammar || []).map(g => [g.id, g]));
+const gramPassed = id => !!(S.gram[id] && S.gram[id].pass);
+const gramCount = () => (C.grammar || []).filter(g => gramPassed(g.id)).length;
+function gramBlock(b) {
+  if (b.h) return `<h2 class="g-h">${b.h}</h2>`;
+  if (b.p) return `<p>${b.p}</p>`;
+  if (b.rule) return `<div class="g-rule"><span class="eyebrow">The rule</span><p>${b.rule}</p></div>`;
+  if (b.warn) return `<div class="g-warn"><span class="eyebrow">Watch out</span><p>${b.warn}</p></div>`;
+  if (b.list) return `<ul class="g-list">${b.list.map(x => `<li>${x}</li>`).join("")}</ul>`;
+  if (b.table) {
+    const t = b.table;
+    return `<div class="g-tablewrap">${t.cap ? `<p class="eyebrow">${t.cap}</p>` : ""}<div class="g-scroll" tabindex="0"><table class="g-table"><thead><tr>${t.head.map(h => `<th scope="col">${h}</th>`).join("")}</tr></thead><tbody>${t.rows.map(r => `<tr>${r.map((c, i) => i ? `<td>${c}</td>` : `<th scope="row">${c}</th>`).join("")}</tr>`).join("")}</tbody></table></div></div>`;
+  }
+  if (b.ex) return `<div class="list g-ex">${b.ex.map(e => `<button class="li" data-say="${esc(e.ne)}"><span class="play-dot">${I.speaker}</span><span><span class="ro">${esc(e.ro)}</span><br><span class="ne">${esc(e.ne)}</span><br><span class="en">${esc(e.en)}</span>${e.note ? `<br><span class="g-note">${esc(e.note)}</span>` : ""}</span><span></span></button>`).join("")}</div>`;
+  return "";
+}
+
+VIEWS.grammar = () => {
+  const all = C.grammar || [], n = gramCount(), next = all.find(g => !gramPassed(g.id));
+  $app.innerHTML = `
+  ${backBtn("home", "Home")}
+  <section><p class="eyebrow">A1 → C2</p><h1>Grammar</h1>
+    <p class="muted">Clear rules, tables and exceptions, from your first sentence to native-level nuance. Read a chapter, tap the examples to hear them, then pass its check (80%) to tick it off.</p>
+    <div class="progress"><i style="width:${all.length ? n / all.length * 100 : 0}%"></i></div>
+    <p class="muted small">${n} of ${all.length} chapters passed</p></section>
+  <section class="cards">
+    ${next ? `<button class="card lead" data-go="gram-${next.id}"><span class="k">${S.gram[next.id] ? "Continue" : "Next chapter"} · ${next.level}</span><h3>${esc(next.title)}</h3><span class="muted">${esc(next.sub)}</span></button>` : `<div class="card lead"><span class="k">All done</span><h3>Every chapter passed</h3><span class="muted">Re-take any check to keep the rules fresh.</span></div>`}
+    <button class="card" data-go="conj"><span class="k">Quick reference</span><h3>Verb tables</h3><span class="muted">Every tense on one page</span></button>
+  </section>
+  ${GLEVELS.map(lv => {
+    const gs = all.filter(g => g.level === lv); if (!gs.length) return "";
+    const L = C.levels.find(l => l.id === lv);
+    return `<section><div class="row split"><h2>${esc(L ? L.name : lv)}</h2><span class="chip">${gs.filter(g => gramPassed(g.id)).length} / ${gs.length}</span></div>
+      <div class="list">${gs.map(g => `<button class="li" data-go="gram-${g.id}"><span class="play-dot g-num">${all.indexOf(g) + 1}</span><span><span class="ro">${esc(g.title)}</span><br><span class="en">${esc(g.sub)}</span></span>${gramPassed(g.id) ? '<span class="tick">Passed</span>' : S.gram[g.id] ? '<span class="muted small">Read</span>' : "<span></span>"}</button>`).join("")}</div></section>`;
+  }).join("")}`;
+};
+
+VIEWS.gram = id => {
+  const g = GRAM[id]; if (!g) return go("grammar");
+  const all = C.grammar, i = all.indexOf(g), nx = all[i + 1], pv = all[i - 1];
+  if (!S.gram[id]) { S.gram[id] = { read: day() }; save(); }
+  const best = S.gram[id].best;
+  $app.innerHTML = `
+  ${backBtn("grammar", "Grammar")}
+  <section><p class="eyebrow">${esc(g.level)} · Chapter ${i + 1} of ${all.length}${gramPassed(id) ? " · Passed" : ""}</p><h1>${esc(g.title)}</h1><p class="muted">${esc(g.sub)}</p></section>
+  <article class="g-body">${g.blocks.map(gramBlock).join("")}</article>
+  <section class="tips"><h3>Check yourself</h3><p class="muted">${g.quiz.length} questions, each with an explanation. Get 80% to pass the chapter.${best != null ? ` Your best: ${Math.round(best * 100)}%.` : ""}</p><button class="btn primary" data-go="gquiz-${id}">Start the check</button></section>
+  <div class="row split g-nav">${pv ? `<button class="btn small ghost" data-go="gram-${pv.id}">← ${esc(pv.title)}</button>` : "<span></span>"}${nx ? `<button class="btn small ghost" data-go="gram-${nx.id}">${esc(nx.title)} →</button>` : ""}</div>`;
+};
+
+VIEWS.gquiz = id => {
+  const g = GRAM[id]; if (!g) return go("grammar");
+  const qs = shuffle(g.quiz).map(q => ({ ...q, opts: shuffle([q.a, ...q.o]) }));
+  let k = 0, right = 0;
+  const draw = () => {
+    if (k >= qs.length) return done();
+    const q = qs[k];
+    $app.innerHTML = `
+    ${backBtn("gram-" + id, g.title)}
+    <div class="stage">
+      <p class="eyebrow">${esc(g.title)} · ${k + 1} of ${qs.length}</p>
+      <div class="progress" style="width:100%"><i style="width:${k / qs.length * 100}%"></i></div>
+      <h2 class="g-q">${q.q}</h2>
+      <div class="opts">${q.opts.map((o, j) => `<button class="opt" data-j="${j}">${o}</button>`).join("")}</div>
+      <div id="gwhy" class="g-why" hidden></div>
+    </div>`;
+    $app.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+      const ok = q.opts[+b.dataset.j] === q.a;
+      $app.querySelectorAll(".opt").forEach(x => { x.disabled = true; if (q.opts[+x.dataset.j] === q.a) x.classList.add("right"); });
+      if (ok) { right++; Sfx.good(right); } else { b.classList.add("wrong"); Sfx.bad(); }
+      const w = document.getElementById("gwhy"); w.hidden = false;
+      w.innerHTML = `<p class="verdict ${ok ? "good" : "bad"}">${ok ? pick(["Right!", "Correct!", "Syaabaas!"]) : "Not quite"}</p><p>${q.why || ""}</p><button class="btn primary" id="gnext">${k + 1 < qs.length ? "Next question" : "See result"}</button>`;
+      const nb = document.getElementById("gnext"); nb.onclick = () => { k++; draw(); }; nb.focus();
+    });
+  };
+  const done = () => {
+    const pct = right / qs.length, pass = pct >= 0.8, r = S.gram[id] || (S.gram[id] = {}), first = pass && !r.pass;
+    r.best = Math.max(r.best || 0, pct); if (pass && !r.pass) r.pass = day(); save();
+    addXP(first ? 10 : 2); if (pass) track("gram");
+    const nx = C.grammar[C.grammar.indexOf(g) + 1];
+    $app.innerHTML = `
+    ${backBtn("grammar", "Grammar")}
+    <div class="stage">${cheerHTML(pass ? "good" : "bad")}
+      <h1>${right} of ${qs.length} right</h1>
+      <p class="muted">${pass ? (first ? "Chapter passed. +10 XP" : "Passed again. Repetition is how rules become instinct.") : "You need 80% to pass. Re-read the rule boxes and examples, then try again."}</p>
+      <div class="row" style="justify-content:center">${pass && nx ? `<button class="btn primary" data-go="gram-${nx.id}">Next: ${esc(nx.title)}</button>` : `<button class="btn primary" data-go="gram-${id}">Re-read the chapter</button>`}<button class="btn" data-go="gquiz-${id}">Try again</button></div>
+    </div>`;
+    if (pass) { celebrate(first ? 110 : 40); Sfx.win(); }
+  };
+  draw();
+};
+
+// Every conjugation table from the tense chapters, on one page.
+VIEWS.conj = () => {
+  const ids = ["be", "pres", "imp", "past", "was", "cont", "fut", "perf", "habit", "if", "pass", "honor"];
+  const chs = ids.map(id => GRAM[id]).filter(Boolean);
+  $app.innerHTML = `
+  ${backBtn("grammar", "Grammar")}
+  <section><p class="eyebrow">Quick reference</p><h1>Verb tables</h1><p class="muted">The model verbs are <b>garnu</b> (to do, a consonant stem) and <b>khaanu</b> (to eat, a vowel stem). Most verbs follow one of them. Tap a heading for the full explanation.</p></section>
+  ${chs.map(g => `<section><button class="g-reflink" data-go="gram-${g.id}"><span class="chip">${esc(g.level)}</span> <h2>${esc(g.title)}</h2></button>${g.blocks.filter(b => b.table || b.rule).map(gramBlock).join("")}</section>`).join("")}`;
+};
+
+/* ---------- daily reminder ---------- */
+// Web apps can't schedule exact alarms. Three layers: a timer while the app is open or in the background,
+// Periodic Background Sync on Android/Chrome (installed app), and a repeating calendar event that works everywhere.
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const standalone = () => window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+const Remind = {
+  ok: "Notification" in window,
+  timer: null,
+  cfg() { return S.settings.remind || (S.settings.remind = { on: false, time: "19:00" }); },
+  lastDay() { return Object.keys(S.xp).filter(k => S.xp[k] > 0).sort().pop() || ""; },
+  async sync() {
+    const r = this.cfg(), st = { on: !!r.on, time: r.time, last: this.lastDay(), notified: S.remindShown || "", streak: streak(), pd: phraseOfDay() };
+    try { const c = await caches.open("saathi-state"); await c.put("state.json", new Response(JSON.stringify(st), { headers: { "Content-Type": "application/json" } })); } catch (e) {}
+    this.arm();
+  },
+  arm() {
+    clearTimeout(this.timer);
+    const r = this.cfg(); if (!r.on || !this.ok || Notification.permission !== "granted") return;
+    const [h, m] = r.time.split(":").map(Number), at = new Date(); at.setHours(h, m, 0, 0);
+    const wait = at - Date.now(); if (wait <= 0 || wait > 864e5) return;
+    this.timer = setTimeout(() => { if (!S.xp[day()] && S.remindShown !== day()) { S.remindShown = day(); save(); this.show(); this.sync(); } }, wait);
+  },
+  async reg() {
+    if (!("serviceWorker" in navigator)) return null;
+    return Promise.race([navigator.serviceWorker.getRegistration().then(r => r || null), sleep(1500).then(() => null)]);
+  },
+  async show(test) {
+    const pd = phraseOfDay(), st = streak();
+    const title = test ? "Reminders are on" : st ? `Keep your ${st}-day streak going` : "Time for some Nepali";
+    const body = `${pd.ro}: ${pd.en}. Five minutes today is enough.`;
+    const opt = { body, icon: "icons/icon-192.png", badge: "icons/icon-192.png", tag: "saathi-daily" };
+    try { const reg = await this.reg(); if (reg) { await reg.showNotification(title, opt); return true; } } catch (e) {}
+    try { new Notification(title, opt); return true; } catch (e) { return false; }
+  },
+  async background(on) {
+    try {
+      const reg = await this.reg(); if (!reg || !("periodicSync" in reg)) return false;
+      if (!on) { await reg.periodicSync.unregister("saathi-daily"); return false; }
+      const p = await navigator.permissions.query({ name: "periodic-background-sync" });
+      if (p.state !== "granted") return false;
+      await reg.periodicSync.register("saathi-daily", { minInterval: 4 * 36e5 }); return true;
+    } catch (e) { return false; }
+  },
+  appUrl() { return location.href.split("#")[0]; },
+  stamp(d, h, m) { return d.getFullYear() + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0") + "T" + String(h).padStart(2, "0") + String(m).padStart(2, "0") + "00"; },
+  ics() {
+    const [h, m] = this.cfg().time.split(":").map(Number), d = new Date(); d.setDate(d.getDate() + 1);
+    const now = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d+/, "");
+    return ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Nepali Saathi//Daily practice//EN", "CALSCALE:GREGORIAN", "BEGIN:VEVENT",
+      "UID:daily-practice-" + Date.now() + "@nepali-saathi", "DTSTAMP:" + now, "DTSTART:" + this.stamp(d, h, m), "DURATION:PT15M", "RRULE:FREQ=DAILY",
+      "SUMMARY:Nepali practice", "DESCRIPTION:15 minutes with Nepali Saathi keeps your streak alive. " + this.appUrl(), "URL:" + this.appUrl(),
+      "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:Time for Nepali practice", "TRIGGER:PT0S", "END:VALARM", "END:VEVENT", "END:VCALENDAR", ""].join("\r\n");
+  },
+  google() {
+    const [h, m] = this.cfg().time.split(":").map(Number), d = new Date(); d.setDate(d.getDate() + 1);
+    const e = new Date(d); e.setHours(h, m + 15);
+    const q = new URLSearchParams({ action: "TEMPLATE", text: "Nepali practice", details: "15 minutes with Nepali Saathi keeps your streak alive. " + this.appUrl(), recur: "RRULE:FREQ=DAILY", dates: this.stamp(d, h, m) + "/" + this.stamp(e, e.getHours(), e.getMinutes()) });
+    return "https://calendar.google.com/calendar/render?" + q.toString();
+  }
+};
+
 /* Settings */
-VIEWS.settings = () => {
+VIEWS.settings = arg => {
   const st = S.settings;
   $app.innerHTML = `
   ${backBtn("home", "Home")}
   <section><h1>Settings</h1></section>
   <section>
+    <div class="field" id="remind"><label>Daily reminder</label>
+      <label class="switch"><input type="checkbox" id="rem" ${Remind.cfg().on ? "checked" : ""}> Remind me to practise every day</label>
+      <div class="row"><label for="remt" class="muted">Time</label><input type="time" id="remt" class="inp" value="${Remind.cfg().time}" style="width:auto"></div>
+      <p class="muted" id="remst"></p>
+      <div class="row"><button class="btn small" id="remtest">Send a test</button><button class="btn small" id="remics">Add to my calendar</button><a class="btn small" id="remg" href="${esc(Remind.google())}" target="_blank" rel="noopener">Google Calendar</a></div>
+      <p class="muted">Phones only let web apps wake up in limited ways. On <b>Android</b> with the app installed, reminders can arrive even when it's closed (the time may drift a little). On <b>iPhone</b> and computers, notifications arrive while the app is open or in the background. For a reminder that <b>always</b> arrives, also add the repeating calendar event: it rings at your chosen time every day.</p></div>
     <div class="field"><label for="voice">Voice</label>
       <select id="voice"><option value="auto" ${st.voice === "auto" ? "selected" : ""}>Nepali recordings (recommended)</option><option value="device" ${st.voice === "device" ? "selected" : ""}>Device voice only</option></select>
       <p class="muted">Every lesson phrase has a built-in recording of a Nepali voice, which also works offline. Phrases you add yourself use Google's free online Nepali voice. "Device voice only" uses your phone's own voice, which may be Hindi on some devices: close, but not exact.</p>
@@ -1124,6 +1303,42 @@ VIEWS.settings = () => {
       <div class="row"><button class="btn small" id="reset">Reset all progress</button><span id="confirm" hidden><button class="btn small primary" id="yes" style="background:var(--bad);border-color:var(--bad);color:#fff">Yes, erase everything</button> <button class="btn small ghost" id="no">Cancel</button></span></div></div>
   </section>`;
   const $ = s => document.getElementById(s);
+  const remStatus = (msg) => {
+    const r = Remind.cfg(); let t = msg || "";
+    if (!t) {
+      if (!Remind.ok) t = isIOS && !standalone() ? "On iPhone, first add this app to your Home Screen (Share → Add to Home Screen), open it from there, then turn this on." : "This browser can't show notifications. Use the calendar reminder below.";
+      else if (Notification.permission === "denied") t = "Notifications are blocked for this app. Allow them in your browser or phone settings, or use the calendar reminder.";
+      else if (r.on && Notification.permission === "granted") t = `On: a nudge at ${r.time} on days you haven't practised yet.`;
+      else t = "Off.";
+    }
+    $("remst").textContent = t;
+  };
+  remStatus();
+  $("rem").onchange = async e => {
+    const r = Remind.cfg();
+    if (e.target.checked) {
+      if (!Remind.ok) { e.target.checked = false; remStatus(); return; }
+      let p = Notification.permission;
+      if (p === "default") { try { p = await Notification.requestPermission(); } catch (err) { p = "denied"; } }
+      if (p !== "granted") { e.target.checked = false; r.on = false; save(); remStatus(); return; }
+      r.on = true; save(); await Remind.sync();
+      const bg = await Remind.background(true);
+      remStatus(`On: a nudge at ${r.time} on days you haven't practised yet.${bg ? " Background reminders are enabled on this device." : ""}`);
+    } else { r.on = false; save(); Remind.sync(); Remind.background(false); remStatus(); }
+  };
+  $("remt").onchange = e => { if (!e.target.value) return; Remind.cfg().time = e.target.value; save(); Remind.sync(); $("remg").href = Remind.google(); remStatus(); };
+  $("remtest").onclick = async () => {
+    if (!Remind.ok || Notification.permission !== "granted") { remStatus(Remind.ok && Notification.permission === "default" ? "Turn the reminder on first, so your device can ask for permission." : ""); return; }
+    remStatus((await Remind.show(true)) ? "Test sent. If you don't see it, check your device's notification settings for this app." : "Your device didn't allow the test notification.");
+  };
+  $("remics").onclick = () => {
+    const ics = Remind.ics();
+    if (isIOS) { location.href = "data:text/calendar;charset=utf-8," + encodeURIComponent(ics); return; }
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([ics], { type: "text/calendar" })); a.download = "nepali-practice.ics";
+    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+    remStatus("Calendar file created. Open it to add a daily “Nepali practice” event with an alert.");
+  };
+  if (arg === "remind") setTimeout(() => $("remind").scrollIntoView({ block: "start" }), 50);
   $("voice").onchange = e => { st.voice = e.target.value; Voice.online = true; Voice.fails = 0; save(); $("vlabel").textContent = Voice.label(); };
   $("test").onclick = async () => { await Voice.say("नमस्ते! तपाईंलाई कस्तो छ?"); $("vlabel").textContent = Voice.label(); };
   $("slow").oninput = e => { st.slow = +e.target.value; save(); $("slowv").textContent = Math.round(st.slow * 100) + "%"; };
@@ -1163,6 +1378,7 @@ const API = {
   pool(min = 8) { const s = seenList().filter(p => !p.own && p.en.length < 60); return s.length >= min ? s : C.units.slice(0, 3).flatMap(u => u.phrases); }
 };
 applyFreeze();
+Remind.sync();
 Object.entries(window.GAMES || {}).forEach(([k, f]) => { VIEWS[k] = arg => f(API, arg); });
 if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
   navigator.serviceWorker.register("sw.js").catch(() => {});

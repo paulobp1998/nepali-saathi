@@ -1,8 +1,9 @@
 // Offline support: caches the app and its recordings. Bump V when publishing changes.
-const V = "saathi-v4";
+const V = "saathi-v5";
 const TTS = "saathi-tts";
+const STATE = "saathi-state"; // reminder settings shared by the app (see Remind in app.js)
 importScripts("audio-list.js");
-const SHELL = ["./", "index.html", "app.js", "content.js", "content-more.js", "trail.js", "games.js", "audio-list.js", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png"];
+const SHELL = ["./", "index.html", "app.js", "content.js", "content-more.js", "trail.js", "grammar-a.js", "grammar-b.js", "grammar-c.js", "games.js", "audio-list.js", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png"];
 
 self.addEventListener("install", e => {
   self.skipWaiting();
@@ -14,7 +15,7 @@ self.addEventListener("install", e => {
   })());
 });
 self.addEventListener("activate", e => e.waitUntil((async () => {
-  for (const k of await caches.keys()) if (k !== V && k !== TTS) await caches.delete(k);
+  for (const k of await caches.keys()) if (k !== V && k !== TTS && k !== STATE) await caches.delete(k);
   await self.clients.claim();
 })()));
 
@@ -49,4 +50,27 @@ self.addEventListener("fetch", e => {
       const r = await fetch(req.url, { mode: "no-cors" }); c.put(req.url, r.clone()); return r;
     }));
   }
+});
+
+/* Daily reminder: Periodic Background Sync (Chrome/Android, installed app) wakes this worker now and then.
+   Show one nudge a day, after the chosen time, only if the learner hasn't practised yet. */
+const ymd = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+async function maybeRemind() {
+  const c = await caches.open(STATE), r = await c.match("state.json"); if (!r) return;
+  const s = await r.json(), now = new Date(), today = ymd(now);
+  if (!s.on || s.last === today || s.notified === today) return;
+  const [h, m] = String(s.time || "19:00").split(":").map(Number);
+  if (now.getHours() * 60 + now.getMinutes() < h * 60 + m) return;
+  s.notified = today; await c.put("state.json", new Response(JSON.stringify(s), { headers: { "Content-Type": "application/json" } }));
+  const title = s.streak ? `Keep your ${s.streak}-day streak going` : "Time for some Nepali";
+  const body = s.pd ? `${s.pd.ro}: ${s.pd.en}. Five minutes today is enough.` : "Five minutes of Nepali today is enough.";
+  await self.registration.showNotification(title, { body, icon: "icons/icon-192.png", badge: "icons/icon-192.png", tag: "saathi-daily" });
+}
+self.addEventListener("periodicsync", e => { if (e.tag === "saathi-daily") e.waitUntil(maybeRemind()); });
+self.addEventListener("notificationclick", e => {
+  e.notification.close();
+  e.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(ws => {
+    for (const w of ws) if ("focus" in w) return w.focus();
+    return self.clients.openWindow("./");
+  }));
 });

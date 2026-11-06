@@ -293,6 +293,35 @@ input[type=range] { accent-color: var(--accent); width: min(320px, 100%); }
 @media (prefers-reduced-motion: reduce) { .habre, .combo, .mem.up, .plate span, .modal-in { animation: none !important; } }
 .toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom)); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-weight: 700; z-index: 20; max-width: calc(100% - 32px); }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+/* grammar */
+.g-body { display: grid; gap: 14px; min-width: 0; }
+.g-body p { margin: 0; line-height: 1.6; }
+.g-body .g-h { margin-top: 10px; }
+.g-rule, .g-warn { border-radius: 14px; padding: 12px 16px; display: grid; gap: 4px; border: 1px solid transparent; }
+.g-rule { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 35%, transparent); }
+.g-rule .eyebrow { color: var(--accent); }
+.g-warn { background: var(--bad-soft); border-color: color-mix(in srgb, var(--bad) 30%, transparent); }
+.g-warn .eyebrow { color: var(--bad); }
+.g-list { margin: 0; padding-left: 1.2rem; display: grid; gap: 6px; line-height: 1.5; }
+.g-tablewrap { display: grid; gap: 6px; min-width: 0; }
+.g-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); -webkit-overflow-scrolling: touch; }
+.g-table { border-collapse: collapse; width: 100%; font-size: 0.93rem; }
+.g-table th, .g-table td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.4; }
+.g-table thead th { background: var(--sunk); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); white-space: nowrap; }
+.g-table tbody th { font-weight: 600; color: var(--muted); }
+.g-table tbody tr:last-child > * { border-bottom: 0; }
+.g-table b, .g-body b { color: var(--ink); }
+.g-ex .g-note { font-size: 0.85rem; color: var(--muted); font-style: italic; }
+.g-num { font-size: 0.85rem; font-weight: 700; }
+.g-q { font-size: 1.15rem; line-height: 1.4; }
+.g-why { display: grid; gap: 10px; justify-items: center; max-width: 52ch; }
+.g-why p { margin: 0; }
+.g-reflink { display: flex; gap: 10px; align-items: center; background: none; border: 0; padding: 0; text-align: left; color: inherit; }
+.g-nav .btn { max-width: 48%; }
+a.btn { text-decoration: none; color: inherit; }
+#remind { scroll-margin-top: 72px; }
+@media (max-width: 420px) { .g-table { font-size: 0.86rem; } .g-table th, .g-table td { padding: 8px 9px; } }
 </style>
 </head>
 <body>
@@ -307,6 +336,9 @@ input[type=range] { accent-color: var(--accent); width: min(320px, 100%); }
 <script src="content.js"></script>
 <script src="content-more.js"></script>
 <script src="trail.js"></script>
+<script src="grammar-a.js"></script>
+<script src="grammar-b.js"></script>
+<script src="grammar-c.js"></script>
 <script src="audio-list.js"></script>
 <script src="games.js"></script>
 <script src="app.js"></script>
