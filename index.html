@@ -322,6 +322,50 @@ input[type=range] { accent-color: var(--accent); width: min(320px, 100%); }
 a.btn { text-decoration: none; color: inherit; }
 #remind { scroll-margin-top: 72px; }
 @media (max-width: 420px) { .g-table { font-size: 0.86rem; } .g-table th, .g-table td { padding: 8px 9px; } }
+
+/* culture, reading, builder */
+:root { --art-sky: color-mix(in srgb, var(--accent-soft) 65%, var(--surface)); }
+.top::after { content: ""; display: block; height: 13px; margin-bottom: -13px; position: relative; background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='13'><path d='M0 1.5 Q50 4 100 1.5' fill='none' stroke='%239aa5b6' stroke-width='.8'/><path d='M3 2h14l-7 10z' fill='%232f5fa8'/><path d='M23 2.6h14l-7 10z' fill='%23f6f1e7' stroke='%23c9c2b2' stroke-width='.6'/><path d='M43 3h14l-7 10z' fill='%23c8372d'/><path d='M63 2.6h14l-7 10z' fill='%232f8a4e'/><path d='M83 2h14l-7 10z' fill='%23f0c53a'/></svg>") repeat-x 0 0 / 100px 13px; pointer-events: none; opacity: .95; }
+.artbox { display: block; line-height: 0; }
+.art { width: 100%; height: auto; display: block; border-radius: 14px; }
+.artbox.thumb { width: 72px; float: right; margin: 0 0 4px 10px; }
+.artbox.banner { max-width: 440px; width: 100%; }
+.artbox.hero-art { width: 120px; flex: none; }
+.cult-hero { display: flex; gap: 16px; align-items: center; }
+@media (max-width: 480px) { .cult-hero { flex-direction: column; align-items: flex-start; } }
+.cult-banner { justify-items: start; }
+.lede { font-size: 1.08rem; line-height: 1.55; margin: 0; }
+.cgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 12px; }
+.ccard { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 8px; display: grid; gap: 8px; text-align: left; align-content: start; min-width: 0; transition: transform .15s, border-color .15s; }
+.ccard:hover { border-color: var(--accent); transform: translateY(-2px); }
+.ccard-body { display: grid; gap: 3px; padding: 0 6px 6px; }
+.nepal-today .cards { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.month-card { background: linear-gradient(135deg, var(--accent-soft), var(--surface)); }
+.month-card h3 .deva { color: var(--accent); }
+.fact-card { display: block; }
+.fact-card .k, .fact-card .fact, .fact-card .muted, .fact-card h3 { display: block; margin-bottom: 6px; }
+.fact { font-weight: 700; line-height: 1.4; }
+.months { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
+.month { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; display: grid; gap: 6px; }
+.month p { margin: 0; line-height: 1.45; }
+.month.now { border: 2px solid var(--accent); background: var(--accent-soft); }
+.dyk { background: var(--surface); border: 1px solid var(--line); border-left: 5px solid #f0c53a; border-radius: 14px; padding: 12px 16px; }
+.dyk ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 6px; line-height: 1.5; }
+.lgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.ltile { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 12px; display: grid; gap: 4px; justify-items: center; text-align: center; min-width: 0; }
+.ltile:hover { border-color: var(--accent); }
+.lbig { font-size: 2.6rem; line-height: 1.2; color: var(--accent); }
+.lsnd { font-weight: 700; }
+.lword .deva { font-size: 1.1rem; }
+.qdeva { font-size: 2.4rem; color: var(--accent); display: inline-block; vertical-align: middle; margin: 0 4px; }
+.answer { min-height: 58px; width: 100%; border: 2px dashed var(--line); border-radius: 14px; padding: 8px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: center; }
+.answer.ok { border-style: solid; border-color: var(--good); background: var(--good-soft); }
+.answer.bad { border-style: solid; border-color: var(--bad); background: var(--bad-soft); }
+.bank { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; min-height: 48px; }
+.tile { border: 1.5px solid var(--line); background: var(--bg); border-radius: 10px; padding: 9px 13px; font-weight: 700; box-shadow: 0 2px 0 var(--line); }
+.tile:hover:not(:disabled) { border-color: var(--accent); }
+.lvchips .chip { cursor: pointer; } .lvchips .chip.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.g-why a { color: var(--accent); }
 </style>
 </head>
 <body>
@@ -339,6 +383,8 @@ a.btn { text-decoration: none; color: inherit; }
 <script src="grammar-a.js"></script>
 <script src="grammar-b.js"></script>
 <script src="grammar-c.js"></script>
+<script src="culture.js"></script>
+<script src="reading.js"></script>
 <script src="audio-list.js"></script>
 <script src="games.js"></script>
 <script src="app.js"></script>

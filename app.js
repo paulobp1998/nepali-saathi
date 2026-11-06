@@ -8,7 +8,7 @@ const $app = document.getElementById("app");
 
 /* ---------- storage ---------- */
 const KEY = "nepali-saathi-v1";
-const DEF = { srs: {}, done: {}, dlg: {}, story: {}, xp: {}, imm: {}, mine: [], stats: {}, daily: {}, badges: {}, best: {}, gram: {}, freezes: 0, frozen: {}, settings: { voice: "auto", slow: 0.7, script: false, goal: 30, drill: "ne-en", gap: 2, sfx: true, remind: { on: false, time: "19:00" } } };
+const DEF = { srs: {}, done: {}, dlg: {}, story: {}, xp: {}, imm: {}, mine: [], stats: {}, daily: {}, badges: {}, best: {}, gram: {}, cult: {}, read: {}, freezes: 0, frozen: {}, settings: { voice: "auto", slow: 0.7, script: false, goal: 30, drill: "ne-en", gap: 2, sfx: true, remind: { on: false, time: "19:00" } } };
 let S = load();
 let ALL = [], BY_ID = {}, UNIT = {};
 function indexAll() {
@@ -389,7 +389,10 @@ const QUESTS = [
   { id: "convo", text: "Finish a conversation or story", key: "convo", n: 1 },
   { id: "drill", text: "Hear 15 phrases in the hands-free drill", key: "drill", n: 15 },
   { id: "momo", text: "Serve 10 momos in Momo Rush", key: "momo", n: 10 },
-  { id: "gram", text: "Pass a grammar chapter check", key: "gram", n: 1 }
+  { id: "gram", text: "Pass a grammar chapter check", key: "gram", n: 1 },
+  { id: "cult", text: "Read a culture article", key: "cult", n: 1 },
+  { id: "build", text: "Build 5 sentences in Nepali order", key: "build", n: 5 },
+  { id: "readq", text: "Pass a Read Nepali practice", key: "readq", n: 1 }
 ];
 function questsFor(t = day()) {
   let seed = 7; for (const ch of t) seed = (seed * 31 + ch.charCodeAt(0)) >>> 0;
@@ -442,6 +445,10 @@ const BADGES = [
   { id: "gram5", name: "Rule follower", desc: "Pass 5 grammar chapters", test: () => gramCount() >= 5 },
   { id: "gramB1", name: "Sentence builder", desc: "Pass every A1 to B1 grammar chapter", test: () => (C.grammar || []).filter(g => ["A1", "A2", "B1"].includes(g.level)).every(g => gramPassed(g.id)) },
   { id: "gramAll", name: "Grammarian", desc: "Pass every grammar chapter, A1 to C2", test: () => (C.grammar || []).length > 0 && gramCount() === C.grammar.length },
+  { id: "cult6", name: "Culture curious", desc: "Pass 6 culture checks", test: () => Object.values(S.cult).filter(x => x.pass).length >= 6 },
+  { id: "cultAll", name: "Nepal insider", desc: "Pass every culture check", test: () => (C.culture || []).length > 0 && (C.culture || []).every(c => S.cult[c.id] && S.cult[c.id].pass) },
+  { id: "reader", name: "Devanagari reader", desc: "Pass every Read Nepali group", test: () => (C.reading || []).length > 0 && (C.reading || []).every(g => S.read[g.id] && S.read[g.id].pass) },
+  { id: "build50", name: "Sentence smith", desc: "Build 50 sentences correctly", test: () => (S.stats.build || 0) >= 50 },
   { id: "night", name: "Night owl", desc: "Practise after 10 pm", test: () => !!S.stats.night },
   { id: "early", name: "Early bird", desc: "Practise before 7 am", test: () => !!S.stats.early }
 ];
@@ -513,6 +520,9 @@ VIEWS.home = () => {
   <section class="cards">
     <button class="card lead" data-go="${nextMode}-${next.id}"><span class="k">Continue the trek</span><h3>${esc(stop.place || next.title)}</h3><span class="muted">${esc(next.title)} · ${verb}</span></button>
     <button class="card" data-go="grammar"><span class="k">How Nepali works</span><h3>Grammar</h3><span class="muted">${gramCount()} of ${(C.grammar || []).length} chapters · A1 → C2</span></button>
+    <button class="card" data-go="culture"><span class="k">Religion, festivals, food</span><h3>Culture</h3><span class="muted">${Object.keys(S.cult).length} of ${(C.culture || []).length} articles read</span></button>
+    <button class="card" data-go="build"><span class="k">Word order</span><h3>Sentence builder</h3><span class="muted">Tap the words into Nepali order</span></button>
+    <button class="card" data-go="read"><span class="k">Devanagari</span><h3>Read Nepali</h3><span class="muted">${Object.values(S.read).filter(x => x.pass).length} of ${(C.reading || []).length} letter groups</span></button>
     <button class="card" data-go="games"><span class="k">Play</span><h3>Games</h3><span class="muted">Momo Rush, Memory Match, Bargain Bazaar</span></button>
     <button class="card" data-go="review"><span class="k">Review</span><h3>${due ? due + " phrases due" : "Nothing due"}</h3><span class="muted">Bring phrases back before you forget</span></button>
     <button class="card" data-go="drill"><span class="k">Hands-free</span><h3>Listening drill</h3><span class="muted">Audio only, for walks and commutes</span></button>
@@ -522,6 +532,7 @@ VIEWS.home = () => {
     <div class="potd-row"><button class="hear sm" data-say="${esc(pd.ne)}" aria-label="Play">${I.speaker}</button>
       <div><p class="potd-ro">${esc(pd.ro)}</p><p>${esc(pd.en)}</p>${pd.note ? `<p class="note">${esc(pd.note)}</p>` : ""}</div></div>
   </section>
+  ${nepalTodayHTML()}
   ${trailHTML()}
   <section class="cards">
     <button class="card" data-go="badges"><span class="k">Collection</span><h3>Badges</h3><span class="muted">${Object.keys(S.badges).length} of ${BADGES.length} earned</span></button>
@@ -735,6 +746,7 @@ VIEWS.unit = id => {
     <button class="card ${f[1] && !f[2] ? "lead" : ""}" data-go="speak-${id}"><span class="k">3 · Speak</span><h3>Say it in Nepali</h3><span class="muted">${Mic.ok ? "Your speech is checked" : "Say it aloud, then check"}</span></button>
   </section>
   <section class="tips"><h3>How it works</h3><ul>${u.tips.map(t => `<li>${t}</li>`).join("")}</ul></section>
+  ${(() => { const L = (C.unitLinks || {})[id]; if (!L) return ""; const c = (C.culture || []).find(x => x.id === L.c), g = (C.grammar || []).find(x => x.id === L.g); return `<section><h2>Go deeper</h2><div class="cards">${c ? `<button class="card fact-card" data-go="cult-${c.id}">${(C.art || {})[c.art] ? `<span class="artbox thumb">${C.art[c.art]}</span>` : ""}<span class="k">Culture corner</span><h3>${esc(c.title)}</h3><span class="muted small">${esc(c.sub)}</span></button>` : ""}${g ? `<button class="card" data-go="gram-${g.id}"><span class="k">Grammar for this lesson · ${esc(g.level)}</span><h3>${esc(g.title)}</h3><span class="muted small">${esc(g.sub)}</span></button>` : ""}</div></section>`; })()}
   ${dl.length ? `<section><h2>Conversations</h2><div class="list">${dl.map(d => `<button class="li" data-go="dialogue-${d.id}"><span class="play-dot">${I.play}</span><span><span class="ro">${esc(d.title)}</span><br><span class="en">${esc(d.scene)}</span></span>${S.dlg[d.id] ? '<span class="tick">Done</span>' : "<span></span>"}</button>`).join("")}</div></section>` : ""}
   <section><h2>All phrases</h2><div class="list">${u.phrases.map(p => `
     <button class="li" data-say="${esc(p.ne)}"><span class="play-dot">${I.speaker}</span><span><span class="ro">${esc(p.ro)}</span><br><span class="en">${esc(p.en)}</span></span>${S.settings.script ? `<span class="ne">${esc(p.ne)}</span>` : "<span></span>"}</button>`).join("")}</div></section>`;
@@ -1157,46 +1169,55 @@ VIEWS.gram = id => {
   <div class="row split g-nav">${pv ? `<button class="btn small ghost" data-go="gram-${pv.id}">← ${esc(pv.title)}</button>` : "<span></span>"}${nx ? `<button class="btn small ghost" data-go="gram-${nx.id}">${esc(nx.title)} →</button>` : ""}</div>`;
 };
 
-VIEWS.gquiz = id => {
-  const g = GRAM[id]; if (!g) return go("grammar");
-  const qs = shuffle(g.quiz).map(q => ({ ...q, opts: shuffle([q.a, ...q.o]) }));
+// Shared multiple-choice runner: one question at a time, explanation after each answer.
+function mcq({ title, qs, back, backLabel, onDone }) {
+  const items = qs.map(q => ({ ...q, opts: shuffle([q.a, ...q.o]) }));
   let k = 0, right = 0;
   const draw = () => {
-    if (k >= qs.length) return done();
-    const q = qs[k];
+    if (k >= items.length) return onDone(right, items.length);
+    const q = items[k];
     $app.innerHTML = `
-    ${backBtn("gram-" + id, g.title)}
+    ${backBtn(back, backLabel)}
     <div class="stage">
-      <p class="eyebrow">${esc(g.title)} · ${k + 1} of ${qs.length}</p>
-      <div class="progress" style="width:100%"><i style="width:${k / qs.length * 100}%"></i></div>
+      <p class="eyebrow">${esc(title)} · ${k + 1} of ${items.length}</p>
+      <div class="progress" style="width:100%"><i style="width:${k / items.length * 100}%"></i></div>
+      ${q.say ? `<button class="hear" id="play" data-say="${esc(q.say)}" aria-label="Play">${I.speaker}</button>` : ""}
       <h2 class="g-q">${q.q}</h2>
-      <div class="opts">${q.opts.map((o, j) => `<button class="opt" data-j="${j}">${o}</button>`).join("")}</div>
+      <div class="opts">${q.opts.map((o, j) => `<button class="opt${q.deva ? " deva-opt" : ""}" data-j="${j}">${o}</button>`).join("")}</div>
       <div id="gwhy" class="g-why" hidden></div>
     </div>`;
     $app.querySelectorAll(".opt").forEach(b => b.onclick = () => {
       const ok = q.opts[+b.dataset.j] === q.a;
       $app.querySelectorAll(".opt").forEach(x => { x.disabled = true; if (q.opts[+x.dataset.j] === q.a) x.classList.add("right"); });
       if (ok) { right++; Sfx.good(right); } else { b.classList.add("wrong"); Sfx.bad(); }
+      if (q.after) Voice.say(q.after);
       const w = document.getElementById("gwhy"); w.hidden = false;
-      w.innerHTML = `<p class="verdict ${ok ? "good" : "bad"}">${ok ? pick(["Right!", "Correct!", "Syaabaas!"]) : "Not quite"}</p><p>${q.why || ""}</p><button class="btn primary" id="gnext">${k + 1 < qs.length ? "Next question" : "See result"}</button>`;
+      w.innerHTML = `<p class="verdict ${ok ? "good" : "bad"}">${ok ? pick(["Right!", "Correct!", "Syaabaas!"]) : "Not quite"}</p>${q.why ? `<p>${q.why}</p>` : ""}<button class="btn primary" id="gnext">${k + 1 < items.length ? "Next question" : "See result"}</button>`;
       const nb = document.getElementById("gnext"); nb.onclick = () => { k++; draw(); }; nb.focus();
     });
   };
-  const done = () => {
-    const pct = right / qs.length, pass = pct >= 0.8, r = S.gram[id] || (S.gram[id] = {}), first = pass && !r.pass;
+  draw();
+}
+function mcqResult({ right, n, pass, first, xp, nextBtn, retry, reread, back, backLabel }) {
+  $app.innerHTML = `
+  ${backBtn(back, backLabel)}
+  <div class="stage">${cheerHTML(pass ? "good" : "bad")}
+    <h1>${right} of ${n} right</h1>
+    <p class="muted">${pass ? (first ? `Passed. +${xp} XP` : "Passed again. Repetition is how it sticks.") : "Not quite there yet. Have another look, then try again."}</p>
+    <div class="row" style="justify-content:center">${pass && nextBtn ? nextBtn : reread ? `<button class="btn primary" data-go="${reread}">Have another look</button>` : ""}<button class="btn" data-go="${retry}">Try again</button></div>
+  </div>`;
+  if (pass) { celebrate(first ? 110 : 40); Sfx.win(); }
+}
+
+VIEWS.gquiz = id => {
+  const g = GRAM[id]; if (!g) return go("grammar");
+  mcq({ title: g.title, qs: shuffle(g.quiz), back: "gram-" + id, backLabel: g.title, onDone: (right, n) => {
+    const pct = right / n, pass = pct >= 0.8, r = S.gram[id] || (S.gram[id] = {}), first = pass && !r.pass;
     r.best = Math.max(r.best || 0, pct); if (pass && !r.pass) r.pass = day(); save();
     addXP(first ? 10 : 2); if (pass) track("gram");
     const nx = C.grammar[C.grammar.indexOf(g) + 1];
-    $app.innerHTML = `
-    ${backBtn("grammar", "Grammar")}
-    <div class="stage">${cheerHTML(pass ? "good" : "bad")}
-      <h1>${right} of ${qs.length} right</h1>
-      <p class="muted">${pass ? (first ? "Chapter passed. +10 XP" : "Passed again. Repetition is how rules become instinct.") : "You need 80% to pass. Re-read the rule boxes and examples, then try again."}</p>
-      <div class="row" style="justify-content:center">${pass && nx ? `<button class="btn primary" data-go="gram-${nx.id}">Next: ${esc(nx.title)}</button>` : `<button class="btn primary" data-go="gram-${id}">Re-read the chapter</button>`}<button class="btn" data-go="gquiz-${id}">Try again</button></div>
-    </div>`;
-    if (pass) { celebrate(first ? 110 : 40); Sfx.win(); }
-  };
-  draw();
+    mcqResult({ right, n, pass, first, xp: 10, nextBtn: nx && `<button class="btn primary" data-go="gram-${nx.id}">Next: ${esc(nx.title)}</button>`, retry: "gquiz-" + id, reread: "gram-" + id, back: "grammar", backLabel: "Grammar" });
+  } });
 };
 
 // Every conjugation table from the tense chapters, on one page.
@@ -1207,6 +1228,158 @@ VIEWS.conj = () => {
   ${backBtn("grammar", "Grammar")}
   <section><p class="eyebrow">Quick reference</p><h1>Verb tables</h1><p class="muted">The model verbs are <b>garnu</b> (to do, a consonant stem) and <b>khaanu</b> (to eat, a vowel stem). Most verbs follow one of them. Tap a heading for the full explanation.</p></section>
   ${chs.map(g => `<section><button class="g-reflink" data-go="gram-${g.id}"><span class="chip">${esc(g.level)}</span> <h2>${esc(g.title)}</h2></button>${g.blocks.filter(b => b.table || b.rule).map(gramBlock).join("")}</section>`).join("")}`;
+};
+
+/* ---------- culture ---------- */
+const CULT = Object.fromEntries((C.culture || []).map(c => [c.id, c]));
+const cultPassed = id => !!(S.cult[id] && S.cult[id].pass);
+const FACTS = (C.culture || []).flatMap(c => c.facts.map(f => ({ f, id: c.id })));
+const seedOf = (t, salt = 0) => { let h = 7 + salt; for (const ch of t) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return h; };
+const factOfDay = () => FACTS[seedOf(day(), 3) % FACTS.length];
+// Nepali (Bikram Sambat) month, approximately: months start around the 14th–17th of Western months; Baisakh ≈ mid-April.
+function bsNow(d = new Date()) {
+  let i = (d.getMonth() - 3 + 12) % 12; if (d.getDate() < 15) i = (i + 11) % 12;
+  const y = d.getFullYear() + ((d.getMonth() > 3 || (d.getMonth() === 3 && d.getDate() >= 14)) ? 57 : 56);
+  return { m: C.months[i], i, y };
+}
+const artOf = (key, cls = "") => `<span class="artbox ${cls}">${(C.art || {})[key] || ""}</span>`;
+function nepalTodayHTML() {
+  const fd = factOfDay(), bs = bsNow();
+  if (!fd || !bs.m) return "";
+  return `<section class="nepal-today">
+    <div class="row split"><h2>Nepal today</h2><button class="btn small ghost" data-go="culture">Culture →</button></div>
+    <div class="cards">
+      <button class="card month-card" data-go="culture"><span class="k">This month · ${bs.y} BS</span><h3><span class="deva">${esc(bs.m.ne)}</span> ${esc(bs.m.ro)}</h3><span class="muted small">${esc(bs.m.g)}</span><span>${esc(bs.m.fest)}</span></button>
+      <button class="card fact-card" data-go="cult-${fd.id}">${artOf(CULT[fd.id].art, "thumb")}<span class="k">Did you know?</span><span class="fact">${esc(fd.f)}</span><span class="muted small">Read: ${esc(CULT[fd.id].title)} →</span></button>
+    </div></section>`;
+}
+
+VIEWS.culture = () => {
+  const all = C.culture || [], n = all.filter(c => cultPassed(c.id)).length, bs = bsNow();
+  $app.innerHTML = `
+  ${backBtn("home", "Home")}
+  <section class="cult-hero">${artOf("stupa", "hero-art")}<div><p class="eyebrow">Culture</p><h1>Nepal, up close</h1>
+    <p class="muted">Religion, festivals, food, manners and history: the background that makes conversations click. Every article has key words to hear and a short check.</p>
+    <p class="muted small">${n} of ${all.length} checks passed</p></div></section>
+  <section class="cgrid">${all.map(c => `<button class="ccard" data-go="cult-${c.id}">${artOf(c.art)}<span class="ccard-body"><b>${esc(c.title)}</b><span class="muted small">${esc(c.sub)}</span>${cultPassed(c.id) ? '<span class="tick small">Checked</span>' : S.cult[c.id] ? '<span class="muted small">Read</span>' : ""}</span></button>`).join("")}</section>
+  <section><div class="row split"><h2>The festival year</h2><span class="chip">Now: ${esc(bs.m.ro)} ${bs.y}</span></div>
+    <p class="muted">Nepal's calendar, Bikram Sambat, starts in mid-April. Most festivals follow the moon, so their Western dates move a little each year.</p>
+    <div class="months">${C.months.map((m, i) => `<div class="month ${i === bs.i ? "now" : ""}"><div class="row split"><b><span class="deva">${esc(m.ne)}</span> · ${esc(m.ro)}</b><span class="muted small">${esc(m.g)}</span></div><p>${esc(m.fest)}</p><p class="muted small">${esc(m.tip)}</p></div>`).join("")}</div></section>`;
+};
+
+VIEWS.cult = id => {
+  const c = CULT[id]; if (!c) return go("culture");
+  if (!S.cult[id]) { S.cult[id] = { read: day() }; save(); track("cult"); addXP(2); }
+  const units = Object.entries(C.unitLinks || {}).filter(([, l]) => l.c === id).map(([u]) => UNIT[u]).filter(Boolean);
+  const all = C.culture, i = all.indexOf(c), nx = all[i + 1];
+  $app.innerHTML = `
+  ${backBtn("culture", "Culture")}
+  <section class="cult-banner">${artOf(c.art, "banner")}<p class="eyebrow">Culture · ${i + 1} of ${all.length}</p><h1>${esc(c.title)}</h1><p class="lede">${esc(c.intro)}</p></section>
+  <article class="g-body">${c.sections.map(s => `<h2 class="g-h">${esc(s.h)}</h2><p>${s.p}</p>`).join("")}</article>
+  <section class="dyk"><p class="eyebrow">Did you know?</p><ul>${c.facts.map(f => `<li>${esc(f)}</li>`).join("")}</ul></section>
+  <section><h2>Words to know</h2><div class="list g-ex">${c.words.map(w => `<button class="li" data-say="${esc(w.ne)}"><span class="play-dot">${I.speaker}</span><span><span class="ro">${esc(w.ro)}</span><br><span class="ne">${esc(w.ne)}</span><br><span class="en">${esc(w.en)}</span></span><span></span></button>`).join("")}</div></section>
+  ${units.length ? `<section><h2>Practise it in a lesson</h2><div class="list">${units.map(u => `<button class="li" data-go="unit-${u.id}"><span class="chip">${esc(u.level)}</span><span><span class="ro">${esc(u.title)}</span><br><span class="en">${esc(u.sub)}</span></span><span class="muted">→</span></button>`).join("")}</div></section>` : ""}
+  <section class="tips"><h3>Culture check</h3><p class="muted">${c.quiz.length} quick questions.${cultPassed(id) ? " Passed." : ""}</p><button class="btn primary" data-go="cquiz-${id}">Start the check</button></section>
+  ${nx ? `<div class="row end"><button class="btn small ghost" data-go="cult-${nx.id}">Next: ${esc(nx.title)} →</button></div>` : ""}`;
+};
+
+VIEWS.cquiz = id => {
+  const c = CULT[id]; if (!c) return go("culture");
+  mcq({ title: c.title, qs: shuffle(c.quiz), back: "cult-" + id, backLabel: c.title, onDone: (right, n) => {
+    const pass = right / n >= 0.66, r = S.cult[id] || (S.cult[id] = {}), first = pass && !r.pass;
+    if (first) r.pass = day(); save(); addXP(first ? 5 : 1); if (pass) track("cultq");
+    const nx = C.culture[C.culture.indexOf(c) + 1];
+    mcqResult({ right, n, pass, first, xp: 5, nextBtn: nx && `<button class="btn primary" data-go="cult-${nx.id}">Next: ${esc(nx.title)}</button>`, retry: "cquiz-" + id, reread: "cult-" + id, back: "culture", backLabel: "Culture" });
+  } });
+};
+
+/* ---------- read Nepali (Devanagari) ---------- */
+const RGRP = Object.fromEntries((C.reading || []).map(g => [g.id, g]));
+const readPassed = id => !!(S.read[id] && S.read[id].pass);
+VIEWS.read = () => {
+  const all = C.reading || [], n = all.filter(g => readPassed(g.id)).length;
+  $app.innerHTML = `
+  ${backBtn("home", "Home")}
+  <section><p class="eyebrow">Devanagari</p><h1>Read Nepali</h1>
+    <p class="muted">Nepali is written in Devanagari. Reading it unlocks signs, menus, subtitles, song lyrics and the news, and makes your pronunciation sharper. Learn one group at a time: tap each letter to hear a word that uses it, then pass the practice round.</p>
+    <div class="progress"><i style="width:${all.length ? n / all.length * 100 : 0}%"></i></div><p class="muted small">${n} of ${all.length} groups passed</p></section>
+  <section class="list">${all.map((g, i) => `<button class="li" data-go="letters-${g.id}"><span class="play-dot g-num">${i + 1}</span><span><span class="ro">${esc(g.title)}</span><br><span class="en deva">${esc(g.sub)}</span></span>${readPassed(g.id) ? '<span class="tick">Passed</span>' : "<span></span>"}</button>`).join("")}</section>
+  <section class="tips"><h3>Tip</h3><p class="muted">Turn on <b>Show Nepali script</b> in Settings once you know the first groups, so you see Devanagari next to every phrase you already know.</p></section>`;
+};
+VIEWS.letters = id => {
+  const g = RGRP[id]; if (!g) return go("read");
+  $app.innerHTML = `
+  ${backBtn("read", "Read Nepali")}
+  <section><p class="eyebrow">Group ${C.reading.indexOf(g) + 1}</p><h1>${esc(g.title)}</h1><p class="muted">${esc(g.intro)}</p></section>
+  <section class="lgrid">${g.items.map((it, j) => `<button class="ltile" data-j="${j}" data-say="${esc(it.ne)}"><span class="lbig deva">${esc(it.l)}</span><span class="lsnd">${esc(it.r)}</span><span class="lword"><span class="deva">${esc(it.ne)}</span><br><span class="muted small">${esc(it.ro)} · ${esc(it.en)}</span></span></button>`).join("")}</section>
+  <section class="tips"><h3>Practise</h3><p class="muted">Ten questions: name the sound of a letter, and read whole words. Get 8 to pass.</p><button class="btn primary" data-go="rquiz-${id}">Start practice</button></section>`;
+};
+VIEWS.rquiz = id => {
+  const g = RGRP[id]; if (!g) return go("read");
+  const items = g.items, sounds = [...new Set(items.map(x => x.r))];
+  const others = (arr, not, n = 3) => shuffle(arr.filter(x => x !== not)).slice(0, n);
+  const wordPool = (C.reading || []).flatMap(x => x.items).map(x => x.ro);
+  const qs = shuffle(items).slice(0, 10).map((it, k) => k % 2 === 0
+    ? { q: `Which sound is <span class="qdeva deva">${esc(it.l)}</span> ?`, a: it.r, o: others(sounds, it.r), why: `<span class="deva">${esc(it.l)}</span> = ${esc(it.r)}, as in <span class="deva">${esc(it.ne)}</span> (${esc(it.ro)}, ${esc(it.en)}).`, after: it.ne }
+    : { q: `Read this word: <span class="qdeva deva">${esc(it.ne)}</span>`, a: it.ro, o: others([...new Set(wordPool)], it.ro), why: `${esc(it.ro)} means “${esc(it.en)}”.`, after: it.ne });
+  mcq({ title: g.title, qs, back: "letters-" + id, backLabel: g.title, onDone: (right, n) => {
+    const pass = right / n >= 0.8, r = S.read[id] || (S.read[id] = {}), first = pass && !r.pass;
+    if (first) r.pass = day(); r.best = Math.max(r.best || 0, right / n); save(); addXP(first ? 8 : 2); if (pass) track("readq");
+    const nx = C.reading[C.reading.indexOf(g) + 1];
+    mcqResult({ right, n, pass, first, xp: 8, nextBtn: nx && `<button class="btn primary" data-go="letters-${nx.id}">Next: ${esc(nx.title)}</button>`, retry: "rquiz-" + id, reread: "letters-" + id, back: "read", backLabel: "Read Nepali" });
+  } });
+};
+
+/* ---------- sentence builder: put the words in Nepali order ---------- */
+const toks = ro => ro.replace(/[.?!,;:“”"]/g, "").trim().split(/\s+/).filter(Boolean);
+function buildPool(lv) {
+  const want = lv === "B2+" ? ["B2", "C1", "C2"] : [lv];
+  const fromGram = (C.grammar || []).filter(g => want.includes(g.level)).flatMap(g => g.blocks.filter(b => b.ex).flatMap(b => b.ex.map(e => ({ ...e, src: g.title, gid: g.id }))));
+  const fromUnits = C.units.filter(u => want.includes(u.level)).flatMap(u => u.phrases.map(p => ({ ...p, src: u.title })));
+  return [...fromGram, ...fromUnits].filter(e => { const t = toks(e.ro); return t.length >= 3 && t.length <= 9 && !/[\/()…]/.test(e.ro + e.en); });
+}
+VIEWS.build = lv => {
+  const LV = ["A1", "A2", "B1", "B2+"]; lv = LV.includes(lv) ? lv : (S.settings.buildLv || "A1"); S.settings.buildLv = lv; save();
+  const round = shuffle(buildPool(lv)).slice(0, 8);
+  let k = 0, good = 0;
+  const draw = () => {
+    if (k >= round.length) {
+      addXP(Math.max(2, good)); track("build", good);
+      $app.innerHTML = `${backBtn("home", "Home")}<div class="stage">${cheerHTML(good >= 6 ? "good" : "bad")}<h1>${good} of ${round.length} built</h1><p class="muted">Word order is the skeleton of Nepali: subject, then time and place, then object, verb last.</p><div class="row" style="justify-content:center"><button class="btn primary" data-go="build-${lv}">Another round</button><button class="btn" data-go="grammar">Grammar</button></div></div>`;
+      if (good >= 6) { celebrate(60); Sfx.win(); }
+      return;
+    }
+    const e = round[k], target = toks(e.ro);
+    let bank = shuffle(target.map((w, i) => ({ w, i }))), ans = [], checked = false;
+    if (bank.every((b, i) => b.i === i)) bank.reverse();
+    const paint = () => {
+      $app.innerHTML = `
+      ${backBtn("home", "Home")}
+      <div class="row lvchips">${LV.map(x => `<button class="chip ${x === lv ? "on" : ""}" data-go="build-${x}">${x}</button>`).join("")}</div>
+      <div class="stage">
+        <p class="eyebrow">Sentence builder · ${k + 1} of ${round.length}</p>
+        <div class="progress" style="width:100%"><i style="width:${k / round.length * 100}%"></i></div>
+        <h2 class="g-q">${esc(e.en)}</h2>
+        <div class="answer ${checked ? (ans.map(a => a.w).join(" ") === target.join(" ") ? "ok" : "bad") : ""}">${ans.length ? ans.map((a, j) => `<button class="tile" data-a="${j}" ${checked ? "disabled" : ""}>${esc(a.w)}</button>`).join("") : '<span class="muted small">Tap the words in Nepali order</span>'}</div>
+        <div class="bank">${bank.map((b, j) => `<button class="tile" data-b="${j}" ${checked ? "disabled" : ""}>${esc(b.w)}</button>`).join("")}</div>
+        <div id="bres" class="g-why"></div>
+        <div class="row" style="justify-content:center">${checked ? `<button class="btn primary" id="bnext">${k + 1 < round.length ? "Next" : "See result"}</button>` : `<button class="btn" id="bhint">Hint</button><button class="btn primary" id="bcheck" ${bank.length ? "disabled" : ""}>Check</button>`}</div>
+      </div>`;
+      $app.querySelectorAll("[data-b]").forEach(t => t.onclick = () => { ans.push(bank.splice(+t.dataset.b, 1)[0]); paint(); });
+      $app.querySelectorAll("[data-a]").forEach(t => t.onclick = () => { bank.push(ans.splice(+t.dataset.a, 1)[0]); paint(); });
+      const res = document.getElementById("bres");
+      if (checked) {
+        const ok = ans.map(a => a.w).join(" ") === target.join(" ");
+        res.innerHTML = `<p class="verdict ${ok ? "good" : "bad"}">${ok ? pick(["Perfect order!", "Syaabaas!", "Exactly right"]) : "Almost"}</p><button class="say-line" data-say="${esc(e.ne)}"><span class="ro">${esc(e.ro)}</span><span class="en deva">${esc(e.ne)}</span></button>${e.note ? `<p class="muted small">${esc(e.note)}</p>` : ""}<p class="muted small">From: ${e.gid ? `<a href="#gram-${e.gid}">${esc(e.src)}</a>` : esc(e.src)}</p>`;
+        document.getElementById("bnext").onclick = () => { k++; draw(); };
+      } else {
+        document.getElementById("bhint").onclick = () => { Voice.say(e.ne); const first = target[ans.length]; if (first != null) toast(`Next word: ${first}`); };
+        document.getElementById("bcheck").onclick = () => { checked = true; const ok = ans.map(a => a.w).join(" ") === target.join(" "); if (ok) { good++; Sfx.good(good); } else Sfx.bad(); Voice.say(e.ne); paint(); };
+      }
+    };
+    paint();
+  };
+  draw();
 };
 
 /* ---------- daily reminder ---------- */
