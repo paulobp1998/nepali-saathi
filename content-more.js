@@ -95,7 +95,7 @@ C.units.push(
       { id: "de1", ne: "उहाँ को हुनुहुन्छ?", ro: "uhaan ko hunuhunchha?", en: "Who is he / she?" },
       { id: "de2", ne: "उहाँ मेरो साथी हुनुहुन्छ।", ro: "uhaan mero saathi hunuhunchha.", en: "He / she is my friend." },
       { id: "de3", ne: "मेरो भाइ अग्लो छ।", ro: "mero bhaai aglo chha.", en: "My younger brother is tall." },
-      { id: "de4", ne: "मेरी बहिनी धेरै राम्री छ।", ro: "meri bahini dherai raamri chha.", en: "My younger sister is very pretty." },
+      { id: "de4", ne: "मेरी बहिनी धेरै राम्री छे।", ro: "meri bahini dherai raamri chhe.", en: "My younger sister is very pretty.", note: "chhe is the feminine of chha, used for girls and younger women you are close to. In casual speech many people just say chha." },
       { id: "de5", ne: "उहाँ धेरै दयालु हुनुहुन्छ।", ro: "uhaan dherai dayaalu hunuhunchha.", en: "He / she is very kind." },
       { id: "de6", ne: "यो कोठा सफा छ।", ro: "yo kothaa saphaa chha.", en: "This room is clean." },
       { id: "de7", ne: "त्यो होटल फोहोर छ।", ro: "tyo hotal phohor chha.", en: "That hotel is dirty." },
@@ -133,14 +133,14 @@ C.units.push(
     ],
     phrases: [
       { id: "hb1", ne: "फुर्सदमा के गर्नुहुन्छ?", ro: "phursadmaa ke garnuhunchha?", en: "What do you do in your free time?" },
-      { id: "hb2", ne: "मलाई गीत सुन्न मन पर्छ।", ro: "malaai geet sunna man parchha.", en: "I like listening to music." },
+      { id: "hb2", ne: "मलाई गीत सुन्न मन पर्छ।", ro: "malaai git sunna man parchha.", en: "I like listening to music." },
       { id: "hb3", ne: "मलाई किताब पढ्न मन पर्छ।", ro: "malaai kitaab padhna man parchha.", en: "I like reading books." },
       { id: "hb4", ne: "मलाई ट्रेकिङ गर्न मन पर्छ।", ro: "malaai treking garna man parchha.", en: "I like trekking." },
       { id: "hb5", ne: "मलाई नाच्न आउँदैन।", ro: "malaai naachna aaundaina.", en: "I can't dance." },
       { id: "hb6", ne: "तपाईंलाई कुन खेल मन पर्छ?", ro: "tapaainlaai kun khel man parchha?", en: "Which sport do you like?" },
       { id: "hb7", ne: "मलाई फुटबल हेर्न मन पर्छ।", ro: "malaai phutbal herna man parchha.", en: "I like watching football." },
       { id: "hb8", ne: "म गितार बजाउँछु।", ro: "ma gitaar bajaaunchhu.", en: "I play the guitar." },
-      { id: "hb9", ne: "तपाईंलाई नेपाली गीत मन पर्छ?", ro: "tapaainlaai nepaali geet man parchha?", en: "Do you like Nepali songs?" },
+      { id: "hb9", ne: "तपाईंलाई नेपाली गीत मन पर्छ?", ro: "tapaainlaai nepaali git man parchha?", en: "Do you like Nepali songs?" },
       { id: "hb10", ne: "मलाई फोटो खिच्न मन पर्छ।", ro: "malaai photo khichna man parchha.", en: "I like taking photos." },
       { id: "hb11", ne: "सँगै जाऔँ न!", ro: "sangai jaaun na!", en: "Let's go together!" },
       { id: "hb12", ne: "कति रमाइलो!", ro: "kati ramaailo!", en: "What fun!" }
@@ -218,7 +218,7 @@ C.units.push(
       { id: "op2", ne: "मलाई लाग्छ, यो ठिक हो।", ro: "malaai laagchha, yo thik ho.", en: "I think this is right." },
       { id: "op3", ne: "मेरो विचारमा नेपाली खाना संसारकै मीठो हो।", ro: "mero bichaarmaa nepaali khaanaa sansaarkai mitho ho.", en: "In my opinion Nepali food is the tastiest in the world." },
       { id: "op4", ne: "म सहमत छु।", ro: "ma sahamat chhu.", en: "I agree." },
-      { id: "op5", ne: "म सहमत छैन।", ro: "ma sahamat chhaina.", en: "I don't agree." },
+      { id: "op5", ne: "म सहमत छैनँ।", ro: "ma sahamat chhaina.", en: "I don't agree." },
       { id: "op6", ne: "तपाईंले ठिक भन्नुभयो।", ro: "tapaainle thik bhannubhayo.", en: "You're right." },
       { id: "op7", ne: "त्यस्तो होइन जस्तो लाग्छ।", ro: "tyasto hoina jasto laagchha.", en: "I don't think it's like that." },
       { id: "op8", ne: "यो परिस्थितिमा निर्भर गर्छ।", ro: "yo paristhitimaa nirbhar garchha.", en: "It depends on the situation." },
@@ -264,7 +264,7 @@ C.units.push(
       { id: "wk8", ne: "यो काम कहिलेसम्म सक्नुपर्छ?", ro: "yo kaam kahilesamma saknuparchha?", en: "By when does this need to be finished?" },
       { id: "wk9", ne: "म यसमा काम गर्दैछु।", ro: "ma yasmaa kaam gardaichhu.", en: "I'm working on it." },
       { id: "wk10", ne: "तपाईंले के पढ्नुभयो?", ro: "tapaainle ke padhnubhayo?", en: "What did you study?" },
-      { id: "wk11", ne: "मैले जीवविज्ञान पढेँ।", ro: "maile jeewabigyaan padhen.", en: "I studied biology." },
+      { id: "wk11", ne: "मैले जीवविज्ञान पढेँ।", ro: "maile jiwabigyaan padhen.", en: "I studied biology." },
       { id: "wk12", ne: "म यो काम धेरै वर्षदेखि गर्दै आएको छु।", ro: "ma yo kaam dherai barshadekhi gardai aaeko chhu.", en: "I've been doing this job for many years." }
     ] },
   { id: "health", level: "B1", title: "Health care", sub: "Vaccines, infection, hygiene",
@@ -421,7 +421,7 @@ C.stories = [
       { ne: "त्यसपछि उनी मन्दिर जान्छिन्।", ro: "tyaspachhi uni mandir jaanchhin.", en: "Then she goes to the temple." },
       { ne: "नौ बजे उनी स्कुलमा पढाउन जान्छिन्।", ro: "nau baje uni skulmaa padhaauna jaanchhin.", en: "At nine she goes to teach at school." },
       { ne: "बेलुका उनी परिवारसँग दाल भात खान्छिन्।", ro: "belukaa uni pariwaarsanga daal bhaat khaanchhin.", en: "In the evening she eats dal bhat with her family." },
-      { ne: "राति उनी नेपाली गीत सुन्दै सुत्छिन्।", ro: "raati uni nepaali geet sundai sutchhin.", en: "At night she falls asleep listening to Nepali songs." }
+      { ne: "राति उनी नेपाली गीत सुन्दै सुत्छिन्।", ro: "raati uni nepaali git sundai sutchhin.", en: "At night she falls asleep listening to Nepali songs." }
     ],
     questions: [
       { q: "When does Sita get up?", a: "At five", o: ["At six", "At nine", "At seven"] },

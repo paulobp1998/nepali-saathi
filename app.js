@@ -1102,7 +1102,7 @@ VIEWS.sounds = () => {
   ${C.sounds.map((s, gi) => `
   <section class="tips" data-g="${gi}">
     <h3>${esc(s.title)}</h3><p class="muted">${esc(s.body)}</p>
-    <div class="opts">${s.pairs.map((p, k) => `<button class="opt" data-k="${k}"><span>${esc(p.ro)}</span> <span class="muted" style="font-weight:400">· ${esc(p.en)}</span></button>`).join("")}</div>
+    <div class="opts">${s.pairs.map((p, k) => `<button class="opt" data-k="${k}"><span>${esc(p.ro)}</span> <span class="deva muted" style="font-weight:400">${esc(p.ne)}</span> <span class="muted" style="font-weight:400">· ${esc(p.en)}</span></button>`).join("")}</div>
     <div class="row"><button class="btn small" data-test="${gi}">${I.speaker}Test my ear</button><span class="muted" data-out="${gi}"></span></div>
   </section>`).join("")}`;
   const state = {};
@@ -1114,7 +1114,7 @@ VIEWS.sounds = () => {
         const ok = k === state[gi];
         sec.querySelectorAll(".opt").forEach(x => x.classList.remove("right", "wrong"));
         sec.querySelector(`.opt[data-k="${state[gi]}"]`).classList.add("right"); if (!ok) b.classList.add("wrong");
-        out.textContent = ok ? "Yes! Test again?" : "That was " + s.pairs[state[gi]].ro + ". Listen to both again.";
+        out.textContent = ok ? "Yes! Test again?" : "That was " + s.pairs[state[gi]].ro + " (" + s.pairs[state[gi]].en + "). Listen to both again.";
         if (ok) addXP(1); state[gi] = null;
       } else Voice.say(s.pairs[k].ne);
     });

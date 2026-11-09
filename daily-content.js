@@ -181,9 +181,9 @@ C.roleplays = [
       { ne: "म अनुसन्धान गर्छु।", ro: "ma anusandhaan garchhu.", en: "Say you do research", go: "research" }] },
     teach: { say: { ne: "के पढाउनुहुन्छ?", ro: "ke padhaaunuhunchha?", en: "What do you teach?" }, opts: [
       { ne: "म नर्सिङका विद्यार्थीहरूलाई पढाउँछु।", ro: "ma narsingkaa bidyaarthiharulaai padhaaunchhu.", en: "Say you teach nursing students", go: "studied" },
-      { ne: "म जीवविज्ञान पढाउँछु।", ro: "ma jeewabigyaan padhaaunchhu.", en: "Say you teach biology", go: "studied" }] },
+      { ne: "म जीवविज्ञान पढाउँछु।", ro: "ma jiwabigyaan padhaaunchhu.", en: "Say you teach biology", go: "studied" }] },
     studied: { say: { ne: "राम्रो! तपाईंले के पढ्नुभयो?", ro: "raamro! tapaainle ke padhnubhayo?", en: "Nice! What did you study?" }, opts: [
-      { ne: "मैले जीवविज्ञान पढेँ।", ro: "maile jeewabigyaan padhen.", en: "Say you studied biology", go: "years" }] },
+      { ne: "मैले जीवविज्ञान पढेँ।", ro: "maile jiwabigyaan padhen.", en: "Say you studied biology", go: "years" }] },
     years: { say: { ne: "अनि कति वर्षदेखि पढाउनुहुन्छ?", ro: "ani kati barshadekhi padhaaunuhunchha?", en: "And how many years have you been teaching?" }, opts: [
       { ne: "दस वर्षदेखि।", ro: "das barshadekhi.", en: "For ten years", go: "dinner" },
       { ne: "म यो काम धेरै वर्षदेखि गर्दै आएको छु।", ro: "ma yo kaam dherai barshadekhi gardai aaeko chhu.", en: "Say you've been doing this for many years", go: "dinner" }] },

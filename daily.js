@@ -119,11 +119,31 @@ function run() {
 }
 
 const R = {};
+/* A unit's tips are shown one at a time, each on the first new phrase that uses the word it explains
+   (tips that match no phrase keep the old rhythm: one every fourth phrase). */
+const TIPS = new Map();
+function tipFor(u, idx) {
+  if (!u.tips || !u.tips.length) return null;
+  if (!TIPS.has(u.id)) {
+    const at = {}, ros = u.phrases.map(p => " " + p.ro.toLowerCase().replace(/[^a-z\s-]/g, " ").replace(/\s+/g, " ").trim() + " ");
+    const free = j => j < ros.length && at[j] == null;
+    u.tips.forEach((t, k) => {
+      const terms = [...t.matchAll(/<b>(.*?)<\/b>/g)].flatMap(m => m[1].toLowerCase().split(/\/|\.\.\./)).map(s => s.replace(/[^a-z\s-]/g, " ").replace(/\s+/g, " ").trim()).filter(s => s.replace(/-/g, "").length > 1);
+      const hit = r => terms.some(w => w[0] === "-" ? r.includes(w.slice(1) + " ") : r.includes(" " + w + " "));
+      let j = ros.findIndex((r, i) => free(i) && hit(r));
+      if (j < 0) j = [k * 4, ...ros.keys()].find(free);
+      if (j != null && j >= 0) at[j] = k;
+    });
+    TIPS.set(u.id, at);
+  }
+  const k = TIPS.get(u.id)[idx]; return k == null ? null : u.tips[k];
+}
+
 /* New phrase: hear it, see it word by word, learn why it's built that way, say it. */
 R.new = (st, done) => {
   const p = A.BY_ID[st.id]; if (!p) return done();
   const u = A.UNIT[p.unit] || { title: "", phrases: [p], tips: [] }, idx = u.phrases.indexOf(p);
-  const tip = idx % 4 === 0 && u.tips ? u.tips[idx / 4] : null;
+  const tip = tipFor(u, idx);
   A.$app.innerHTML = `${top()}
   <div class="stage">
     <p class="q">New phrase · ${esc(u.title)}</p>

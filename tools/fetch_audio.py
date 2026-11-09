@@ -15,41 +15,49 @@ def fnv(s):
         h = (h * 0x01000193) & 0xffffffff
     return format(h, "08x")
 
-texts = list(EXTRA)
-for f in SOURCES:
-    src = open(os.path.join(ROOT, f), encoding="utf-8").read()
-    texts += re.findall(r'\bne: "([^"]+)"', src)
-    texts += re.findall(r'\b\d+: "([^"]*[\u0900-\u097F][^"]*)"', src)  # bazaar prices
-texts = sorted({t.strip() for t in texts})
-out = os.path.join(ROOT, "audio")
-os.makedirs(out, exist_ok=True)
-got = fail = 0
-for i, t in enumerate(texts):
-    path = os.path.join(out, fnv(t) + ".mp3")
-    if os.path.exists(path) and os.path.getsize(path) > 1000:
-        continue
-    url = "https://translate.google.com/translate_tts?ie=UTF-8&tl=ne&client=tw-ob&q=" + urllib.parse.quote(t)
-    for attempt in range(6):
-        try:
-            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-            data = urllib.request.urlopen(req, timeout=20).read()
-            if len(data) < 1000:
-                raise ValueError("too small")
-            open(path, "wb").write(data); got += 1
-            break
-        except Exception as e:
-            wait = 20 * (attempt + 1) if "429" in str(e) else 3
-            print(f"retry {t!r}: {e} (waiting {wait}s)", flush=True); time.sleep(wait)
-    else:
-        fail += 1
-    time.sleep(0.5)
-    if i % 50 == 0:
-        print(f"{i}/{len(texts)}", flush=True)
+def collect():
+    """Every Nepali text the app can play, as a sorted list."""
+    texts = list(EXTRA)
+    for f in SOURCES:
+        src = open(os.path.join(ROOT, f), encoding="utf-8").read()
+        texts += re.findall(r'\bne: "([^"]+)"', src)
+        texts += re.findall(r'\b\d+: "([^"]*[\u0900-\u097F][^"]*)"', src)  # bazaar prices
+    return sorted({t.strip() for t in texts})
 
-want = {fnv(t) for t in texts}
-for f in os.listdir(out):
-    if f.endswith(".mp3") and f[:-4] not in want:
-        os.remove(os.path.join(out, f))  # phrase was changed or removed
-have = sorted(f[:-4] for f in os.listdir(out) if f.endswith(".mp3"))
-open(os.path.join(ROOT, "audio-list.js"), "w").write("self.AUDIO_FILES=" + repr(have).replace("'", '"') + ";\n")
-print(f"done: {len(texts)} phrases, {got} downloaded, {fail} failed, {len(have)} files total", flush=True)
+def main():
+    texts = collect()
+    out = os.path.join(ROOT, "audio")
+    os.makedirs(out, exist_ok=True)
+    got = fail = 0
+    for i, t in enumerate(texts):
+        path = os.path.join(out, fnv(t) + ".mp3")
+        if os.path.exists(path) and os.path.getsize(path) > 1000:
+            continue
+        url = "https://translate.google.com/translate_tts?ie=UTF-8&tl=ne&client=tw-ob&q=" + urllib.parse.quote(t)
+        for attempt in range(6):
+            try:
+                req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+                data = urllib.request.urlopen(req, timeout=20).read()
+                if len(data) < 1000:
+                    raise ValueError("too small")
+                open(path, "wb").write(data); got += 1
+                break
+            except Exception as e:
+                wait = 20 * (attempt + 1) if "429" in str(e) else 3
+                print(f"retry {t!r}: {e} (waiting {wait}s)", flush=True); time.sleep(wait)
+        else:
+            fail += 1
+        time.sleep(0.5)
+        if i % 50 == 0:
+            print(f"{i}/{len(texts)}", flush=True)
+
+    want = {fnv(t) for t in texts}
+    for f in os.listdir(out):
+        if f.endswith(".mp3") and f[:-4] not in want:
+            os.remove(os.path.join(out, f))  # phrase was changed or removed
+    have = sorted(f[:-4] for f in os.listdir(out) if f.endswith(".mp3"))
+    open(os.path.join(ROOT, "audio-list.js"), "w").write("self.AUDIO_FILES=" + repr(have).replace("'", '"') + ";\n")
+    print(f"done: {len(texts)} phrases, {got} downloaded, {fail} failed, {len(have)} files total", flush=True)
+
+if __name__ == "__main__":
+    main()

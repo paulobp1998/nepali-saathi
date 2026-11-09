@@ -673,7 +673,7 @@ C.grammar.push(
     ] },
     { ex: [
       { ne: "मैले दाल भात खाएको छु।", ro: "maile daal bhaat khaaeko chhu.", en: "I've eaten (my meal).", note: "Reply to the common greeting “khaanaa khaanubhayo?”" },
-      { ne: "म कहिल्यै सगरमाथा गएको छैन।", ro: "ma kahilyai sagarmaathaa gaeko chhaina.", en: "I've never been to Everest." },
+      { ne: "म कहिल्यै सगरमाथा गएको छैनँ।", ro: "ma kahilyai sagarmaathaa gaeko chhaina.", en: "I've never been to Everest." },
       { ne: "तपाईंले मोमो खानुभएको छ?", ro: "tapaainle momo khaanubhaeko chha?", en: "Have you ever eaten momos?" },
       { ne: "म आइपुग्दा बस गइसकेको थियो।", ro: "ma aaipugdaa bas gaisakeko thiyo.", en: "When I arrived, the bus had already left." }
     ] },

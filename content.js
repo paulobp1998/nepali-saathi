@@ -364,14 +364,14 @@ window.COURSE = {
     { title: "Breathy or not", body: "Many consonants come in pairs: plain and with a puff of air (aspirated). Hold your palm in front of your mouth: you should feel air only on the second word.",
       pairs: [ { ne: "काम", ro: "kaam", en: "work" }, { ne: "खाम", ro: "khaam", en: "envelope" }, { ne: "ताल", ro: "taal", en: "lake" }, { ne: "थाल", ro: "thaal", en: "plate" } ] },
     { title: "Breathy g, d, b", body: "Voiced sounds have breathy partners too. They sound like a g, d or b followed by a quick h.",
-      pairs: [ { ne: "गर्नु", ro: "garnu", en: "to do" }, { ne: "घर", ro: "ghar", en: "home" }, { ne: "दाल", ro: "daal", en: "lentils" }, { ne: "धन्यवाद", ro: "dhanyabaad", en: "thank you" } ] },
-    { title: "Teeth or curled tongue", body: "Nepali has two t's and two d's. One touches the back of the top teeth (softer than English). The other curls the tongue back to the roof of the mouth (harder, like American 't' in 'art').",
-      pairs: [ { ne: "तपाईं", ro: "tapaain", en: "you (teeth t)" }, { ne: "टाउको", ro: "taauko", en: "head (curled t)" }, { ne: "दिदी", ro: "didi", en: "older sister (teeth d)" }, { ne: "डाक्टर", ro: "daaktar", en: "doctor (curled d)" } ] },
+      pairs: [ { ne: "गोडा", ro: "godaa", en: "leg, foot" }, { ne: "घोडा", ro: "ghodaa", en: "horse" }, { ne: "दान", ro: "daan", en: "gift, donation" }, { ne: "धान", ro: "dhaan", en: "rice in the field" }, { ne: "बात", ro: "baat", en: "talk, chat" }, { ne: "भात", ro: "bhaat", en: "cooked rice" } ] },
+    { title: "Teeth or curled tongue", body: "Nepali has two t's and two d's. One touches the back of the top teeth (softer than English). The other curls the tongue back to the roof of the mouth (harder, like American 't' in 'art'). The romanization writes both the same way, so here only your ear can tell the words apart.",
+      pairs: [ { ne: "तार", ro: "taar", en: "wire (teeth t)" }, { ne: "टार", ro: "taar", en: "flat land above a river (curled t)" }, { ne: "दर", ro: "dar", en: "rate (teeth d)" }, { ne: "डर", ro: "dar", en: "fear (curled d)" } ] },
     { title: "ch and chh", body: "ch is like 'ts' or a soft English 'ch'. chh adds a puff of air.",
-      pairs: [ { ne: "चार", ro: "chaar", en: "four" }, { ne: "छ", ro: "chha", en: "six / is" }, { ne: "चिया", ro: "chiyaa", en: "tea" }, { ne: "छोरी", ro: "chhori", en: "daughter" } ] },
+      pairs: [ { ne: "चोरी", ro: "chori", en: "theft" }, { ne: "छोरी", ro: "chhori", en: "daughter" }, { ne: "चाला", ro: "chaalaa", en: "manner, behaviour" }, { ne: "छाला", ro: "chhaalaa", en: "skin, leather" } ] },
     { title: "Short a and long aa", body: "Short a sounds like the 'u' in 'cup', a little rounded. Long aa is the 'a' in 'father'. They change meaning.",
-      pairs: [ { ne: "म", ro: "ma", en: "I" }, { ne: "माफ", ro: "maaf", en: "sorry" }, { ne: "दस", ro: "das", en: "ten" }, { ne: "दाल", ro: "daal", en: "lentils" } ] },
+      pairs: [ { ne: "कम", ro: "kam", en: "less" }, { ne: "काम", ro: "kaam", en: "work" }, { ne: "मन", ro: "man", en: "heart, mind" }, { ne: "मान", ro: "maan", en: "respect" } ] },
     { title: "Nasal vowels", body: "A vowel can be said through the nose, like French 'bon'. In the romanization this is the n after a vowel.",
-      pairs: [ { ne: "हो", ro: "ho", en: "yes / is" }, { ne: "हुँ", ro: "hun", en: "(I) am" }, { ne: "पाँच", ro: "paanch", en: "five" }, { ne: "कहाँ", ro: "kahaan", en: "where" } ] }
+      pairs: [ { ne: "बास", ro: "baas", en: "shelter, a place to stay" }, { ne: "बाँस", ro: "baans", en: "bamboo" }, { ne: "भाडा", ro: "bhaadaa", en: "rent, fare" }, { ne: "भाँडा", ro: "bhaandaa", en: "pots and dishes" } ] }
   ]
 };
