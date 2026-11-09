@@ -255,7 +255,7 @@ C.grammar.push(
     { p: "To allow, use the infinitive in <b>-na</b> + <b>dinu</b> (give): <b>malaai jaana dinus</b> (let me go), <b>bachchaalaai khelna deu</b> (let the child play), <b>malaai sochna dinus</b> (let me think)." },
     { h: "Wanting someone else to do something" },
     { p: "<b>chaahanu</b> + the optative: <b>ma chaahanchhu ki timi pani aau</b>, or more naturally <b>timi pani aau bhanne ma chaahanchhu</b> (I want you to come too)." },
-    { warn: "Festival greetings follow a pattern: <b>[festival]-ko shubhakaamanaa!</b> → <i>dashaiko shubhakaamanaa</i>, <i>tiharko shubhakaamanaa</i>, <i>janmadinko shubhakaamanaa</i> (happy birthday)." }
+    { warn: "Festival greetings follow a pattern: <b>[festival]-ko shubhakaamanaa!</b> → <i>dashaiko shubhakaamanaa</i>, <i>tihaarko shubhakaamanaa</i>, <i>janmadinko shubhakaamanaa</i> (happy birthday)." }
   ],
   quiz: [
     { q: "“Get well soon.”", a: "chhittai niko hos", o: ["chhittai niko hunchha", "chhittai niko bhayo"], why: "Wish → <b>hos</b> (may it be)." },
@@ -461,7 +461,7 @@ C.grammar.push(
     ] } },
     { rule: "The high-respect forms have <b>no gender</b>. If you're unsure about gender agreement, the polite forms are both safer and more respectful." },
     { h: "Talking about family" },
-    { p: "Use high respect for parents, grandparents, older relatives and teachers, even when they're not present: <b>mero buwaa shikshak hunuhunchha</b>, <b>hajuraamaa aaunubhayo</b>. Younger siblings and children take the middle or low level: <b>bhaai aayo</b>, <b>bahini aai</b>." },
+    { p: "Use high respect for parents, grandparents, older relatives and teachers, even when they're not present: <b>mero bubaa shikshak hunuhunchha</b>, <b>hajuraamaa aaunubhayo</b>. Younger siblings and children take the middle or low level: <b>bhaai aayo</b>, <b>bahini aai</b>." },
     { h: "Feminine forms" },
     { p: "Only the low and middle levels distinguish gender: <b>u aai</b> (she came), <b>uni aain</b> (she came, mid), <b>u aaunchhe</b> (she comes). In fast speech many Nepalis use the masculine forms for women; in writing and careful speech the feminine forms are expected." },
     { ex: [
@@ -474,7 +474,7 @@ C.grammar.push(
     { p: "Respectful vocabulary: <b>khaanaa khaanubhayo?</b> (have you eaten? — a standard greeting), <b>sanchai hunuhunchha?</b> (are you well?), <b>aaraam garnus</b> (please rest). Respect also lives in <b>hajur</b> (yes / pardon), <b>-ji</b> after names (<b>Raamji</b>) and <b>daai / didi</b>." }
   ],
   quiz: [
-    { q: "About your father: “He's coming.”", a: "buwaa aaundai hunuhunchha", o: ["buwaa aaundaichha", "buwaa aaundaichhin"], why: "Parents take the high respect form." },
+    { q: "About your father: “He's coming.”", a: "bubaa aaundai hunuhunchha", o: ["bubaa aaundaichha", "bubaa aaundaichhin"], why: "Parents take the high respect form." },
     { q: "About your little sister: “She went to school.”", a: "bahini skul gai", o: ["bahini skul jaanubhayo", "bahini skul gayau"], why: "Younger siblings: low level, feminine <b>gai</b>." },
     { q: "Which forms have no gender distinction?", a: "tapaain / uhaan forms (-nuhunchha)", o: ["timi forms (-chhau)", "uni forms (-chhan)"], why: "High-respect forms are gender-neutral." },
     { q: "A friend tells you: “timi bhane hunchha.” This means:", a: "you can use timi with me", o: ["please use tapaain", "don't talk to me"], why: "They invite you to the familiar level." }
@@ -487,14 +487,14 @@ C.grammar.push(
       ["<b>-nu</b>", "the action as subject (“to do”, “doing”)", "nepaali <b>siknu</b> ramaailo chha (learning Nepali is fun)"],
       ["<b>-na</b>", "after adjectives: hard to, easy to", "yo <b>bujhna</b> gaahro chha (this is hard to understand)"],
       ["<b>-ne</b> + noun", "the … for doing", "<b>khaane</b> kuraa (food), <b>basne</b> thaaun (a place to stay)"],
-      ["<b>-ne garchhu</b>", "I usually, I make a habit of", "ma bihaana <b>hindne garchhu</b> (I usually walk in the morning)"],
+      ["<b>-ne garchhu</b>", "I usually, I make a habit of", "ma bihaan <b>hindne garchhu</b> (I usually walk in the morning)"],
       ["<b>-ne belaa</b>", "time to", "<b>jaane belaa</b> bhayo (it's time to go)"],
       ["<b>-ne bichaar</b>", "intend to", "<b>basne bichaar</b> chha (I'm planning to stay)"],
       ["<b>-aai</b>", "noun of the activity", "<b>padhaai</b> (studies), <b>lekhaai</b> (handwriting), <b>bhalaai</b> (good deed), <b>uchaai</b> (height)"],
       ["<b>-ko laagi</b> / <b>-nako laagi</b>", "for the purpose of", "<b>padhnako laagi</b> (in order to study)"]
     ] } },
     { ex: [
-      { ne: "बिहान सबेरै उठ्नु राम्रो बानी हो।", ro: "bihaana saberai uthnu raamro baani ho.", en: "Getting up early is a good habit." },
+      { ne: "बिहान सबेरै उठ्नु राम्रो बानी हो।", ro: "bihaan saberai uthnu raamro baani ho.", en: "Getting up early is a good habit." },
       { ne: "मलाई नेपाली पढ्न अलि गाह्रो लाग्छ।", ro: "malaai nepaali padhna ali gaahro laagchha.", en: "I find reading Nepali a bit hard." },
       { ne: "म साँझ समाचार सुन्ने गर्छु।", ro: "ma saanjha samaachaar sunne garchhu.", en: "I usually listen to the news in the evening." },
       { ne: "तपाईंको पढाइ कस्तो चल्दैछ?", ro: "tapaainko padhaai kasto chaldaichha?", en: "How are your studies going?" }
@@ -504,7 +504,7 @@ C.grammar.push(
   quiz: [
     { q: "“Learning Nepali is fun.”", a: "nepaali siknu ramaailo chha", o: ["nepaali sikna ramaailo chha ho", "nepaali sikne ramaailo"], why: "Action as subject → <b>-nu</b>." },
     { q: "“It's time to sleep.”", a: "sutne belaa bhayo", o: ["sutnu belaa bhayo", "sutna belaa chha"], why: "<b>-ne belaa</b> = time to." },
-    { q: "“I usually drink tea in the morning.”", a: "ma bihaana chiyaa khaane garchhu", o: ["ma bihaana chiyaa khaanu garchhu", "ma bihaana chiyaa khaana parchha"], why: "Habit → <b>-ne garchhu</b>." },
+    { q: "“I usually drink tea in the morning.”", a: "ma bihaan chiyaa khaane garchhu", o: ["ma bihaan chiyaa khaanu garchhu", "ma bihaan chiyaa khaana parchha"], why: "Habit → <b>-ne garchhu</b>." },
     { q: "“This is easy to understand.”", a: "yo bujhna sajilo chha", o: ["yo bujhnu sajilo chha ho", "yo bujhne sajilo"], why: "After adjectives → <b>-na</b>." }
   ] }
 );

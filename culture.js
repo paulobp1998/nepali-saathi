@@ -173,7 +173,7 @@ C.culture = [
   ],
   words: [
     { ne: "दसैँको शुभकामना!", ro: "dasainko shubhakaamanaa!", en: "Happy Dashain!" },
-    { ne: "तिहारको शुभकामना!", ro: "tiharko shubhakaamanaa!", en: "Happy Tihar!" },
+    { ne: "तिहारको शुभकामना!", ro: "tihaarko shubhakaamanaa!", en: "Happy Tihar!" },
     { ne: "जमरा", ro: "jamaraa", en: "barley shoots given at Dashain" },
     { ne: "दियो", ro: "diyo", en: "oil lamp" },
     { ne: "सयपत्री", ro: "sayapatri", en: "marigold" },
@@ -189,7 +189,7 @@ C.culture = [
   quiz: [
     { q: "Which animals are honoured on the second day of Tihar?", a: "Dogs", o: ["Elephants", "Goats"], why: "Kukur Tihar: dogs get garlands and tika." },
     { q: "Who gives tika at Dashain?", a: "Elders, to younger relatives", o: ["Children, to parents", "Priests only"], why: "Blessings flow from elders to the young." },
-    { q: "How do you wish someone a happy Tihar?", a: "tiharko shubhakaamanaa!", o: ["tihar dhanyabaad!", "tihar hos!"], why: "[festival] + ko shubhakaamanaa." }
+    { q: "How do you wish someone a happy Tihar?", a: "tihaarko shubhakaamanaa!", o: ["tihar dhanyabaad!", "tihar hos!"], why: "[festival] + ko shubhakaamanaa." }
   ] },
 
 { id: "food", title: "Daal bhaat and beyond", sub: "What Nepal eats, and how", art: "momo",

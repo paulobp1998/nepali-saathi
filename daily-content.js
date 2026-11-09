@@ -19,18 +19,18 @@ C.gloss = {
   tapaain: "you (polite)", tapaainlaai: "to you", tapaainko: "your", tapaainle: "you (doer)", hajur: "you (very polite) / yes?",
   uni: "he, she", uhaan: "he, she (respectful)", usko: "his, her", unko: "his, her", yo: "this", tyo: "that", yasko: "its, of this",
   ko: "who", ke: "what / (question)", kahaan: "where", kati: "how much, how many", kasto: "how, what kind", kahile: "when", kina: "why", kun: "which", kasari: "how",
-  ho: "is (identity)", hoina: "is not (identity)", chha: "is, there is", chhaina: "is not, there isn't", chhu: "am", chhan: "are (they)", hun: "am / are (identity)", usle: "he, she (doer)",
+  ho: "is (identity)", hoina: "is not (identity)", chha: "is, there is", chhaina: "is not, there isn't", chhu: "am", chhan: "are (they)", hun: "am (identity)", usle: "he, she (doer)",
   hunchha: "OK / happens", hunuhunchha: "is (polite)", bhayo: "happened, became", thiyo: "was", thiena: "was not",
   laagyo: "came to be (felt)", laagchha: "feels / costs, takes", parchha: "falls, is needed", chaahiyo: "is needed, want",
   pani: "also, too", ra: "and", ani: "and then", tara: "but", ki: "or", ni: "and…? (soft emphasis)", ta: "(emphasis)", maatra: "only",
   dherai: "very, a lot", ali: "a bit", alikati: "a little", ajhai: "still, more", sabai: "all", kehi: "something", kunai: "some, any",
   aaja: "today", bholi: "tomorrow", hijo: "yesterday", ahile: "now", pahile: "first, before", pachhi: "after, later", pheri: "again",
-  bihaana: "morning", belukaa: "evening", baje: "o'clock", haptaa: "week", samaya: "time", ghantaa: "hour", din: "day", barsha: "year",
+  bihaan: "morning", belukaa: "evening", baje: "o'clock", haptaa: "week", samaya: "time", ghantaa: "hour", din: "day", barsha: "year",
   yahaan: "here", tyahaan: "there", najikai: "nearby", taadhaa: "far",
   thik: "fine, OK", raamro: "good", naraamro: "bad", thulo: "big", saano: "small", mitho: "tasty", mahango: "expensive", sasto: "cheap", nayaan: "new", khusi: "happy",
   arko: "another, next", eutaa: "one (thing)", ek: "one", dui: "two", tin: "three", chaar: "four", paanch: "five", saya: "hundred", hajaar: "thousand",
   naam: "name", ghar: "home, house", kaam: "work", paani: "water", chiyaa: "tea", khaanaa: "food, meal", bhaat: "rice", daal: "lentils",
-  saathi: "friend", daai: "older brother", didi: "older sister", aamaa: "mother", buwaa: "father", man: "heart, mind", taauko: "head",
+  saathi: "friend", daai: "older brother", didi: "older sister", aamaa: "mother", bubaa: "father", man: "heart, mind", taauko: "head",
   kuraa: "thing, talk", paisaa: "money", rupaiyaan: "rupees", aushadhi: "medicine", daaktar: "doctor", samasyaa: "problem", jwaro: "fever",
   nepaali: "Nepali", nepaal: "Nepal", thaahaa: "knowledge (thaahaa chha = know)", maaf: "pardon", dhanyabaad: "thank you", namaste: "hello",
   sanchai: "well, healthy", bistaarai: "slowly", sangai: "together", pugyo: "enough / arrived", jaaun: "let's go", gaen: "I went",
@@ -51,7 +51,7 @@ C.notSuffix = ["aamaa", "maamaa", "hajuraamaa", "taauko", "arko", "ahile", "kahi
 // Verb roots, so endings can show "gar + nuhos = please do".
 C.roots = { gar: "do", jaa: "go", aau: "come", aaun: "come", khaa: "eat", khaan: "eat", pi: "drink", piu: "drink", bas: "sit, live", bol: "speak", bujh: "understand",
   sik: "learn", bhan: "say", di: "give", din: "give", de: "give", li: "take", lin: "take", her: "look", sun: "listen", padh: "read, study", padhaau: "teach",
-  lekh: "write", kin: "buy", ruk: "wait", rok: "stop", sut: "sleep", uth: "get up", khel: "play", sak: "can, finish", bhet: "meet", dukh: "hurt", laag: "feel, seem",
+  lekh: "write", kin: "buy", ruk: "stop", rok: "stop", sut: "sleep", uth: "get up", khel: "play", sak: "can, finish", bhet: "meet", dukh: "hurt", laag: "feel, seem",
   par: "fall, be needed", chalaau: "drive", lyaau: "bring", aa: "come", ga: "go", bha: "be, become", hun: "be", parkha: "wait", pug: "reach, be enough", padhaaun: "teach" };
 
 // Pattern notes: why the sentence is built this way. First two that match are shown.
@@ -233,7 +233,7 @@ C.weekly = {
 // Monthly 60-second recording: same kind of topic each month at a level, so you can hear yourself improve.
 C.monologue = {
   A1: { t: "Introduce yourself", d: "Your name, where you're from, where you live, your work, your family.", hints: ["mero naam … ho", "ma … baata aaeko hun", "ma …maa baschhu", "ma … garchhu"] },
-  A2: { t: "Yesterday", d: "What you did yesterday, from morning to night.", hints: ["hijo bihaana ma … uthen", "tyaspachhi …", "belukaa …", "raati …"] },
+  A2: { t: "Yesterday", d: "What you did yesterday, from morning to night.", hints: ["hijo bihaan ma … uthen", "tyaspachhi …", "belukaa …", "raati …"] },
   B1: { t: "Your work", d: "What you do, why you chose it, what you like and what is hard.", hints: ["ma … kaam garchhu", "kinabhane …", "malaai … man parchha", "tara … gaahro chha"] },
   B2: { t: "An opinion", d: "Pick a topic (social media, travel, cities vs villages) and argue your view with an example.", hints: ["mero bichaarmaa …", "udaaharanko laagi …", "tyasaile …", "jasto laagchha"] }
 };

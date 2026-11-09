@@ -1,5 +1,6 @@
 // Offline support: caches the app and its recordings. Bump V when publishing changes.
-const V = "saathi-v8";
+const V = "saathi-v9";
+const AUDIO = "saathi-audio"; // recordings are named by content hash, so this cache survives updates
 const TTS = "saathi-tts";
 const STATE = "saathi-state"; // reminder settings shared by the app (see Remind in app.js)
 importScripts("audio-list.js");
@@ -11,11 +12,18 @@ self.addEventListener("install", e => {
     const c = await caches.open(V);
     await c.addAll(SHELL);
     const audio = (self.AUDIO_FILES || []).map(h => "audio/" + h + ".mp3");
-    for (let i = 0; i < audio.length; i += 25) await Promise.all(audio.slice(i, i + 25).map(u => c.add(u).catch(() => {})));
+    const ac = await caches.open(AUDIO);
+    const need = async u => {
+      if (await ac.match(u)) return;
+      const old = await caches.match(u); // reuse a copy from an older cache instead of downloading again
+      if (old) return ac.put(u, old);
+      return ac.add(u);
+    };
+    for (let i = 0; i < audio.length; i += 25) await Promise.all(audio.slice(i, i + 25).map(u => need(u).catch(() => {})));
   })());
 });
 self.addEventListener("activate", e => e.waitUntil((async () => {
-  for (const k of await caches.keys()) if (k !== V && k !== TTS && k !== STATE) await caches.delete(k);
+  for (const k of await caches.keys()) if (k !== V && k !== AUDIO && k !== TTS && k !== STATE) await caches.delete(k);
   await self.clients.claim();
 })()));
 
@@ -34,20 +42,27 @@ self.addEventListener("fetch", e => {
   if (u.origin === location.origin) {
     if (u.pathname.includes("/audio/")) {
       e.respondWith((async () => {
-        const c = await caches.open(V);
+        const c = await caches.open(AUDIO);
         const key = u.origin + u.pathname;
         let hit = await c.match(key);
         if (!hit) { try { const r = await fetch(key); if (!r.ok) return r; await c.put(key, r.clone()); hit = r; } catch (err) { return Response.error(); } }
         return ranged(req, hit.clone());
       })());
     } else {
-      e.respondWith(fetch(req).then(r => { if (r.ok) { const cp = r.clone(); caches.open(V).then(c => c.put(req, cp)); } return r; })
-        .catch(() => caches.match(req, { ignoreSearch: true }).then(r => r || caches.match("index.html"))));
+      // Network first, but on a slow connection fall back to the cached copy after 3 s (the fetch still refreshes the cache).
+      e.respondWith((async () => {
+        const cached = () => caches.match(req, { ignoreSearch: true });
+        const net = fetch(req).then(r => { if (r.ok) { const cp = r.clone(); caches.open(V).then(c => c.put(req, cp)); } return r; });
+        e.waitUntil(net.catch(() => {}));
+        const slow = new Promise(res => setTimeout(res, 3000)).then(cached);
+        try { return (await Promise.race([net, slow.then(r => r || net)])) || await net; }
+        catch (err) { return (await cached()) || (await caches.match("index.html")) || Response.error(); }
+      })());
     }
   } else if (u.hostname === "translate.google.com") {
     e.respondWith(caches.open(TTS).then(async c => {
       const hit = await c.match(req.url); if (hit) return hit;
-      const r = await fetch(req.url, { mode: "no-cors" }); c.put(req.url, r.clone()); return r;
+      try { const r = await fetch(req.url, { mode: "no-cors" }); if (r.ok || r.type === "opaque") c.put(req.url, r.clone()).catch(() => {}); return r; } catch (err) { return Response.error(); }
     }));
   }
 });
