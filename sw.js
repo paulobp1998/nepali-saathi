@@ -1,5 +1,5 @@
 // Offline support: caches the app and its recordings. Bump V when publishing changes.
-const V = "saathi-v6";
+const V = "saathi-v7";
 const TTS = "saathi-tts";
 const STATE = "saathi-state"; // reminder settings shared by the app (see Remind in app.js)
 importScripts("audio-list.js");

@@ -8,7 +8,7 @@ const $app = document.getElementById("app");
 
 /* ---------- storage ---------- */
 const KEY = "nepali-saathi-v1";
-const DEF = { srs: {}, done: {}, dlg: {}, story: {}, xp: {}, imm: {}, mine: [], stats: {}, daily: {}, badges: {}, best: {}, gram: {}, cult: {}, read: {}, freezes: 0, frozen: {}, settings: { voice: "auto", slow: 0.7, script: false, goal: 30, drill: "ne-en", gap: 2, sfx: true, remind: { on: false, time: "19:00" } } };
+const DEF = { srs: {}, done: {}, dlg: {}, story: {}, xp: {}, imm: {}, mine: [], stats: {}, daily: {}, badges: {}, best: {}, gram: {}, cult: {}, read: {}, freezes: 0, frozen: {}, gone: {}, epoch: 0, at: 0, settings: { voice: "auto", slow: 0.7, script: false, goal: 30, drill: "ne-en", gap: 2, sfx: true, remind: { on: false, time: "19:00" } } };
 let S = load();
 let ALL = [], BY_ID = {}, UNIT = {};
 function indexAll() {
@@ -23,7 +23,9 @@ function load() {
   return JSON.parse(JSON.stringify(DEF));
 }
 function merge(j) { const d = JSON.parse(JSON.stringify(DEF)); return { ...d, ...j, settings: { ...d.settings, ...(j.settings || {}) } }; }
-function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+let syncSoon = () => {};
+function store() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function save() { S.at = Date.now(); store(); syncSoon(); }
 const day = (d = new Date()) => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
 function addXP(n) {
   if (!n) return;
@@ -52,13 +54,13 @@ function applyFreeze() {
 
 /* ---------- spaced repetition (Leitner boxes) ---------- */
 const INT = [0, 1, 3, 7, 16, 35].map(d => d * 864e5);
-function introduce(id) { if (!S.srs[id]) S.srs[id] = { box: 1, due: Date.now() + 6 * 36e5 }; }
+function introduce(id) { if (!S.srs[id]) S.srs[id] = { box: 1, due: Date.now() + 6 * 36e5, t: Date.now() }; }
 function grade(id, ok) {
   const now = Date.now(); let r = S.srs[id];
   if (!r) r = S.srs[id] = { box: 0, due: now };
   if (ok) { if (r.due <= now || r.box === 0) { r.box = Math.min(5, r.box + 1); r.due = now + INT[r.box]; } }
   else { r.box = 1; r.due = now + 10 * 6e4; }
-  save();
+  r.t = now; save();
 }
 const dueList = () => Object.entries(S.srs).filter(([id, r]) => BY_ID[id] && r.due <= Date.now()).map(([id]) => BY_ID[id]);
 const seenList = () => Object.keys(S.srs).filter(id => BY_ID[id]).map(id => BY_ID[id]);
@@ -728,7 +730,7 @@ VIEWS.mine = () => {
       const p = { id: "u" + Date.now().toString(36), ne: n, ro, en };
       S.mine.push(p); indexAll(); introduce(p.id); S.srs[p.id].due = Date.now(); save(); addXP(2); Voice.prefetch(n); toast("Added to your review"); draw();
     };
-    $app.querySelectorAll("[data-del]").forEach(b => b.onclick = () => { S.mine = S.mine.filter(p => p.id !== b.dataset.del); delete S.srs[b.dataset.del]; save(); indexAll(); draw(); });
+    $app.querySelectorAll("[data-del]").forEach(b => b.onclick = () => { S.mine = S.mine.filter(p => p.id !== b.dataset.del); delete S.srs[b.dataset.del]; S.gone[b.dataset.del] = 1; save(); indexAll(); draw(); });
   };
   draw();
 };
@@ -1468,11 +1470,20 @@ VIEWS.settings = arg => {
       <div class="status"><span>Recognition</span>${SRC ? '<span class="ok">Available</span>' : '<span class="no">Not in this browser</span>'}<span>Recording</span>${Rec.ok ? '<span class="ok">Available</span>' : '<span class="no">Not available</span>'}</div>
       <p class="muted">Speech checking uses the browser's free speech recognition. It works best in Google Chrome (computer or Android). Elsewhere you say the phrase aloud and check yourself.</p>
       ${SRC ? `<div class="row"><button class="btn small" id="mtest">${I.mic}Test: say "namaste"</button><span class="muted" id="mout"></span></div>` : ""}</div>
-    <div class="field"><label>Move progress between devices</label><p class="muted">Progress is saved separately on each device. To move it, copy the backup code here and paste it on the other device (for example, send it to yourself by email).</p>
+    <div class="field" id="sync"><label>Sync across devices</label>
+      ${Sync.on ? `<p class="muted">On. Progress made here is saved to a private gist in your GitHub account and shows up on your other synced devices a few seconds later.</p>
+      <p class="muted" id="syncst"></p>
+      <div class="row"><button class="btn small" id="syncnow">Sync now</button><button class="btn small ghost" id="syncoff">Stop syncing on this device</button></div>`
+      : `<p class="muted">Keep the same progress on your phone and computer, for free. The app keeps it in a private gist in your own GitHub account. Do this once on each device:</p>
+      <ol class="muted"><li>Open <a href="${SYNC_NEW_KEY}" target="_blank" rel="noopener">GitHub's new-key page</a> and sign in. The note and the <b>gist</b> box are already filled in. Set <b>Expiration</b> to <b>No expiration</b>, then press <b>Generate token</b> at the bottom.</li><li>Copy the key (it starts with <code>ghp_</code>), paste it below and press Connect.</li></ol>
+      <input class="inp" id="synctok" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your GitHub key">
+      <div class="row"><button class="btn small primary" id="syncgo">Connect</button><span class="muted" id="syncst"></span></div>
+      <p class="muted">The key can only read and write your gists, nothing else in your account, and it stays on this device.</p>`}</div>
+    <div class="field"><label>Backup code</label><p class="muted">A manual copy of your progress. Paste it on another device, or keep it somewhere safe.</p>
       <div class="row"><button class="btn small" id="bcopy">Copy backup code</button><span class="muted" id="bst"></span></div>
       <textarea id="bcode" class="inp" rows="3" placeholder="Paste a backup code here to restore it"></textarea>
       <div class="row"><button class="btn small" id="brestore">Restore from code</button></div></div>
-    <div class="field"><label>Progress</label><p class="muted">Saved on this device only. Clearing browser data erases it, so keep a backup code somewhere safe.</p>
+    <div class="field"><label>Progress</label><p class="muted">${Sync.on ? "Saved on this device and in your private GitHub gist. Resetting here also erases it on your other synced devices." : "Saved on this device only. Clearing browser data erases it, so turn on sync or keep a backup code."}</p>
       <div class="row"><button class="btn small" id="reset">Reset all progress</button><span id="confirm" hidden><button class="btn small primary" id="yes" style="background:var(--bad);border-color:var(--bad);color:#fff">Yes, erase everything</button> <button class="btn small ghost" id="no">Cancel</button></span></div></div>
   </section>`;
   const $ = s => document.getElementById(s);
@@ -1511,6 +1522,18 @@ VIEWS.settings = arg => {
     document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
     remStatus("Calendar file created. Open it to add a daily “Nepali practice” event with an alert.");
   };
+  Sync.paint();
+  if ($("syncgo")) $("syncgo").onclick = async () => {
+    const t = $("synctok").value.trim(); if (!t) { $("syncst").textContent = "Paste the key first."; return; }
+    $("syncgo").disabled = true; $("syncst").textContent = "Connecting…";
+    try { await Sync.connect(t); toast("Sync is on"); go("settings"); }
+    catch (e) {
+      $("syncgo").disabled = false;
+      $("syncst").textContent = e.status === 401 ? "GitHub didn't accept that key. Copy the whole key and try again." : e.status === 403 || e.status === 404 ? "That key can't save gists. Create a new key with the gist box ticked." : "Couldn't reach GitHub. Check your connection and try again.";
+    }
+  };
+  if ($("syncnow")) $("syncnow").onclick = async () => { $("syncst").textContent = "Syncing…"; await Sync.run(); Sync.paint(); };
+  if ($("syncoff")) $("syncoff").onclick = () => { Sync.disconnect(); toast("Sync is off on this device"); go("settings"); };
   if (arg === "remind") setTimeout(() => $("remind").scrollIntoView({ block: "start" }), 50);
   $("voice").onchange = e => { st.voice = e.target.value; Voice.online = true; Voice.fails = 0; save(); $("vlabel").textContent = Voice.label(); };
   $("test").onclick = async () => { await Voice.say("नमस्ते! तपाईंलाई कस्तो छ?"); $("vlabel").textContent = Voice.label(); };
@@ -1531,12 +1554,125 @@ VIEWS.settings = arg => {
     try { navigator.clipboard.writeText(code).then(ok, fb); } catch (e) { fb(); }
   };
   $("brestore").onclick = () => {
-    try { const j = JSON.parse(decodeURIComponent(escape(atob($("bcode").value.trim())))); if (!j.srs) throw 0; S = merge(j); save(); indexAll(); toast("Progress restored."); go("home"); }
+    try { const j = JSON.parse(decodeURIComponent(escape(atob($("bcode").value.trim())))); if (!j.srs) throw 0; const ep = S.epoch || 0; S = merge(j); S.epoch = Math.max(ep, S.epoch || 0); save(); indexAll(); toast("Progress restored."); go("home"); }
     catch (e) { $("bst").textContent = "That code isn't valid. Copy the whole code and try again."; }
   };
   $("reset").onclick = () => { $("confirm").hidden = false; $("reset").hidden = true; };
   $("no").onclick = () => { $("confirm").hidden = true; $("reset").hidden = false; };
-  $("yes").onclick = () => { const keep = S.settings; S = JSON.parse(JSON.stringify(DEF)); S.settings = keep; save(); indexAll(); toast("Progress erased."); go("home"); };
+  $("yes").onclick = () => { const keep = S.settings; S = JSON.parse(JSON.stringify(DEF)); S.settings = keep; S.epoch = Date.now(); save(); indexAll(); toast("Progress erased."); go("home"); };
+};
+
+/* ---------- sync across devices: progress lives in a private gist in the learner's GitHub account ---------- */
+const GFILE = "nepali-saathi-progress.json", SKEY = "nepali-saathi-sync";
+const SYNC_NEW_KEY = "https://github.com/settings/tokens/new?scopes=gist&description=Nepali%20Saathi%20sync";
+const LOCAL_SET = ["voice", "remind"]; // device-specific settings, never synced
+const isNum = v => typeof v === "number";
+// Combine one field from two devices: numbers take the max (or min), dates the earliest, flags and maps the union.
+function mergeVal(x, y, low) {
+  if (x === undefined || x === null) return y;
+  if (y === undefined || y === null) return x;
+  if (isNum(x) && isNum(y)) return low ? Math.min(x, y) : Math.max(x, y);
+  if (typeof x === "string" && typeof y === "string") return x < y ? x : y;
+  if (typeof x === "object" && typeof y === "object" && !Array.isArray(x) && !Array.isArray(y)) {
+    const o = {}; new Set([...Object.keys(x), ...Object.keys(y)]).forEach(k => { o[k] = mergeVal(x[k], y[k]); }); return o;
+  }
+  return x || y;
+}
+const newerCard = (r, q) => (r.t || 0) !== (q.t || 0) ? (r.t || 0) > (q.t || 0) : r.box !== q.box ? r.box > q.box : r.due > q.due;
+// a: this device, b: the copy from the gist
+function combine(a, b) {
+  a = merge(a); b = merge(b);
+  const keepLocal = w => { const s = { ...w.settings }; LOCAL_SET.forEach(k => { s[k] = a.settings[k]; }); return { ...w, settings: s, remindShown: a.remindShown }; };
+  // A reset starts a new epoch: the newer epoch replaces everything.
+  if ((a.epoch || 0) !== (b.epoch || 0)) return keepLocal((a.epoch || 0) > (b.epoch || 0) ? a : b);
+  const bNewer = (b.at || 0) > (a.at || 0);
+  const o = keepLocal(bNewer ? b : a); // settings and freezes follow the device used last
+  ["done", "dlg", "story", "xp", "stats", "daily", "badges", "gram", "cult", "read", "frozen", "gone"].forEach(k => { o[k] = mergeVal(a[k], b[k]) || {}; });
+  o.imm = bNewer ? { ...a.imm, ...b.imm } : { ...b.imm, ...a.imm };
+  o.best = {}; new Set([...Object.keys(a.best || {}), ...Object.keys(b.best || {})]).forEach(k => { o.best[k] = mergeVal(a.best[k], b.best[k], k === "memory"); });
+  o.srs = { ...b.srs }; Object.entries(a.srs).forEach(([id, r]) => { const q = o.srs[id]; if (!q || newerCard(r, q)) o.srs[id] = r; });
+  const seen = {}; o.mine = [...a.mine, ...b.mine].filter(p => p && p.id && !o.gone[p.id] && !seen[p.id] && (seen[p.id] = 1));
+  Object.keys(o.gone).forEach(id => { delete o.srs[id]; });
+  o.at = Math.max(a.at || 0, b.at || 0); o.epoch = a.epoch || 0;
+  return o;
+}
+const pack = s => { const o = { ...s, settings: { ...s.settings } }; LOCAL_SET.forEach(k => delete o.settings[k]); delete o.remindShown; return o; };
+const canon = v => JSON.stringify(v, (k, x) => x && typeof x === "object" && !Array.isArray(x) ? Object.fromEntries(Object.keys(x).sort().map(k2 => [k2, x[k2]])) : x);
+const SAFE_VIEWS = ["home", "path", "badges", "games", "grammar", "culture", "read", "settings", "mine", "unit", "gram", "cult", "letters", "conj"];
+const Sync = {
+  cfg() { try { return JSON.parse(localStorage.getItem(SKEY)) || {}; } catch (e) { return {}; } },
+  put(c) { try { if (c) localStorage.setItem(SKEY, JSON.stringify(c)); else localStorage.removeItem(SKEY); } catch (e) {} },
+  get on() { return !!this.cfg().token; },
+  busy: null, again: false, timer: 0,
+  async api(path, opt = {}, token = this.cfg().token) {
+    const r = await fetch("https://api.github.com" + path, { ...opt, cache: "no-store",
+      headers: { Accept: "application/vnd.github+json", Authorization: "Bearer " + token, ...(opt.body ? { "Content-Type": "application/json" } : {}) } });
+    if (!r.ok) { const e = new Error("github " + r.status); e.status = r.status; throw e; }
+    return r.json();
+  },
+  async findGist(token) {
+    for (let p = 1; p <= 10; p++) {
+      const l = await this.api(`/gists?per_page=100&page=${p}`, {}, token);
+      const g = l.find(x => x.files && x.files[GFILE]); if (g) return g.id;
+      if (l.length < 100) break;
+    }
+    return null;
+  },
+  create(token) {
+    return this.api("/gists", { method: "POST", body: JSON.stringify({ description: "Nepali Saathi progress (kept in sync by the app)", public: false, files: { [GFILE]: { content: JSON.stringify(pack(S)) } } }) }, token);
+  },
+  async connect(token) {
+    const id = (await this.findGist(token)) || (await this.create(token)).id;
+    this.put({ token, gist: id });
+    return this.run();
+  },
+  disconnect() { clearTimeout(this.timer); this.put(null); },
+  soon() { if (!this.on) return; clearTimeout(this.timer); this.timer = setTimeout(() => this.run(), 3000); },
+  run() {
+    if (!this.on || navigator.onLine === false) { this.paint(); return Promise.resolve(false); }
+    if (this.busy) { this.again = true; return this.busy; }
+    clearTimeout(this.timer);
+    this.busy = this._run().finally(() => { this.busy = null; if (this.again) { this.again = false; this.run(); } });
+    return this.busy;
+  },
+  async _run() {
+    const c = this.cfg(), keep = () => { if (this.cfg().token === c.token) this.put(c); };
+    try {
+      let g = c.gist ? await this.api("/gists/" + c.gist).catch(e => { if (e.status === 404) return null; throw e; }) : null;
+      if (!g) { const id = await this.findGist(c.token); g = id ? await this.api("/gists/" + id) : await this.create(c.token); c.gist = g.id; keep(); }
+      const f = g.files && g.files[GFILE]; let txt = f ? f.content : "";
+      if (f && f.truncated) txt = await (await fetch(f.raw_url, { cache: "no-store" })).text();
+      let remote = null; try { remote = JSON.parse(txt); } catch (e) {}
+      let changed = false;
+      if (remote && remote.srs) {
+        const before = JSON.stringify(S); S = combine(S, remote);
+        if (JSON.stringify(S) !== before) { store(); indexAll(); changed = true; }
+      }
+      const out = pack(S);
+      if (!remote || canon(out) !== canon(remote)) await this.api("/gists/" + c.gist, { method: "PATCH", body: JSON.stringify({ files: { [GFILE]: { content: JSON.stringify(out) } } }) });
+      c.last = Date.now(); delete c.err; keep();
+      if (changed) this.refresh();
+      return true;
+    } catch (e) {
+      c.err = e.status === 401 ? "auth" : e.status === 403 || e.status === 429 ? "limit" : "net"; keep();
+      return false;
+    } finally { this.paint(); }
+  },
+  refresh() {
+    header();
+    const v = (location.hash || "#home").slice(1).split(/-(.+)/)[0];
+    if (SAFE_VIEWS.includes(v) && !document.querySelector(".modal")) route();
+  },
+  label() {
+    const c = this.cfg(); if (!c.token) return "";
+    if (c.err === "auth") return "GitHub no longer accepts this device's key (it may have expired). Stop syncing on this device, then connect again with a new key.";
+    if (c.err === "limit") return "GitHub asked the app to slow down. It will try again shortly.";
+    if (c.err === "net" || navigator.onLine === false) return "Couldn't reach GitHub. Your progress is safe on this device and will sync when you're back online.";
+    if (!c.last) return "Not synced yet.";
+    const m = Math.round((Date.now() - c.last) / 6e4);
+    return "Last synced " + (m < 1 ? "just now" : m < 60 ? m + " min ago" : new Date(c.last).toLocaleString()) + ".";
+  },
+  paint() { const el = document.getElementById("syncst"); if (el && this.on) el.textContent = this.label(); }
 };
 
 /* keyboard: space replays audio on practice screens */
@@ -1557,4 +1693,9 @@ if ("serviceWorker" in navigator && (location.protocol === "https:" || location.
   navigator.serviceWorker.register("sw.js").catch(() => {});
 }
 route();
+syncSoon = () => Sync.soon();
+document.addEventListener("visibilitychange", () => Sync.run());
+window.addEventListener("pagehide", () => Sync.run());
+window.addEventListener("online", () => Sync.run());
+Sync.run();
 })();

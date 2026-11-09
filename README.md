@@ -11,6 +11,7 @@ Live app: https://paulobp1998.github.io/nepali-saathi/
 - `culture.js`: illustrated culture articles, the festival calendar by Nepali month, and links from each lesson
 - `reading.js`: the Read Nepali (Devanagari) trainer
 - `app.js`: the app (including the daily reminder; `sw.js` shows it in the background where the browser allows)
+- Progress sync: Settings → Sync across devices. Each device stores a GitHub key (classic token, `gist` scope only) and the app keeps progress in a private gist named `nepali-saathi-progress.json`, merging both copies so nothing is lost.
 - `audio/`: built-in Nepali recordings, one per phrase
 - `sw.js`, `manifest.webmanifest`, `icons/`: offline support and install on phone
 
