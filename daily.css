@@ -1,0 +1,34 @@
+/* Daily session, role-plays, weekly task, monthly recording (daily.js). Uses the tokens from index.html. */
+.daily-card { background: var(--accent-soft); border-radius: 20px; padding: 18px; display: grid; gap: 12px; }
+.daily-card.ok { background: var(--good-soft); }
+.daily-card h2 { font-family: var(--display); font-size: clamp(1.4rem, 5vw, 1.9rem); margin: 0; }
+.daily-card .eyebrow { margin: 0; }
+.daily-card .mix { display: flex; flex-wrap: wrap; gap: 6px; }
+.daily-card .btn.big { min-height: 54px; font-size: 1.08rem; padding: 10px 22px; }
+.sizes { display: inline-flex; gap: 4px; }
+.sizes .chip, .stage .chip[data-r] { cursor: pointer; }
+.sizes .chip.on, .stage .chip.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.weekly { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; display: grid; gap: 8px; }
+.weekly.ok { border-color: var(--good); }
+.weekly h3, .weekly p { margin: 0; }
+.weekly .chip svg { width: 16px; height: 16px; }
+.mono-card { width: 100%; }
+.explore > summary { cursor: pointer; font-family: var(--display); font-weight: 700; font-size: 1.15rem; padding: 10px 0; }
+.explore[open] > summary { margin-bottom: 10px; }
+.words { width: 100%; display: grid; gap: 6px; }
+.words .eyebrow, .why .eyebrow { margin: 0; }
+.wchips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.wchip { display: grid; gap: 1px; padding: 6px 10px; border-radius: 10px; background: var(--bg); border: 1px solid var(--line); text-align: center; min-width: 0; }
+.wchip b { font-size: 0.98rem; }
+.wchip b i { font-style: normal; color: var(--accent); }
+.wchip small { font-size: 0.74rem; color: var(--muted); line-height: 1.25; max-width: 16ch; }
+.wchip.v { border-color: var(--accent); background: var(--accent-soft); }
+.why { width: 100%; max-width: 52ch; text-align: left; background: var(--bg); border-left: 4px solid var(--accent); border-radius: 10px; padding: 10px 14px; display: grid; gap: 6px; }
+.why p { margin: 0; }
+.why.tip { border-left-color: var(--good); }
+.fact-text { font-size: 1.1rem; max-width: 46ch; }
+.rp-turn { gap: 12px; }
+.rp-opt { display: grid; gap: 4px; }
+.rp-opt .hint { font-weight: 400; color: var(--muted); font-size: 0.92rem; }
+.mono-count { font-family: var(--display); font-size: 3.4rem; font-weight: 800; margin: 0; font-variant-numeric: tabular-nums; }
+@media (max-width: 420px) { .daily-card .row.split { flex-direction: column; align-items: flex-start; gap: 6px; } }

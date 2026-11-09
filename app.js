@@ -489,6 +489,7 @@ document.addEventListener("click", e => {
 
 /* ---------- views ---------- */
 const VIEWS = {};
+const HOOKS = {}; // filled by modules (daily.js)
 
 VIEWS.home = () => {
   const due = dueList().length;
@@ -514,13 +515,15 @@ VIEWS.home = () => {
       <p class="muted small">${nx ? `${xpAll} XP · ${nx.xp - xpAll} more to ${esc(nx.en)}` : `${xpAll} XP · top rank`}</p>
     </div>
   </section>
+  ${HOOKS.home ? HOOKS.home() : ""}
   <section class="quests">
     <div class="row split"><h2>Today's quests</h2><span class="muted small">+10 XP each · all three: +20 XP and a streak freeze</span></div>
     ${questsFor().map(q => { const v = Math.min(q.n, d[q.key] || 0), ok = qd[q.id]; return `
       <div class="quest ${ok ? "ok" : ""}"><span class="qicon">${ok ? I.check : I.target}</span><span class="qbody"><span>${esc(q.text)}</span><span class="progress"><i style="width:${v / q.n * 100}%"></i></span></span><span class="qn">${v}/${q.n}</span></div>`; }).join("")}
   </section>
+  <details class="explore"><summary>Explore on your own</summary>
   <section class="cards">
-    <button class="card lead" data-go="${nextMode}-${next.id}"><span class="k">Continue the trek</span><h3>${esc(stop.place || next.title)}</h3><span class="muted">${esc(next.title)} · ${verb}</span></button>
+    <button class="card" data-go="${nextMode}-${next.id}"><span class="k">Continue the trek</span><h3>${esc(stop.place || next.title)}</h3><span class="muted">${esc(next.title)} · ${verb}</span></button>
     <button class="card" data-go="grammar"><span class="k">How Nepali works</span><h3>Grammar</h3><span class="muted">${gramCount()} of ${(C.grammar || []).length} chapters · A1 → C2</span></button>
     <button class="card" data-go="culture"><span class="k">Religion, festivals, food</span><h3>Culture</h3><span class="muted">${Object.keys(S.cult).length} of ${(C.culture || []).length} articles read</span></button>
     <button class="card" data-go="build"><span class="k">Word order</span><h3>Sentence builder</h3><span class="muted">Tap the words into Nepali order</span></button>
@@ -528,7 +531,10 @@ VIEWS.home = () => {
     <button class="card" data-go="games"><span class="k">Play</span><h3>Games</h3><span class="muted">Momo Rush, Memory Match, Bargain Bazaar</span></button>
     <button class="card" data-go="review"><span class="k">Review</span><h3>${due ? due + " phrases due" : "Nothing due"}</h3><span class="muted">Bring phrases back before you forget</span></button>
     <button class="card" data-go="drill"><span class="k">Hands-free</span><h3>Listening drill</h3><span class="muted">Audio only, for walks and commutes</span></button>
+    <button class="card" data-go="roleplays"><span class="k">Speak your part</span><h3>Role-plays</h3><span class="muted">Branching scenes and conversations</span></button>
+    <button class="card" data-go="mono"><span class="k">Monthly check-in</span><h3>My recordings</h3><span class="muted">${Object.keys(S.mono || {}).length} month${Object.keys(S.mono || {}).length === 1 ? "" : "s"} recorded</span></button>
   </section>
+  </details>
   <section class="potd">
     <p class="eyebrow">Phrase of the day</p>
     <div class="potd-row"><button class="hear sm" data-say="${esc(pd.ne)}" aria-label="Play">${I.speaker}</button>
@@ -544,6 +550,7 @@ VIEWS.home = () => {
     <button class="card" data-go="settings"><span class="k">Voice, sound &amp; backup</span><h3>Settings</h3><span class="muted">${esc(Voice.label())}</span></button>
     ${S.settings.remind && S.settings.remind.on ? "" : `<button class="card" data-go="settings-remind"><span class="k">Stay on track</span><h3>Daily reminder</h3><span class="muted">Get a nudge on days you haven't practised</span></button>`}
   </section>`;
+  if (HOOKS.homeWire) HOOKS.homeWire();
 };
 
 function trailHTML() {
@@ -818,7 +825,7 @@ function finish(title, sub, unitId, nextMode, extra = "", win = true) {
 }
 
 /* Generic quiz engine. item types: meaning | heard | speak */
-function quiz({ items, pool, title, backTo, backLabel, onDone }) {
+function quiz({ items, pool, title, backTo, backLabel, onDone, at = 0, of }) {
   let i = 0, right = 0, answered = false, selfMode = !Mic.ok, combo = 0;
   const react = ok => { if (ok) { combo++; Sfx.good(combo); } else { combo = 0; Sfx.bad(); } };
   const comboChip = () => combo >= 3 ? `<p class="combo">${combo} in a row!</p>` : "";
@@ -826,11 +833,11 @@ function quiz({ items, pool, title, backTo, backLabel, onDone }) {
   const draw = () => {
     answered = false;
     const it = items[i], p = it.p;
-    const top = `${backBtn(backTo, backLabel)}<div class="progress" aria-hidden="true"><i style="width:${i / total * 100}%"></i></div>`;
+    const top = `${backBtn(backTo, backLabel)}<div class="progress" aria-hidden="true"><i style="width:${(at + i) / (of || total) * 100}%"></i></div>`;
     if (it.type === "speak") {
       $app.innerHTML = `${top}
       <div class="stage">
-        <p class="q">${esc(title)} · ${i + 1} of ${total} · say it in Nepali</p>
+        <p class="q">${esc(title)} · ${at + i + 1} of ${of || total} · say it in Nepali</p>
         <p class="prompt">${esc(p.en)}</p>
         <button class="btn small ghost" id="hint">Show hint</button>
         <p class="big-ro blur" id="hintText" hidden aria-hidden="true">${esc(p.ro)}</p>
@@ -882,7 +889,7 @@ function quiz({ items, pool, title, backTo, backLabel, onDone }) {
       const field = it.type === "meaning" ? "en" : "ro";
       $app.innerHTML = `${top}
       <div class="stage">
-        <p class="q">${esc(title)} · ${i + 1} of ${total} · ${it.type === "meaning" ? "what does it mean?" : "which one did you hear?"}</p>
+        <p class="q">${esc(title)} · ${at + i + 1} of ${of || total} · ${it.type === "meaning" ? "what does it mean?" : "which one did you hear?"}</p>
         <button class="hear" id="play" aria-label="Play again">${I.speaker}</button>
         <button class="btn small ghost" id="slow">${I.slow}Slowly</button>
         <div class="opts">${opts.map(o => `<button class="opt" data-id="${o.id}">${esc(o[field])}</button>`).join("")}</div>
@@ -1587,7 +1594,7 @@ function combine(a, b) {
   if ((a.epoch || 0) !== (b.epoch || 0)) return keepLocal((a.epoch || 0) > (b.epoch || 0) ? a : b);
   const bNewer = (b.at || 0) > (a.at || 0);
   const o = keepLocal(bNewer ? b : a); // settings and freezes follow the device used last
-  ["done", "dlg", "story", "xp", "stats", "daily", "badges", "gram", "cult", "read", "frozen", "gone"].forEach(k => { o[k] = mergeVal(a[k], b[k]) || {}; });
+  ["done", "dlg", "story", "xp", "stats", "daily", "badges", "gram", "cult", "read", "frozen", "gone", "gm", "week", "mono", "rp", "pat"].forEach(k => { o[k] = mergeVal(a[k], b[k]) || {}; });
   o.imm = bNewer ? { ...a.imm, ...b.imm } : { ...b.imm, ...a.imm };
   o.best = {}; new Set([...Object.keys(a.best || {}), ...Object.keys(b.best || {})]).forEach(k => { o.best[k] = mergeVal(a.best[k], b.best[k], k === "memory"); });
   o.srs = { ...b.srs }; Object.entries(a.srs).forEach(([id, r]) => { const q = o.srs[id]; if (!q || newerCard(r, q)) o.srs[id] = r; });
@@ -1598,7 +1605,7 @@ function combine(a, b) {
 }
 const pack = s => { const o = { ...s, settings: { ...s.settings } }; LOCAL_SET.forEach(k => delete o.settings[k]); delete o.remindShown; return o; };
 const canon = v => JSON.stringify(v, (k, x) => x && typeof x === "object" && !Array.isArray(x) ? Object.fromEntries(Object.keys(x).sort().map(k2 => [k2, x[k2]])) : x);
-const SAFE_VIEWS = ["home", "path", "badges", "games", "grammar", "culture", "read", "settings", "mine", "unit", "gram", "cult", "letters", "conj"];
+const SAFE_VIEWS = ["roleplays", "home", "path", "badges", "games", "grammar", "culture", "read", "settings", "mine", "unit", "gram", "cult", "letters", "conj"];
 const Sync = {
   cfg() { try { return JSON.parse(localStorage.getItem(SKEY)) || {}; } catch (e) { return {}; } },
   put(c) { try { if (c) localStorage.setItem(SKEY, JSON.stringify(c)); else localStorage.removeItem(SKEY); } catch (e) {} },
@@ -1684,11 +1691,14 @@ window.__test = { translit, key, score, normDeva, fnv };
 const API = {
   get S() { return S; }, C, $app, save, addXP, track, Voice, Mic, Sfx, celebrate, habre, cheerHTML, esc, shuffle, sleep, toast, I, backBtn, go, score, micError,
   setCleanup: f => { cleanup = f; },
+  VIEWS, HOOKS, quiz, gramBlock, GRAM, UNIT, DLG, grade, introduce, dueList, seenList, day, Rec, header, modal, ne, pick, levelNow, postcard, route, translit, normDeva,
+  get ALL() { return ALL; }, get BY_ID() { return BY_ID; },
   pool(min = 8) { const s = seenList().filter(p => !p.own && p.en.length < 60); return s.length >= min ? s : C.units.slice(0, 3).flatMap(u => u.phrases); }
 };
 applyFreeze();
 Remind.sync();
 Object.entries(window.GAMES || {}).forEach(([k, f]) => { VIEWS[k] = arg => f(API, arg); });
+(window.MODULES || []).forEach(f => f(API));
 if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
   navigator.serviceWorker.register("sw.js").catch(() => {});
 }

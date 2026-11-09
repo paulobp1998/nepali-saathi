@@ -5,7 +5,7 @@ Run from the app folder:  python3 tools/fetch_audio.py   (safe to re-run; skips 
 import os, re, sys, time, urllib.parse, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SOURCES = ["content.js", "content-more.js", "trail.js", "grammar-a.js", "grammar-b.js", "grammar-c.js", "culture.js", "reading.js", "games.js", "app.js"]
+SOURCES = ["content.js", "content-more.js", "trail.js", "grammar-a.js", "grammar-b.js", "grammar-c.js", "culture.js", "reading.js", "games.js", "app.js", "daily-content.js"]
 EXTRA = ["नमस्ते! तपाईंलाई कस्तो छ?", "बिस्तारै बोल्नुहोस् न।"]
 
 def fnv(s):
