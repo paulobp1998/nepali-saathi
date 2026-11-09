@@ -195,7 +195,7 @@ window.COURSE = {
         { id: "t3", ne: "आज", ro: "aaja", en: "Today" },
         { id: "t4", ne: "भोलि", ro: "bholi", en: "Tomorrow" },
         { id: "t5", ne: "हिजो", ro: "hijo", en: "Yesterday" },
-        { id: "t6", ne: "बिहान", ro: "bihaana", en: "Morning" },
+        { id: "t6", ne: "बिहान", ro: "bihaan", en: "Morning" },
         { id: "t7", ne: "बेलुका", ro: "belukaa", en: "Evening" },
         { id: "t8", ne: "अहिले", ro: "ahile", en: "Now" },
         { id: "t9", ne: "पछि", ro: "pachhi", en: "Later" },
@@ -353,7 +353,7 @@ window.COURSE = {
         { who: "B", ne: "थाहा छैन। किन?", ro: "thaahaa chhaina. kina?", en: "I don't know. Why?" },
         { who: "A", ne: "सँगै चिया खाऔँ न।", ro: "sangai chiyaa khaaun na.", en: "Let's have tea together." },
         { who: "B", ne: "हुन्छ! कति बजे?", ro: "hunchha! kati baje?", en: "Sure! At what time?" },
-        { who: "A", ne: "बिहान दस बजे।", ro: "bihaana das baje.", en: "At ten in the morning." },
+        { who: "A", ne: "बिहान दस बजे।", ro: "bihaan das baje.", en: "At ten in the morning." },
         { who: "B", ne: "ठिक छ, भोलि भेटौँ।", ro: "thik chha, bholi bhetaun.", en: "OK, see you tomorrow." }
       ]
     }

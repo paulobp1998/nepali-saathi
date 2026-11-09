@@ -1,40 +1,33 @@
 // Offline support: caches the app and its recordings. Bump V when publishing changes.
-// Recordings live in their own cache (AUDIO), so a new V never downloads them again.
-const V = "saathi-v9";
-const AUDIO = "saathi-audio";
-const FONTS = "saathi-fonts";
+const V = "saathi-v10";
+const AUDIO = "saathi-audio"; // recordings are named by content hash, so this cache survives updates
+const FONTS = "saathi-fonts"; // Google Fonts (including Mukta for Devanagari), saved on first use
 const TTS = "saathi-tts";
 const STATE = "saathi-state"; // reminder settings shared by the app (see Remind in app.js)
 importScripts("audio-list.js");
 const SHELL = ["./", "index.html", "app.js", "content.js", "content-more.js", "trail.js", "grammar-a.js", "grammar-b.js", "grammar-c.js", "culture.js", "reading.js", "games.js", "daily-content.js", "daily.js", "daily.css", "audio-list.js", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png"];
-const WANT = new Set(self.AUDIO_FILES || []);
-const hashOf = url => { const m = /\/audio\/([0-9a-f]+)\.mp3$/.exec(new URL(url).pathname); return m ? m[1] : null; };
 
 self.addEventListener("install", e => {
   self.skipWaiting();
   e.waitUntil((async () => {
     const c = await caches.open(V);
-    await c.addAll(SHELL.map(u => new Request(u, { cache: "reload" })));
-    const a = await caches.open(AUDIO), have = new Set();
-    for (const r of await a.keys()) have.add(hashOf(r.url));
-    // Recordings saved by an older version of this worker: move them over instead of downloading them again.
-    for (const k of await caches.keys()) {
-      if (!/^saathi-v\d+$/.test(k) || k === V) continue;
-      const old = await caches.open(k);
-      for (const r of await old.keys()) {
-        const h = hashOf(r.url); if (!h || !WANT.has(h) || have.has(h)) continue;
-        const res = await old.match(r); if (res) { await a.put(r, res); have.add(h); }
-      }
-    }
-    const need = [...WANT].filter(h => !have.has(h)).map(h => "audio/" + h + ".mp3");
-    for (let i = 0; i < need.length; i += 25) await Promise.all(need.slice(i, i + 25).map(u => a.add(u).catch(() => {})));
+    await c.addAll(SHELL);
+    const audio = (self.AUDIO_FILES || []).map(h => "audio/" + h + ".mp3");
+    const ac = await caches.open(AUDIO);
+    const need = async u => {
+      if (await ac.match(u)) return;
+      const old = await caches.match(u); // reuse a copy from an older cache instead of downloading again
+      if (old) return ac.put(u, old);
+      return ac.add(u);
+    };
+    for (let i = 0; i < audio.length; i += 25) await Promise.all(audio.slice(i, i + 25).map(u => need(u).catch(() => {})));
   })());
 });
 self.addEventListener("activate", e => e.waitUntil((async () => {
-  const keep = [V, AUDIO, FONTS, TTS, STATE];
-  for (const k of await caches.keys()) if (!keep.includes(k)) await caches.delete(k);
-  const a = await caches.open(AUDIO);
-  for (const r of await a.keys()) if (!WANT.has(hashOf(r.url))) await a.delete(r); // phrase was changed or removed
+  for (const k of await caches.keys()) if (![V, AUDIO, FONTS, TTS, STATE].includes(k)) await caches.delete(k);
+  // Drop recordings of phrases that were changed or removed.
+  const want = new Set(self.AUDIO_FILES || []), ac = await caches.open(AUDIO);
+  for (const r of await ac.keys()) { const m = /\/audio\/([0-9a-f]+)\.mp3$/.exec(new URL(r.url).pathname); if (!m || !want.has(m[1])) await ac.delete(r); }
   await self.clients.claim();
 })()));
 
@@ -47,20 +40,13 @@ async function ranged(req, res) {
     "Content-Type": "audio/mpeg", "Content-Range": `bytes ${start}-${end}/${buf.byteLength}`, "Content-Length": String(end - start + 1), "Accept-Ranges": "bytes" } });
 }
 
-// The app itself: fresh from the network when it answers quickly, otherwise the saved copy (slow or no connection).
-async function shell(req) {
-  const cached = await caches.match(req, { ignoreSearch: true });
-  const net = fetch(req).then(r => { if (r.ok) { const cp = r.clone(); caches.open(V).then(c => c.put(req, cp)); } return r; });
-  if (!cached) return net.catch(() => caches.match("index.html"));
-  return Promise.race([net.catch(() => cached), new Promise(res => setTimeout(() => res(cached), 3000))]);
-}
-// Google Fonts (including Mukta for Devanagari): saved on first use so the app looks the same offline.
+// Fonts: files never change, so the saved copy is enough; the stylesheet is served saved and refreshed in the background.
 async function font(req, u) {
   const c = await caches.open(FONTS), hit = await c.match(req.url);
-  if (hit && u.hostname === "fonts.gstatic.com") return hit; // font files never change
-  const net = fetch(req.url).then(r => { if (r.ok) c.put(req.url, r.clone()); return r; });
+  if (hit && u.hostname === "fonts.gstatic.com") return hit;
+  const net = fetch(req.url).then(r => { if (r.ok) c.put(req.url, r.clone()).catch(() => {}); return r; });
   if (!hit) return net;
-  net.catch(() => {}); // the stylesheet refreshes in the background
+  net.catch(() => {});
   return hit;
 }
 
@@ -76,13 +62,23 @@ self.addEventListener("fetch", e => {
         if (!hit) { try { const r = await fetch(key); if (!r.ok) return r; await c.put(key, r.clone()); hit = r; } catch (err) { return Response.error(); } }
         return ranged(req, hit.clone());
       })());
-    } else e.respondWith(shell(req));
+    } else {
+      // Network first, but on a slow connection fall back to the cached copy after 3 s (the fetch still refreshes the cache).
+      e.respondWith((async () => {
+        const cached = () => caches.match(req, { ignoreSearch: true });
+        const net = fetch(req).then(r => { if (r.ok) { const cp = r.clone(); caches.open(V).then(c => c.put(req, cp)); } return r; });
+        e.waitUntil(net.catch(() => {}));
+        const slow = new Promise(res => setTimeout(res, 3000)).then(cached);
+        try { return (await Promise.race([net, slow.then(r => r || net)])) || await net; }
+        catch (err) { return (await cached()) || (await caches.match("index.html")) || Response.error(); }
+      })());
+    }
   } else if (u.hostname === "fonts.googleapis.com" || u.hostname === "fonts.gstatic.com") {
     e.respondWith(font(req, u));
   } else if (u.hostname === "translate.google.com") {
     e.respondWith(caches.open(TTS).then(async c => {
       const hit = await c.match(req.url); if (hit) return hit;
-      const r = await fetch(req.url, { mode: "no-cors" }); c.put(req.url, r.clone()); return r;
+      try { const r = await fetch(req.url, { mode: "no-cors" }); if (r.ok || r.type === "opaque") c.put(req.url, r.clone()).catch(() => {}); return r; } catch (err) { return Response.error(); }
     }));
   }
 });

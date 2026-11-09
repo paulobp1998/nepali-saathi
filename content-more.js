@@ -72,7 +72,7 @@ C.units.push(
       "Saturday (<b>shanibaar</b>) is the weekly day off in Nepal, not Sunday."
     ],
     phrases: [
-      { id: "ro1", ne: "म बिहान छ बजे उठ्छु।", ro: "ma bihaana chha baje uthchhu.", en: "I get up at six in the morning." },
+      { id: "ro1", ne: "म बिहान छ बजे उठ्छु।", ro: "ma bihaan chha baje uthchhu.", en: "I get up at six in the morning." },
       { id: "ro2", ne: "म नुहाउँछु।", ro: "ma nuhaaunchhu.", en: "I have a wash / shower." },
       { id: "ro3", ne: "म नौ बजे काममा जान्छु।", ro: "ma nau baje kaammaa jaanchhu.", en: "I go to work at nine." },
       { id: "ro4", ne: "दिउँसो म खाजा खान्छु।", ro: "diunso ma khaajaa khaanchhu.", en: "In the afternoon I have a snack." },
@@ -416,7 +416,7 @@ C.dialogues.push(
 C.stories = [
   { id: "s1", level: "A2", title: "Sita's day", intro: "Listen to a day in a teacher's life. Note: verbs for women end in -chhin.",
     lines: [
-      { ne: "सीता बिहान पाँच बजे उठ्छिन्।", ro: "sitaa bihaana paanch baje uthchhin.", en: "Sita gets up at five in the morning." },
+      { ne: "सीता बिहान पाँच बजे उठ्छिन्।", ro: "sitaa bihaan paanch baje uthchhin.", en: "Sita gets up at five in the morning." },
       { ne: "पहिले उनी चिया बनाउँछिन्।", ro: "pahile uni chiyaa banaaunchhin.", en: "First she makes tea." },
       { ne: "त्यसपछि उनी मन्दिर जान्छिन्।", ro: "tyaspachhi uni mandir jaanchhin.", en: "Then she goes to the temple." },
       { ne: "नौ बजे उनी स्कुलमा पढाउन जान्छिन्।", ro: "nau baje uni skulmaa padhaauna jaanchhin.", en: "At nine she goes to teach at school." },
@@ -433,7 +433,7 @@ C.stories = [
       { ne: "गएको हप्ता म पोखरा गएँ।", ro: "gaeko haptaa ma pokharaa gaen.", en: "Last week I went to Pokhara." },
       { ne: "काठमाडौंबाट बसमा सात घण्टा लाग्यो।", ro: "kaathmaadaunbaata basmaa saat ghantaa laagyo.", en: "By bus from Kathmandu it took seven hours." },
       { ne: "बाटोमा धेरै पानी पर्‍यो।", ro: "baatomaa dherai paani paryo.", en: "It rained a lot on the way." },
-      { ne: "तर भोलिपल्ट बिहान घाम लाग्यो।", ro: "tara bholipalta bihaana ghaam laagyo.", en: "But the next morning it was sunny." },
+      { ne: "तर भोलिपल्ट बिहान घाम लाग्यो।", ro: "tara bholipalta bihaan ghaam laagyo.", en: "But the next morning it was sunny." },
       { ne: "तालबाट माछापुच्छ्रे हिमाल सफा देखियो।", ro: "taalbaata maachhaapuchhre himaal saphaa dekhiyo.", en: "From the lake, Machhapuchhre mountain was clearly visible." },
       { ne: "म डुङ्गा चढेँ, अनि मैले धेरै फोटो खिचेँ।", ro: "ma dungaa chadhen, ani maile dherai photo khichen.", en: "I went on a boat, and I took lots of photos." },
       { ne: "अर्को वर्ष म फेरि जानेछु।", ro: "arko barsha ma pheri jaanechhu.", en: "Next year I will go again." }

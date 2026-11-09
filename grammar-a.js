@@ -73,7 +73,7 @@ C.grammar.push(
       ["<b>didi</b>", "older sister", "any woman a bit older than you"],
       ["<b>bhaai</b>", "younger brother", "a younger man or boy"],
       ["<b>bahini</b>", "younger sister", "a younger woman or girl"],
-      ["<b>aamaa</b> / <b>buwaa</b>", "mother / father", "elderly women / men (also <b>aamaa</b> for an older shopkeeper)"],
+      ["<b>aamaa</b> / <b>bubaa</b>", "mother / father", "elderly women / men (also <b>aamaa</b> for an older shopkeeper)"],
       ["<b>saathi</b>", "friend", "a friend your age"]
     ] } },
     { ex: [
@@ -150,7 +150,7 @@ C.grammar.push(
       ["<b>-laai</b>", "to, for (a person); marks people as objects", "aamaalaai (to Mum)"],
       ["<b>-ko</b>", "of, ’s", "Raamko ghar (Ram's house)"],
       ["<b>-le</b>", "who does the action (past tense); with (a tool)", "maile (I, as doer), haatle (by hand)"],
-      ["<b>-dekhi</b>", "since, from (time or place)", "bihaanadekhi (since morning)"],
+      ["<b>-dekhi</b>", "since, from (time or place)", "bihaandekhi (since morning)"],
       ["<b>-samma</b>", "until, up to", "saanjhasamma (until evening)"],
       ["<b>-tira</b>", "towards, around", "pasaltira (towards the shop)"],
       ["<b>-ko laagi</b>", "for", "tapaainko laagi (for you)"],
@@ -158,7 +158,7 @@ C.grammar.push(
     ] } },
     { ex: [
       { ne: "म पोर्चुगलबाट आएँ।", ro: "ma porchugalbaata aaen.", en: "I came from Portugal." },
-      { ne: "बिहानदेखि साँझसम्म काम गर्छु।", ro: "bihaanadekhi saanjhasamma kaam garchhu.", en: "I work from morning until evening." },
+      { ne: "बिहानदेखि साँझसम्म काम गर्छु।", ro: "bihaandekhi saanjhasamma kaam garchhu.", en: "I work from morning until evening." },
       { ne: "म साथीसँग खाना खान्छु।", ro: "ma saathisanga khaanaa khaanchhu.", en: "I eat with a friend." },
       { ne: "यो उपहार तपाईंको लागि हो।", ro: "yo upahaar tapaainko laagi ho.", en: "This present is for you." }
     ] },
@@ -208,7 +208,7 @@ C.grammar.push(
     { table: { head: ["Form", "Use before", "Example"], rows: [
       ["<b>-ko</b> / mero", "a masculine or neutral singular noun", "<b>mero</b> bhaai (my younger brother), <b>mero</b> ghar"],
       ["<b>-ki</b> / meri", "a feminine singular noun", "<b>meri</b> aamaa (my mother), <b>meri</b> bahini"],
-      ["<b>-kaa</b> / meraa", "a plural noun, or someone you respect", "<b>meraa</b> saathiharu (my friends), <b>meraa</b> buwaa"]
+      ["<b>-kaa</b> / meraa", "a plural noun, or someone you respect", "<b>meraa</b> saathiharu (my friends), <b>meraa</b> bubaa"]
     ] } },
     { warn: "In everyday speech many Nepalis just use <b>-ko</b> / <b>mero</b> for everything. You'll be understood either way, but <b>meri aamaa</b> and <b>meraa saathiharu</b> sound educated and correct." },
     { h: "Number and the verb" },

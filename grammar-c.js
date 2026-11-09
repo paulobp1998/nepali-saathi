@@ -76,7 +76,7 @@ C.grammar.push(
     ] },
     { ex: [
       { ne: "प्रधानमन्त्रीले भोलि पत्रकार सम्मेलन गर्ने बताइएको छ।", ro: "pradhaanmantrile bholi patrakaar sammelan garne bataaieko chha.", en: "It is reported that the Prime Minister will hold a press conference tomorrow." },
-      { ne: "कार्यक्रम बिहान दस बजे सुरु हुनेछ।", ro: "kaaryakram bihaana das baje suru hunechha.", en: "The programme will begin at 10 a.m." },
+      { ne: "कार्यक्रम बिहान दस बजे सुरु हुनेछ।", ro: "kaaryakram bihaan das baje suru hunechha.", en: "The programme will begin at 10 a.m." },
       { ne: "तपाईंको सहयोगका लागि हार्दिक धन्यवाद।", ro: "tapaainko sahayogkaa laagi haardik dhanyabaad.", en: "Heartfelt thanks for your help." }
     ] },
     { h: "Writing a formal message" },
@@ -183,7 +183,7 @@ C.grammar.push(
       ["<b>Question word doubled</b>", "asks for a list", "<b>ke-ke</b> kinnubhayo? (what all did you buy?), <b>ko-ko</b> aae? (who all came?), <b>kahaan-kahaan</b> ghumnubhayo?"],
       ["<b>Noun doubled</b>", "each, every, distributive", "<b>ghar-ghar</b>maa (in every house), <b>gaaun-gaaun</b>maa"],
       ["<b>Adverb / adjective doubled</b>", "intensity, gradualness", "<b>bistaarai-bistaarai</b> (little by little), <b>saanaa-saanaa</b> (tiny), <b>chhito-chhito</b> (quickly, quickly)"],
-      ["<b>Pair of related words</b>", "a whole category", "<b>daal-bhaat</b> (a meal), <b>aamaa-buwaa</b> (parents), <b>daaju-bhaai</b> (brothers; men of a community)"]
+      ["<b>Pair of related words</b>", "a whole category", "<b>daal-bhaat</b> (a meal), <b>aamaa-bubaa</b> (parents), <b>daaju-bhaai</b> (brothers; men of a community)"]
     ] } },
     { ex: [
       { ne: "आउनुस्, चिया-सिया खाऔँ।", ro: "aaunus, chiyaa-siyaa khaaaun.", en: "Come, let's have some tea or something." },

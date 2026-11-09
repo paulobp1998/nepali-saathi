@@ -22,7 +22,10 @@ function load() {
   try { const j = JSON.parse(localStorage.getItem(KEY)); if (j) return merge(j); } catch (e) {}
   return JSON.parse(JSON.stringify(DEF));
 }
-function merge(j) { const d = JSON.parse(JSON.stringify(DEF)); return { ...d, ...j, settings: { ...d.settings, ...(j.settings || {}) } }; }
+const okMine = p => p && typeof p === "object" && /^[\w-]{1,60}$/.test(p.id) && ["ne", "ro", "en"].every(k => typeof p[k] === "string");
+function merge(j) { const d = JSON.parse(JSON.stringify(DEF)); const o = { ...d, ...j, settings: { ...d.settings, ...(j.settings || {}) } }; o.mine = (Array.isArray(o.mine) ? o.mine : []).filter(okMine); return o; }
+// Replace the state's contents but keep the S and S.settings objects, so views holding a reference never write to a stale copy.
+function adopt(n) { const st = S.settings; Object.keys(st).forEach(k => delete st[k]); Object.assign(st, n.settings); Object.keys(S).forEach(k => delete S[k]); Object.assign(S, n, { settings: st }); }
 let syncSoon = () => {};
 function store() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
 function save() { S.at = Date.now(); store(); syncSoon(); }
@@ -721,7 +724,7 @@ VIEWS.mine = () => {
       <p class="muted" style="font-size:.85rem">Needs the internet to convert and to play the first time. Converting from English letters can guess wrong, so listen and check before saving.</p>
     </section>
     <section><h2>${S.mine.length} saved</h2>${S.mine.length ? `<div class="row"><button class="btn small" data-go="review">Review them</button><button class="btn small" data-go="drill">Use in the drill</button></div>` : ""}
-      <div class="list">${S.mine.slice().reverse().map(p => `<div class="li"><button class="play-dot" data-say="${esc(p.ne)}" aria-label="Play">${I.speaker}</button><span><span class="ro">${esc(p.ro)}</span><br><span class="en">${esc(p.en)}</span></span><button class="btn small ghost" data-del="${p.id}">Delete</button></div>`).join("")}</div></section>`;
+      <div class="list">${S.mine.slice().reverse().map(p => `<div class="li"><button class="play-dot" data-say="${esc(p.ne)}" aria-label="Play">${I.speaker}</button><span><span class="ro">${esc(p.ro)}</span><br><span class="en">${esc(p.en)}</span></span><button class="btn small ghost" data-del="${esc(p.id)}">Delete</button></div>`).join("")}</div></section>`;
     const $ = x => document.getElementById(x);
     $("conv").onclick = async () => {
       const ro = $("mro").value.trim(); if (!ro) return $("mro").focus();
@@ -1410,7 +1413,7 @@ const Remind = {
     clearTimeout(this.timer);
     const r = this.cfg(); if (!r.on || !this.ok || Notification.permission !== "granted") return;
     const [h, m] = r.time.split(":").map(Number), at = new Date(); at.setHours(h, m, 0, 0);
-    const wait = at - Date.now(); if (wait <= 0 || wait > 864e5) return;
+    let wait = at - Date.now(); if (wait <= 0) wait += 864e5; // past today's time: arm for tomorrow
     this.timer = setTimeout(() => { if (!S.xp[day()] && S.remindShown !== day()) { S.remindShown = day(); save(); this.show(); this.sync(); } }, wait);
   },
   async reg() {
@@ -1652,8 +1655,8 @@ const Sync = {
       let remote = null; try { remote = JSON.parse(txt); } catch (e) {}
       let changed = false;
       if (remote && remote.srs) {
-        const before = JSON.stringify(S); S = combine(S, remote);
-        if (JSON.stringify(S) !== before) { store(); indexAll(); changed = true; }
+        const next = combine(S, remote);
+        if (JSON.stringify(next) !== JSON.stringify(S)) { adopt(next); store(); indexAll(); changed = true; }
       }
       const out = pack(S);
       if (!remote || canon(out) !== canon(remote)) await this.api("/gists/" + c.gist, { method: "PATCH", body: JSON.stringify({ files: { [GFILE]: { content: JSON.stringify(out) } } }) });
