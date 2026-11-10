@@ -22,7 +22,9 @@ function load() {
   try { const j = JSON.parse(localStorage.getItem(KEY)); if (j) return merge(j); } catch (e) {}
   return JSON.parse(JSON.stringify(DEF));
 }
-const okMine = p => p && typeof p === "object" && /^[\w-]{1,60}$/.test(p.id) && ["ne", "ro", "en"].every(k => typeof p[k] === "string");
+// A function declaration on purpose: load() runs above, before a const here would exist, and the error
+// would be swallowed by load()'s try/catch and silently start the app with empty progress.
+function okMine(p) { return !!p && typeof p === "object" && /^[\w-]{1,60}$/.test(p.id) && ["ne", "ro", "en"].every(k => typeof p[k] === "string"); }
 function merge(j) { const d = JSON.parse(JSON.stringify(DEF)); const o = { ...d, ...j, settings: { ...d.settings, ...(j.settings || {}) } }; o.mine = (Array.isArray(o.mine) ? o.mine : []).filter(okMine); return o; }
 // Replace the state's contents but keep the S and S.settings objects, so views holding a reference never write to a stale copy.
 function adopt(n) { const st = S.settings; Object.keys(st).forEach(k => delete st[k]); Object.assign(st, n.settings); Object.keys(S).forEach(k => delete S[k]); Object.assign(S, n, { settings: st }); }
