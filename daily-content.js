@@ -10,7 +10,10 @@ C.gplan = {
   move: ["post"], fam: ["poss"], time: ["pres"], feel: ["adj"], verbs: ["must"],
   past: ["past", "erg"], future: ["fut"], weather: ["was"], routine: ["cont", "habit"], describe: [], phone: ["era"],
   hobby: [], clinic: ["perf"], culture: ["wish"], compare: ["compare"],
-  opinion: ["report"], tell: ["when"], work: ["conn"], health: ["rel"], solve: ["neg"], ifthen: ["if"], emotion: ["particles"], news: ["guess"]
+  opinion: ["report"], tell: ["when"], work: ["conn"], health: ["rel"], solve: ["neg"], ifthen: ["if"], emotion: ["particles"], news: ["guess"],
+  b2favour: ["compound"], b2service: ["caus"], b2rules: ["pass"], b2feel: ["workhorse"], b2respect: ["honor"], b2ideas: ["noun"],
+  c1casual: ["spoken"], c1formal: ["formal"], c1idiom: ["idiom"], c1precise: ["words"],
+  c2echo: ["echo"], c2nuance: ["nuance"], c2proverb: ["proverb"]
 };
 
 // Word-by-word help. Keys are romanized words as the course writes them.

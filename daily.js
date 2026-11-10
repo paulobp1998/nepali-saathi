@@ -7,7 +7,7 @@ const { C, VIEWS, HOOKS, esc, I, shuffle, Voice, Mic, Sfx } = A;
 const $ = id => document.getElementById(id);
 const toks = ro => ro.replace(/[.?!,;:“”"]/g, "").trim().split(/\s+/).filter(Boolean);
 const seed = t => { let h = 7; for (const ch of t) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return h; };
-const SIZES = { short: { n: 3, r: 6, g: 1, label: "Short" }, normal: { n: 4, r: 10, g: 1, label: "Normal" }, long: { n: 6, r: 16, g: 2, label: "Long" } };
+const SIZES = { short: { n: 3, r: 6, g: 1, w: 1, label: "Short" }, normal: { n: 4, r: 10, g: 1, w: 2, label: "Normal" }, long: { n: 6, r: 16, g: 2, w: 4, label: "Long" } };
 const size = () => SIZES[A.S.settings.size] || SIZES.normal;
 
 /* ---------- course position ---------- */
@@ -71,6 +71,11 @@ function plan() {
     strong.forEach(p => learn.push({ t: "echo", id: p.id, m: "speak" }));
     const rps = C.roleplays || []; if (rps.length) learn.push({ t: "rp", id: rps[seed(A.day()) % rps.length].id });
   }
+  // Vocabulary top-up: a few words from the packs of lessons whose phrases have all been met.
+  const words = (C.packs || []).filter(k => { const pu = A.UNIT[k.unit]; return pu && pu.phrases.every(p => S.srs[p.id]); })
+    .flatMap(k => k.words).filter(p => !S.srs[p.id]).slice(0, sz.w);
+  words.forEach((p, k) => { learn.push({ t: "new", id: p.id }); if (k) learn.push({ t: "echo", id: words[k - 1].id, m: "heard" }); });
+  if (words.length) learn.push({ t: "echo", id: words[words.length - 1].id, m: "speak" });
   const out = rev.splice(0, 3);
   learn.forEach((st, k) => { out.push(st); if (k % 3 === 2 && rev.length) out.push(...rev.splice(0, 2)); });
   out.push(...rev, { t: "end" });
@@ -143,10 +148,10 @@ function tipFor(u, idx) {
 R.new = (st, done) => {
   const p = A.BY_ID[st.id]; if (!p) return done();
   const u = A.UNIT[p.unit] || { title: "", phrases: [p], tips: [] }, idx = u.phrases.indexOf(p);
-  const tip = tipFor(u, idx);
+  const pk = p.pack && A.PACK[p.pack], tip = pk ? null : tipFor(u, idx);
   A.$app.innerHTML = `${top()}
   <div class="stage">
-    <p class="q">New phrase · ${esc(u.title)}</p>
+    <p class="q">${pk ? "New word · " + esc(pk.title) : "New phrase · " + esc(u.title)}</p>
     <button class="hear" id="play" aria-label="Play">${I.speaker}</button>
     <p class="big-ro">${esc(p.ro)}</p>${A.ne(p)}
     <p class="big-en">${esc(p.en)}</p>
@@ -450,8 +455,9 @@ HOOKS.home = () => {
   const T = today(), st = T.steps, cnt = t => st.filter(s => s.t === t).length, u = curUnit();
   const gram = [...new Set(st.filter(s => s.t === "gram").map(s => s.g))].map(id => A.GRAM[id]).filter(Boolean);
   const rps = st.filter(s => s.t === "rp").map(s => getRP(s.id)).filter(Boolean);
+  const nWords = st.filter(s => s.t === "new" && (A.BY_ID[s.id] || {}).pack).length;
   const mins = Math.max(3, Math.round(st.reduce((a, s) => a + ({ rev: 0.4, echo: 0.5, new: 0.8, gram: 2, gq: 0.5, order: 0.8, rp: 3, fact: 0.3 }[s.t] || 0), 0)));
-  const mix = [cnt("rev") && `${cnt("rev")} reviews`, cnt("new") && `${cnt("new")} new phrases`, ...gram.map(g => "Grammar: " + g.title.replace(/<[^>]+>/g, "")),
+  const mix = [cnt("rev") && `${cnt("rev")} reviews`, cnt("new") - nWords && `${cnt("new") - nWords} new phrases`, nWords && `${nWords} new word${nWords > 1 ? "s" : ""}`, ...gram.map(g => "Grammar: " + g.title.replace(/<[^>]+>/g, "")),
     cnt("echo") && "Speaking from English", cnt("order") && "Word order", ...rps.map(r => "Role-play: " + r.title), cnt("fact") && "Culture moment", cnt("unit") && "Unit finish"].filter((x, i, all) => x && all.indexOf(x) === i);
   const sz = A.S.settings.size || "normal", mk = monthKey();
   return `<section class="daily-card ${T.done ? "ok" : ""}">

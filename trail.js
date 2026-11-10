@@ -5,7 +5,10 @@ C.regions = [
   { level: "A1", name: "Kathmandu Valley to Pokhara", blurb: "Temples, bazaars and lakes. Learn to survive in Nepali." },
   { level: "A2", name: "The Annapurna Circuit", blurb: "Over the Thorong La pass at 5,416 m. Learn to handle everyday life." },
   { level: "B1", name: "The Everest trail", blurb: "From Lukla's tiny airstrip to Everest Base Camp. Learn to talk about anything familiar." },
-  { level: "B2+", name: "Sagarmatha, 8,849 m", blurb: "Beyond base camp the climb is real-world Nepali: podcasts, films, friends. Log your hours on Your path." }
+  { level: "B2", name: "The Langtang valley", blurb: "North of Kathmandu, up to glaciers and a sacred lake. Learn to speak with ease and colour." },
+  { level: "C1", name: "Upper Mustang", blurb: "The walled kingdom of Lo, behind the Himalaya. Learn to sound natural, whether formal or casual." },
+  { level: "C2", name: "Sagarmatha, 8,849 m", blurb: "From the Western Cwm to the top of the world. Learn the fine shades that only natives notice." },
+  { level: "B2+", name: "Real-world Nepali", blurb: "Lessons get you up the mountain; living the language keeps you there. Podcasts, films, friends: log your hours on Your path." }
 ];
 C.trail = {
   greet:   { place: "Thamel", alt: 1400, fact: "Kathmandu's busy traveller quarter: trekking shops, prayer flags and momo stalls on every corner." },
@@ -36,7 +39,20 @@ C.trail = {
   solve:   { place: "Dingboche", alt: 4410, fact: "Stone-walled fields of barley and potatoes, high above the tree line." },
   ifthen:  { place: "Lobuche", alt: 4940, fact: "Just past the climbers' memorials at Thukla Pass." },
   emotion: { place: "Gorak Shep", alt: 5164, fact: "The last lodges before base camp, on a sandy old lakebed." },
-  news:    { place: "Everest Base Camp", alt: 5364, fact: "You made it. In Nepali, Everest is Sagarmatha: \"forehead of the sky\"." }
+  news:    { place: "Everest Base Camp", alt: 5364, fact: "You made it. In Nepali, Everest is Sagarmatha: \"forehead of the sky\"." },
+  b2favour:  { place: "Syabrubesi", alt: 1503, fact: "The trailhead of the Langtang trek, a long bus ride north of Kathmandu." },
+  b2service: { place: "Lama Hotel", alt: 2480, fact: "Not one hotel but a cluster of lodges in thick forest beside the Langtang river." },
+  b2rules:   { place: "Langtang village", alt: 3430, fact: "Buried by an avalanche in the 2015 earthquake and since rebuilt nearby." },
+  b2feel:    { place: "Kyanjin Gompa", alt: 3870, fact: "An old monastery and a small cheese factory, set up with Swiss help in the 1950s." },
+  b2respect: { place: "Kyanjin Ri", alt: 4773, fact: "A steep viewpoint above Kyanjin, face to face with Langtang Lirung and its glaciers." },
+  b2ideas:   { place: "Gosaikunda", alt: 4380, fact: "A sacred lake that draws thousands of pilgrims at the August full moon, Janai Purnima." },
+  c1casual:  { place: "Chele", alt: 3050, fact: "One of the first villages of Upper Mustang, perched above the Kali Gandaki gorge." },
+  c1formal:  { place: "Ghami", alt: 3520, fact: "Known for one of the longest mani walls in Nepal." },
+  c1idiom:   { place: "Tsarang", alt: 3560, fact: "Its red monastery and old palace stand above fields of barley and buckwheat." },
+  c1precise: { place: "Lo Manthang", alt: 3810, fact: "The walled capital of the former kingdom of Lo, opened to foreign visitors only in 1992." },
+  c2echo:    { place: "Camp 2", alt: 6400, fact: "Advanced base camp in the Western Cwm, a silent valley of ice above the Khumbu Icefall." },
+  c2nuance:  { place: "South Col", alt: 7906, fact: "The last camp, on a windswept saddle between Everest and Lhotse." },
+  c2proverb: { place: "The summit", alt: 8849, fact: "Sagarmatha. In 2020 Nepal and China jointly announced its height: 8,848.86 m." }
 };
 
 // Habre the red panda (habre is Nepali for red panda) cheers you on in Nepali.

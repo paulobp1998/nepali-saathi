@@ -1,7 +1,8 @@
 (() => {
 "use strict";
 const C = window.COURSE;
-const LEVELS = ["A1", "A2", "B1"];
+const LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
+const PACK = Object.fromEntries((C.packs || []).map(k => [k.id, k])); // word packs: extra vocabulary tied to a lesson (vocab.js)
 const DLG = Object.fromEntries(C.dialogues.map(d => [d.id, d]));
 const STORY = Object.fromEntries((C.stories || []).map(s => [s.id, s]));
 const $app = document.getElementById("app");
@@ -14,6 +15,8 @@ let ALL = [], BY_ID = {}, UNIT = {};
 function indexAll() {
   ALL = []; BY_ID = {}; UNIT = {};
   C.units.forEach(u => { UNIT[u.id] = u; u.phrases.forEach(p => { p.unit = u.id; ALL.push(p); BY_ID[p.id] = p; }); });
+  // Pack words join the reviews and quizzes but not the lesson's flags, so they never hold up the trail.
+  (C.packs || []).forEach(k => k.words.forEach(p => { p.unit = k.unit; p.pack = k.id; ALL.push(p); BY_ID[p.id] = p; }));
   UNIT.mine = { id: "mine", level: "Mine", title: "My phrases", sub: "Phrases you added", tips: [], phrases: S.mine };
   S.mine.forEach(p => { p.unit = "mine"; p.own = true; ALL.push(p); BY_ID[p.id] = p; });
 }
@@ -467,7 +470,7 @@ function checkBadges() {
   });
 }
 function phraseOfDay() {
-  const pool = C.units.filter(u => u.level !== "B1").flatMap(u => u.phrases).filter(p => p.ro.length > 8);
+  const pool = C.units.filter(u => u.level === "A1" || u.level === "A2").flatMap(u => u.phrases).filter(p => p.ro.length > 8);
   let h = 0; for (const ch of day()) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
   return pool[h % pool.length];
 }
@@ -563,8 +566,8 @@ function trailHTML() {
   return C.regions.map(rg => {
     if (rg.level === "B2+") {
       const h = immHours(), pct = Math.min(100, Math.round(h / IMM_GOALS.C2 * 100));
-      return `<section class="region"><div class="region-head">${mountains()}<div><p class="eyebrow">B2 → C2</p><h2>${esc(rg.name)}</h2><p class="muted">${esc(rg.blurb)}</p></div></div>
-        <div class="trail"><button class="stop ${cur ? "ahead" : "current"}" data-go="path"><span class="pin">${cur ? I.peak : habre("happy", 40)}</span><span class="stop-body"><span class="place">The summit</span> <span class="alt">8,849 m</span><br><span class="lesson">${h.toFixed(1)} of ${IMM_GOALS.C2} hours of real-world Nepali · ${pct}%</span></span><span></span></button></div></section>`;
+      return `<section class="region"><div class="region-head">${mountains()}<div><p class="eyebrow">Alongside B2 → C2</p><h2>${esc(rg.name)}</h2><p class="muted">${esc(rg.blurb)}</p></div></div>
+        <div class="trail"><button class="stop ${cur ? "ahead" : "current"}" data-go="path"><span class="pin">${cur ? I.peak : habre("happy", 40)}</span><span class="stop-body"><span class="place">Hours of real Nepali</span><br><span class="lesson">${h.toFixed(1)} of ${IMM_GOALS.C2} hours of real-world Nepali · ${pct}%</span></span><span></span></button></div></section>`;
     }
     const us = C.units.filter(u => u.level === rg.level), lv = C.levels.find(l => l.id === rg.level);
     const dl = C.dialogues.filter(dd => (UNIT[dd.unit] || {}).level === rg.level), sts = (C.stories || []).filter(s => s.level === rg.level);
@@ -622,14 +625,10 @@ VIEWS.badges = () => {
 const IMM_GOALS = { B2: 300, C1: 800, C2: 1500 };
 const immHours = () => Object.values(S.imm).reduce((a, b) => a + b, 0) / 60;
 function levelDone(lv) { const us = C.units.filter(u => u.level === lv); return us.length && us.every(u => S.done[u.id + ":speak"] && unitFlags(u)[3]); }
-function levelNow() {
-  let cur = "A1";
-  for (const lv of LEVELS) { if (levelDone(lv)) cur = LEVELS[LEVELS.indexOf(lv) + 1] || "B2"; else return cur; }
-  const h = immHours(); if (h >= IMM_GOALS.C1) return "C2"; if (h >= IMM_GOALS.B2) return "C1"; return "B2";
-}
+function levelNow() { for (const lv of LEVELS) if (!levelDone(lv)) return lv; return "C2"; }
 function levelPct(lv) {
-  if (LEVELS.includes(lv)) { const us = C.units.filter(u => u.level === lv); const f = us.flatMap(u => unitFlags(u)); return f.filter(Boolean).length / f.length; }
-  const prev = { B2: 0, C1: IMM_GOALS.B2, C2: IMM_GOALS.C1 }[lv]; return Math.max(0, Math.min(1, (immHours() - prev) / (IMM_GOALS[lv] - prev)));
+  const us = C.units.filter(u => u.level === lv), f = us.flatMap(u => unitFlags(u));
+  return f.length ? f.filter(Boolean).length / f.length : 0;
 }
 
 VIEWS.path = () => {
@@ -637,14 +636,14 @@ VIEWS.path = () => {
   $app.innerHTML = `
   ${backBtn("home", "Home")}
   <section><p class="eyebrow">A1 → C2</p><h1>Your path to fluency</h1>
-    <p class="muted">The app takes you through A1, A2 and B1 with structured lessons. Beyond B1, progress comes from real Nepali: native audio, conversations, and reading. Log that time here so you can see it add up.</p></section>
+    <p class="muted">Lessons run all the way from A1 to C2. From B2 on they are only half of it: the other half is real Nepali (native audio, conversations, reading). Log that time here so you can see it add up.</p></section>
   <section class="list" style="border-top:0;gap:10px">${C.levels.map(l => {
     const pct = Math.round(levelPct(l.id) * 100), here = l.id === cur;
     return `<div class="tips" style="${here ? "border-color:var(--accent)" : ""}">
       <div class="row split"><h3>${esc(l.name)}</h3><span class="chip">${here ? "You are here · " : ""}${pct}%</span></div>
       <p class="muted">${esc(l.can)}</p>
       <div class="progress"><i style="width:${pct}%"></i></div>
-      <p class="muted" style="font-size:.85rem">${LEVELS.includes(l.id) ? "Earn all five flags on every " + l.id + " lesson to complete it." : "Goal: " + IMM_GOALS[l.id] + " hours of real-world Nepali in total (a rough guide, not a rule)."}</p>
+      <p class="muted" style="font-size:.85rem">Earn all five flags on every ${l.id} lesson to complete it.${IMM_GOALS[l.id] ? " Alongside the lessons, aim for about " + IMM_GOALS[l.id] + " hours of real-world Nepali in total (a rough guide, not a rule)." : ""}</p>
       ${(() => { const gs = (C.grammar || []).filter(g => g.level === l.id); return gs.length ? `<button class="btn small ghost" data-go="grammar" style="justify-self:start">Grammar: ${gs.filter(g => gramPassed(g.id)).length} of ${gs.length} ${esc(l.id)} chapters passed</button>` : ""; })()}
     </div>`; }).join("")}</section>
   <section class="tips">
@@ -762,8 +761,22 @@ VIEWS.unit = id => {
   <section class="tips"><h3>How it works</h3><ul>${u.tips.map(t => `<li>${t}</li>`).join("")}</ul></section>
   ${(() => { const L = (C.unitLinks || {})[id]; if (!L) return ""; const c = (C.culture || []).find(x => x.id === L.c), g = (C.grammar || []).find(x => x.id === L.g); return `<section><h2>Go deeper</h2><div class="cards">${c ? `<button class="card fact-card" data-go="cult-${c.id}">${(C.art || {})[c.art] ? `<span class="artbox thumb">${C.art[c.art]}</span>` : ""}<span class="k">Culture corner</span><h3>${esc(c.title)}</h3><span class="muted small">${esc(c.sub)}</span></button>` : ""}${g ? `<button class="card" data-go="gram-${g.id}"><span class="k">Grammar for this lesson · ${esc(g.level)}</span><h3>${esc(g.title)}</h3><span class="muted small">${esc(g.sub)}</span></button>` : ""}</div></section>`; })()}
   ${dl.length ? `<section><h2>Conversations</h2><div class="list">${dl.map(d => `<button class="li" data-go="dialogue-${d.id}"><span class="play-dot">${I.play}</span><span><span class="ro">${esc(d.title)}</span><br><span class="en">${esc(d.scene)}</span></span>${S.dlg[d.id] ? '<span class="tick">Done</span>' : "<span></span>"}</button>`).join("")}</div></section>` : ""}
+  ${(() => { const pk = (C.packs || []).filter(k => k.unit === id); return pk.length ? `<section><h2>Word packs</h2><p class="muted">Extra words for this topic. Once you've met the lesson's phrases they also arrive a few at a time in your daily session.</p>${pk.map(k => `
+    <details class="explore"><summary>${esc(k.title)} · ${k.words.filter(p => S.srs[p.id]).length} of ${k.words.length} met</summary><div class="list">${k.words.map(p => `
+      <button class="li" data-say="${esc(p.ne)}"><span class="play-dot">${I.speaker}</span><span><span class="ro">${esc(p.ro)}</span><br><span class="en">${esc(p.en)}</span></span>${S.settings.script ? `<span class="ne">${esc(p.ne)}</span>` : "<span></span>"}</button>`).join("")}</div>
+      <div class="row" style="margin-top:10px"><button class="btn small" data-go="pack-${k.id}">Quiz these words</button></div></details>`).join("")}</section>` : ""; })()}
   <section><h2>All phrases</h2><div class="list">${u.phrases.map(p => `
     <button class="li" data-say="${esc(p.ne)}"><span class="play-dot">${I.speaker}</span><span><span class="ro">${esc(p.ro)}</span><br><span class="en">${esc(p.en)}</span></span>${S.settings.script ? `<span class="ne">${esc(p.ne)}</span>` : "<span></span>"}</button>`).join("")}</div></section>`;
+};
+
+/* Word pack quiz: hear or read each word and pick its meaning. Afterwards the words join the reviews. */
+VIEWS.pack = id => {
+  const k = PACK[id]; if (!k) return go("home");
+  const items = shuffle(k.words).map((p, i) => ({ p, type: i % 2 ? "heard" : "meaning" }));
+  quiz({ items, pool: k.words.length >= 4 ? k.words : ALL, title: k.title, backTo: "unit-" + k.unit, backLabel: "Lesson", onDone: (r, t) => {
+    k.words.forEach(p => introduce(p.id)); save(); addXP(3);
+    finish(`${r} of ${t} right`, "These words now come back in your reviews.", null, null, `<button class="btn primary" data-go="unit-${k.unit}">Back to the lesson</button>`, r / t >= 0.6);
+  } });
 };
 
 /* Learn: one card at a time, auto-play, shadow with your own recording */
@@ -1696,7 +1709,7 @@ window.__test = { translit, key, score, normDeva, fnv };
 const API = {
   get S() { return S; }, C, $app, save, addXP, track, Voice, Mic, Sfx, celebrate, habre, cheerHTML, esc, shuffle, sleep, toast, I, backBtn, go, score, micError,
   setCleanup: f => { cleanup = f; },
-  VIEWS, HOOKS, quiz, gramBlock, GRAM, UNIT, DLG, grade, introduce, dueList, seenList, day, Rec, header, modal, ne, pick, levelNow, postcard, route, translit, normDeva,
+  VIEWS, HOOKS, quiz, gramBlock, GRAM, UNIT, DLG, PACK, grade, introduce, dueList, seenList, day, Rec, header, modal, ne, pick, levelNow, postcard, route, translit, normDeva,
   get ALL() { return ALL; }, get BY_ID() { return BY_ID; },
   pool(min = 8) { const s = seenList().filter(p => !p.own && p.en.length < 60); return s.length >= min ? s : C.units.slice(0, 3).flatMap(u => u.phrases); }
 };

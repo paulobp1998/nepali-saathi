@@ -14,7 +14,7 @@ read = lambda f: open(os.path.join(ROOT, f), encoding="utf-8").read()
 
 # 1. Phrase ids are unique (progress is stored by id).
 seen = {}
-for f in ["content.js", "content-more.js"]:
+for f in ["content.js", "content-more.js", "vocab.js", "content-adv.js"]:
     for m in re.finditer(r'\{ id: "([^"]+)", ne:', read(f)):
         if m.group(1) in seen:
             errors.append(f"duplicate phrase id {m.group(1)!r} in {f} and {seen[m.group(1)]}")
@@ -34,7 +34,7 @@ if orphans:
     warnings.append(f"{len(orphans)} recordings are no longer used: run python3 tools/fetch_audio.py to remove them")
 
 # 3. Every Nepali text comes with romanization and English; style checks.
-EN_REQUIRED = {"content.js", "content-more.js", "grammar-a.js", "grammar-b.js", "grammar-c.js"}
+EN_REQUIRED = {"content.js", "content-more.js", "vocab.js", "listening.js", "content-adv.js", "grammar-a.js", "grammar-b.js", "grammar-c.js"}
 for f in SOURCES:
     src = read(f)
     for m in re.finditer(r'\bne: "([^"]+)"', src):
@@ -48,7 +48,7 @@ for f in SOURCES:
             warnings.append(f"{f}: romanization {ro.group(1)!r} uses ee/oo; the course writes i/u")
         if f in EN_REQUIRED and not re.search(r'\ben: "', rest):
             errors.append(f"{f}: no English for {ne!r}")
-        if re.search(r"(^|\s)म\s[^।?!]*(छैन|होइन)[।?!]*$", ne):
+        if re.search(r"(^|\s)म\s[^।?!,]*(छैन|होइन)[।?!]*$", ne):
             warnings.append(f"{f}: {ne!r}: with म the negative is written छैनँ / होइनँ")
 
 # 4. Every script on the page exists and is saved for offline use.
