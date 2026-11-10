@@ -25,7 +25,7 @@ Live app: https://paulobp1998.github.io/nepali-saathi/
 ## Adding or fixing content
 1. Edit a content file (`content*.js`, `listening.js`, `vocab.js` or `grammar-*.js`). Give every new phrase a unique `id`.
 2. Run `python3 tools/fetch_audio.py` to download recordings for new phrases.
-3. Run `python3 tools/validate.py`: it checks ids, recordings, romanization and the offline file list. GitHub runs the same check on every push.
+3. Run `python3 tools/validate.py`: it checks ids, recordings, romanization and the offline file list, and starts the app without a browser to make sure saved progress still loads (`tools/smoke.js`). GitHub runs the same check on every push.
 4. Change `V` in `sw.js` (for example `saathi-v10`) so phones pick up the update. Recordings are kept in their own cache, so phones only download the new ones.
 5. Commit and push. GitHub Pages republishes in about a minute.
 

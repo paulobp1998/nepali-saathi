@@ -2,7 +2,8 @@
 """Check the course data before publishing. Run from the app folder:  python3 tools/validate.py
 Errors (exit code 1): duplicate phrase ids, a Nepali text without a recording, audio-list.js out of step
 with audio/, a phrase without romanization or English, a script missing from the page or the offline list,
-a JavaScript syntax error (when node is installed).
+a JavaScript syntax error (when node is installed), the app failing to start or losing saved progress
+(tools/smoke.js, run with node, or with jsc on a Mac without node).
 Warnings (exit code 0): things worth a look, such as "म ... छैन" without the final nasal."""
 import os, re, shutil, subprocess, sys
 
@@ -74,10 +75,20 @@ if node:
         if r.returncode:
             errors.append(f"{f}: syntax error\n{r.stderr.strip()[:400]}")
 
+# 6. The app starts without a browser and keeps saved progress (tools/smoke.js).
+JSC = "/System/Library/Frameworks/JavaScriptCore.framework/Versions/Current/Helpers/jsc"
+smoke = os.path.join(ROOT, "tools", "smoke.js")
+cmd = [node, smoke, ROOT] if node else [JSC, smoke, "--", ROOT] if os.path.exists(JSC) else None
+if cmd:
+    r = subprocess.run(cmd, capture_output=True, text=True)
+    if r.returncode:
+        errors.append("start-up test failed\n" + "\n".join(l for l in (r.stdout + r.stderr).splitlines() if l.startswith("FAIL"))[:1200])
+
 for w in warnings:
     print("warning:", w)
 for e in errors:
     print("ERROR:", e)
 print(f"{len(seen)} phrases, {len(texts)} Nepali texts, {len(disk)} recordings: {len(errors)} errors, {len(warnings)} warnings"
-      + ("" if node else " (JavaScript syntax not checked: node not installed)"))
+      + ("" if node else " (JavaScript syntax not checked: node not installed)")
+      + ("" if cmd else " (start-up test not run: no node or jsc)"))
 sys.exit(1 if errors else 0)
