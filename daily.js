@@ -1,13 +1,13 @@
 // Daily session: one mixed lesson a day. Reviews, new phrases with word-by-word help, grammar in small
-// parts with quick checks, listening, speaking from English, word order, a culture moment and, at the end
-// of each unit, a spoken role-play. Also: role-plays, weekly real-world tasks and the monthly recording.
-// Content lives in daily-content.js. app.js passes its internals in through API (see MODULES there).
+// parts with quick checks, "which word, when?" notes, listening, speaking from English, word order, a culture
+// moment and, at the end of each unit, a spoken role-play. Also: the notes to browse, role-plays, weekly
+// real-world tasks and the monthly recording. Content lives in daily-content.js and usage-*.js. app.js passes its internals in through API (see MODULES there).
 window.MODULES = (window.MODULES || []).concat(function (A) {
 const { C, VIEWS, HOOKS, esc, I, shuffle, Voice, Mic, Sfx } = A;
 const $ = id => document.getElementById(id);
 const toks = ro => ro.replace(/[.?!,;:“”"]/g, "").trim().split(/\s+/).filter(Boolean);
 const seed = t => { let h = 7; for (const ch of t) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return h; };
-const SIZES = { short: { n: 3, r: 6, g: 1, w: 1, label: "Short" }, normal: { n: 4, r: 10, g: 1, w: 2, label: "Normal" }, long: { n: 6, r: 16, g: 2, w: 4, label: "Long" } };
+const SIZES = { short: { n: 3, r: 6, g: 1, w: 1, u: 1, ur: 1, rd: 1, label: "Short" }, normal: { n: 4, r: 10, g: 1, w: 2, u: 1, ur: 2, rd: 2, label: "Normal" }, long: { n: 6, r: 16, g: 2, w: 4, u: 2, ur: 3, rd: 3, label: "Long" } };
 const size = () => SIZES[A.S.settings.size] || SIZES.normal;
 
 /* ---------- course position ---------- */
@@ -41,6 +41,35 @@ function evalChapter(id) {
 const rpFor = u => (C.roleplays || []).find(r => r.unit === u.id);
 const dlgFor = u => C.dialogues.filter(d => d.unit === u.id);
 
+/* ---------- which word, when? (usage-*.js) ---------- */
+const USE = Object.fromEntries((C.usage || []).map(n => [n.id, n]));
+const NOTES = (C.usage || []).filter(n => n.blocks); // notes with their own text; the others point to a grammar chapter
+const flat = ro => " " + ro.toLowerCase().replace(/[^a-z\s-]/g, " ").replace(/\s+/g, " ").trim() + " ";
+const hits = (n, r) => (n.words || []).some(w => w.endsWith("-") ? r.includes(" " + w.slice(0, -1)) : r.includes(" " + w + " "));
+const um = id => { const m = A.S.use || (A.S.use = {}), r = m[id] || (m[id] = {}); r.q = r.q || {}; return r; };
+const met = id => !!((A.S.use || {})[id] || {}).d;
+const meet = id => { const m = um(id); if (!m.d) { m.d = A.day(); m.due = Date.now() + 20 * 36e5; A.save(); } };
+const GAPS = [2, 4, 9, 20, 45, 90]; // days until a note's next question, after each right answer
+// Notes ready to be shown: the current lesson's, once one of their words has come up, then older lessons' (catching up).
+function useQueue(u, fresh) {
+  const order = C.units.map(x => x.id), cur = u ? order.indexOf(u.id) : order.length;
+  const ok = n => !met(n.id) && (!n.need || A.S.settings[n.need]);
+  const now = !u ? [] : NOTES.filter(n => ok(n) && n.unit === u.id).map(n => {
+    const ps = u.phrases.filter(p => hits(n, flat(p.ro)));
+    return { n, p: fresh.find(p => ps.includes(p)), due: !ps.length || ps.some(p => A.S.srs[p.id]) };
+  }).filter(x => x.p || x.due);
+  return [...now.sort((a, b) => !!b.p - !!a.p), ...NOTES.filter(n => ok(n) && order.indexOf(n.unit) < cur).map(n => ({ n }))];
+}
+const useSteps = n => [{ t: "use", id: n.id }, ...[0, 1].filter(i => n.quiz[i]).map(i => ({ t: "uq", id: n.id, q: i }))];
+// One question from each note that is due again: first the ones answered wrong, then the ones not asked yet.
+function useReviews(k) {
+  const now = Date.now();
+  return Object.entries(A.S.use || {}).filter(([id, m]) => USE[id] && USE[id].quiz && m.d && (m.due || 0) <= now).sort((a, b) => (a[1].due || 0) - (b[1].due || 0)).slice(0, k).map(([id, m]) => {
+    const qs = USE[id].quiz.map((q, i) => i), a = m.q || {}, bad = qs.filter(i => a[i] === 0), todo = qs.filter(i => a[i] == null);
+    return { t: "uq", id, q: bad.length ? bad[0] : todo.length ? todo[0] : qs[(m.r || 0) % qs.length], rv: 1 };
+  });
+}
+
 /* ---------- building today's session ---------- */
 function plan() {
   const S = A.S, sz = size(), u = curUnit(), learn = [];
@@ -59,6 +88,10 @@ function plan() {
     const b = fresh.slice(1).concat(fresh[0] || []).find(p => { const n = toks(p.ro).length; return n >= 3 && n <= 9; });
     if (b) learn.splice(Math.ceil(learn.length * 0.6), 0, { t: "order", id: b.id });
     G.forEach(g => learn.push(...g));
+    useQueue(u, fresh).slice(0, sz.u).forEach(x => {
+      const at = x.p ? learn.findIndex(s => s.t === "new" && s.id === x.p.id) : -1;
+      if (at < 0) learn.push(...useSteps(x.n)); else learn.splice(at + 1, 0, ...useSteps(x.n));
+    });
     if (!fresh.length) {
       if (!secs.length) learn.push(...finale(u));
       else learn.push(...shuffle(u.phrases).slice(0, 3).map(p => ({ t: "echo", id: p.id, m: "speak" })));
@@ -67,6 +100,7 @@ function plan() {
     if (c && c.facts && c.facts.length) learn.push({ t: "fact", c: c.id, i: seed(A.day()) % c.facts.length });
   } else {
     gramQueue(beyondChapters()).slice(0, sz.g).forEach(q => learn.push(...gramSteps(q)));
+    useQueue(null, []).slice(0, sz.u).forEach(x => learn.push(...useSteps(x.n)));
     const strong = shuffle(A.seenList().filter(p => (S.srs[p.id] || {}).box >= 3)).slice(0, 4);
     strong.forEach(p => learn.push({ t: "echo", id: p.id, m: "speak" }));
     const rps = C.roleplays || []; if (rps.length) learn.push({ t: "rp", id: rps[seed(A.day()) % rps.length].id });
@@ -76,6 +110,10 @@ function plan() {
     .flatMap(k => k.words).filter(p => !S.srs[p.id]).slice(0, sz.w);
   words.forEach((p, k) => { learn.push({ t: "new", id: p.id }); if (k) learn.push({ t: "echo", id: words[k - 1].id, m: "heard" }); });
   if (words.length) learn.push({ t: "echo", id: words[words.length - 1].id, m: "speak" });
+  learn.splice(Math.min(2, learn.length), 0, ...useReviews(sz.ur));
+  // Reading practice for learners of the script: phrases they know well, shown in Devanagari only.
+  if (S.settings.script || Object.values(S.read || {}).some(x => x && x.pass))
+    shuffle(A.seenList().filter(p => (S.srs[p.id] || {}).box >= 2 && toks(p.ro).length <= 6)).slice(0, sz.rd).forEach(p => learn.push({ t: "read", id: p.id }));
   const out = rev.splice(0, 3);
   learn.forEach((st, k) => { out.push(st); if (k % 3 === 2 && rev.length) out.push(...rev.splice(0, 2)); });
   out.push(...rev, { t: "end" });
@@ -186,10 +224,19 @@ function parse(w) {
   return { w, g: "" };
 }
 const VERBS = new Set(["ho", "hoina", "chha", "chhaina", "chhu", "chhan", "hun", "hunchha", "hunuhunchha", "bhayo", "thiyo", "thiena", "laagyo", "laagchha", "parchha", "chaahiyo", "pugyo", "jaaun", "gaen", "bujhen", "bujhina", "sakchhu", "sakdina"]);
+const WNOTE = new Map();
+function noteOf(w) {
+  const lw = w.toLowerCase();
+  if (!WNOTE.has(lw)) WNOTE.set(lw, ((C.usage || []).find(n => (n.words || []).some(t => !t.includes(" ") && (t.endsWith("-") ? lw.startsWith(t.slice(0, -1)) : lw === t))) || {}).id || null);
+  return WNOTE.get(lw);
+}
 function wordsHTML(p) {
   const ws = toks(p.ro).map(parse); if (ws.length < 2 || ws.filter(x => x.g).length < 2) return "";
-  return `<div class="words" aria-label="Word by word"><p class="eyebrow">Word by word</p><div class="wchips">${ws.map((x, k) =>
-    `<span class="wchip${x.v && k === ws.length - 1 ? " v" : ""}"><b>${x.suf ? `${esc(x.stem)}<i>-${esc(x.suf)}</i>` : esc(x.w)}</b><small>${esc(x.g || "·")}${x.v && k === ws.length - 1 ? " · verb last" : ""}</small></span>`).join("")}</div></div>`;
+  const chip = (x, k) => {
+    const id = noteOf(x.w), in_ = `<b>${x.suf ? `${esc(x.stem)}<i>-${esc(x.suf)}</i>` : esc(x.w)}</b><small>${esc(x.g || "·")}${x.v && k === ws.length - 1 ? " · verb last" : ""}</small>`, cls = `wchip${x.v && k === ws.length - 1 ? " v" : ""}`;
+    return id ? `<button class="${cls} link" data-note="${id}" title="${esc(USE[id].title)}">${in_}</button>` : `<span class="${cls}">${in_}</span>`;
+  };
+  return `<div class="words" aria-label="Word by word"><p class="eyebrow">Word by word</p><div class="wchips">${ws.map(chip).join("")}</div>${ws.some(x => noteOf(x.w)) ? `<p class="muted small wnote-hint">Tap a dashed word: which one, when?</p>` : ""}</div>`;
 }
 function whyHTML(p) {
   const ro = p.ro.toLowerCase(), seen = A.S.pat || (A.S.pat = {});
@@ -237,26 +284,87 @@ R.gram = (st, done) => {
   <div class="row end"><button class="btn primary" id="next">Got it</button></div>`;
   $("next").onclick = () => { const m = gm(g.id); m.s = Math.max(m.s, st.s + 1); A.addXP(1); A.save(); evalChapter(g.id); done(); };
 };
-R.gq = (st, done) => {
-  const g = A.GRAM[st.g], q = g && g.quiz[st.q]; if (!q) return done();
+// One multiple-choice question with its explanation (grammar checks and "which word" questions).
+function ask(q, label, done, record, note) {
   const opts = shuffle([q.a, ...q.o]);
   A.$app.innerHTML = `${top()}
   <div class="stage">
-    <p class="eyebrow">Quick check · ${esc(g.title)}</p>
+    <p class="eyebrow">${esc(label)}</p>
     ${q.say ? `<button class="hear" data-say="${esc(q.say)}" aria-label="Play">${I.speaker}</button>` : ""}
     <h2 class="g-q">${q.q}</h2>
     <div class="opts">${opts.map((o, j) => `<button class="opt${q.deva ? " deva-opt" : ""}" data-j="${j}">${o}</button>`).join("")}</div>
     <div id="gwhy" class="g-why" hidden></div>
   </div>`;
   A.$app.querySelectorAll(".opt").forEach(b => b.onclick = () => {
-    const ok = opts[+b.dataset.j] === q.a, m = gm(g.id), T = A.S.td;
+    const ok = opts[+b.dataset.j] === q.a, T = A.S.td;
     A.$app.querySelectorAll(".opt").forEach(x => { x.disabled = true; if (opts[+x.dataset.j] === q.a) x.classList.add("right"); });
     if (ok) { Sfx.good(1); A.addXP(2); T.ok++; } else { b.classList.add("wrong"); Sfx.bad(); }
-    T.n++; if (m.q[st.q] !== 1) m.q[st.q] = ok ? 1 : 0; A.save();
+    T.n++; record(ok); A.save();
     if (q.after) Voice.say(q.after);
     const w = $("gwhy"); w.hidden = false;
-    w.innerHTML = `<p class="verdict ${ok ? "good" : "bad"}">${ok ? A.pick(["Right!", "Correct!", "Syaabaas!"]) : "Not quite"}</p>${q.why ? `<p>${q.why}</p>` : ""}<button class="btn primary" id="gnext">Next</button>`;
-    $("gnext").onclick = () => { evalChapter(g.id); done(); }; $("gnext").focus();
+    w.innerHTML = `<p class="verdict ${ok ? "good" : "bad"}">${ok ? A.pick(["Right!", "Correct!", "Syaabaas!"]) : "Not quite"}</p>${q.why ? `<p>${q.why}</p>` : ""}${note && !ok ? `<button class="btn small ghost" data-note="${note}">See the note again</button>` : ""}<button class="btn primary" id="gnext">Next</button>`;
+    $("gnext").onclick = done; $("gnext").focus();
+  });
+}
+R.gq = (st, done) => {
+  const g = A.GRAM[st.g], q = g && g.quiz[st.q]; if (!q) return done();
+  ask(q, "Quick check · " + g.title, () => { evalChapter(g.id); done(); }, ok => { const m = gm(g.id); if (m.q[st.q] !== 1) m.q[st.q] = ok ? 1 : 0; });
+};
+
+/* Which word, when? A short note, two of its questions at once, the rest on later days. */
+const noteBody = n => {
+  if (n.blocks) return n.blocks.map(A.gramBlock).join("");
+  const g = A.GRAM[n.gram]; if (!g) return "";
+  const sec = n.sec && sections(g).find(x => x[0].h === n.sec);
+  return (sec || g.blocks).map(A.gramBlock).join("");
+};
+R.use = (st, done) => {
+  const n = USE[st.id]; if (!n || !n.blocks) return done();
+  A.$app.innerHTML = `${top()}
+  <section><p class="eyebrow">Which word, when? · ${esc(n.level)}</p><h1>${esc(n.title)}</h1><p class="muted">${esc(n.sub)}</p></section>
+  <article class="g-body">${noteBody(n)}</article>
+  <div class="row end"><button class="btn primary" id="next">Got it</button></div>`;
+  $("next").onclick = () => { meet(n.id); A.addXP(2); done(); };
+};
+R.uq = (st, done) => {
+  const n = USE[st.id], q = n && n.quiz && n.quiz[st.q]; if (!q) return done();
+  ask(q, (st.rv ? "Which word, when? · " : "Quick check · ") + n.title, done, ok => {
+    const m = um(n.id); m.q[st.q] = ok ? 1 : 0;
+    if (st.rv) { m.r = ok ? (m.r || 0) + 1 : Math.max(0, (m.r || 0) - 1); m.due = Date.now() + (ok ? GAPS[Math.min(m.r, GAPS.length) - 1] : 1) * 864e5 - 4 * 36e5; }
+  }, n.id);
+};
+// The note as a sheet over the current screen (from a word chip or after a wrong answer).
+function noteSheet(id) {
+  const n = USE[id]; if (!n) return;
+  const m = document.createElement("div"); m.className = "modal";
+  m.innerHTML = `<div class="modal-in sheet" role="dialog" aria-modal="true"><p class="eyebrow">Which word, when?</p><h2>${esc(n.title)}</h2><p class="muted">${esc(n.sub)}</p>
+    <article class="g-body">${noteBody(n)}</article><button class="btn primary" data-close>Close</button></div>`;
+  document.body.appendChild(m); m.querySelector("[data-close]").focus();
+  m.addEventListener("click", e => { if (e.target === m || e.target.closest("[data-close]")) m.remove(); });
+}
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-note]"); if (b) { e.preventDefault(); noteSheet(b.dataset.note); } });
+
+/* Read it: a phrase you know, in Devanagari only. Pick how it is said, then hear it. */
+R.read = (st, done) => {
+  const p = A.BY_ID[st.id]; if (!p) return done();
+  const n = toks(p.ro).length, near = shuffle(A.seenList().filter(x => x.ro !== p.ro)).sort((a, b) => Math.abs(toks(a.ro).length - n) - Math.abs(toks(b.ro).length - n)).slice(0, 2);
+  if (near.length < 2) return done();
+  const opts = shuffle([p, ...near]);
+  A.$app.innerHTML = `${top()}
+  <div class="stage">
+    <p class="q">Read it · how is this said?</p>
+    <p class="big-ne read-ne">${esc(p.ne)}</p>
+    <div class="opts">${opts.map((o, j) => `<button class="opt" data-j="${j}">${esc(o.ro.replace(/[.?!]+$/, ""))}</button>`).join("")}</div>
+    <div id="gwhy" class="g-why" hidden></div>
+  </div>`;
+  A.$app.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+    const ok = opts[+b.dataset.j] === p, T = A.S.td;
+    A.$app.querySelectorAll(".opt").forEach(x => { x.disabled = true; if (opts[+x.dataset.j] === p) x.classList.add("right"); });
+    if (ok) { Sfx.good(1); A.addXP(2); T.ok++; } else { b.classList.add("wrong"); Sfx.bad(); }
+    T.n++; A.save(); Voice.say(p.ne);
+    const w = $("gwhy"); w.hidden = false;
+    w.innerHTML = `<p class="verdict ${ok ? "good" : "bad"}">${ok ? A.pick(["Right!", "You read that!", "Syaabaas!"]) : "Not quite"}</p><p class="big-ro">${esc(p.ro)}</p><p>${esc(p.en)}</p><button class="btn primary" id="gnext">Next</button>`;
+    $("gnext").onclick = done; $("gnext").focus();
   });
 };
 
@@ -298,6 +406,56 @@ function wrap() {
 }
 
 VIEWS.today = () => { today(); A.setCleanup(() => { Voice.stop(); Mic.stop(); }); run(); };
+
+/* ---------- which word, when? the notes to browse ---------- */
+const LVL = lv => ((C.levels || []).find(l => l.id === lv) || {}).name || (lv === "Script" ? "Reading the script" : lv);
+function useRow(n) {
+  const m = (A.S.use || {})[n.id] || {}, right = n.quiz ? n.quiz.filter((q, i) => (m.q || {})[i] === 1).length : 0;
+  const state = n.gram ? (passed(n.gram) ? '<span class="tick">Passed</span>' : '<span class="muted small">Grammar</span>') : !m.d ? '<span class="muted small">New</span>' : right === n.quiz.length ? '<span class="tick">Solid</span>' : `<span class="muted small">${right} / ${n.quiz.length}</span>`;
+  return `<button class="li" data-go="word-${n.id}" data-find="${esc((n.title + " " + n.sub + " " + (n.words || []).join(" ")).toLowerCase())}"><span class="play-dot g-num">${n.gram ? "§" : "?"}</span><span><span class="ro">${esc(n.title)}</span><br><span class="en">${esc(n.sub)}</span></span>${state}</button>`;
+}
+VIEWS.which = () => {
+  const all = C.usage || [], nMet = NOTES.filter(n => met(n.id)).length;
+  A.$app.innerHTML = `${A.backBtn("home", "Home")}
+  <section><p class="eyebrow">A1 → C2</p><h1>Which word, when?</h1>
+    <p class="muted">One English word, several Nepali ones. Each note says which to use when, with examples to hear and situations to test yourself on. Notes arrive in your daily session as their words come up, and their questions come back on later days. Here you can read any of them.</p>
+    <div class="progress"><i style="width:${NOTES.length ? nMet / NOTES.length * 100 : 0}%"></i></div><p class="muted small">${nMet} of ${NOTES.length} notes met</p>
+    <input class="find" id="wfind" type="search" placeholder="Search: now, take, hot, laagyo…" aria-label="Search the notes"></section>
+  <section class="cards"><button class="card lead" data-go="wquiz-mix"><span class="k">Practise</span><h3>Ten mixed situations</h3><span class="muted">${nMet ? "From the notes you've met" : "From the first notes"}</span></button></section>
+  ${[...new Set(all.map(n => n.level))].map(lv => `<section data-grp><h2>${esc(LVL(lv))}</h2><div class="list">${all.filter(n => n.level === lv).map(useRow).join("")}</div></section>`).join("")}`;
+  $("wfind").oninput = e => {
+    const q = e.target.value.trim().toLowerCase();
+    A.$app.querySelectorAll("[data-find]").forEach(b => { b.hidden = !!q && !b.dataset.find.includes(q); });
+    A.$app.querySelectorAll("[data-grp]").forEach(g => { g.hidden = !g.querySelector("[data-find]:not([hidden])"); });
+  };
+};
+VIEWS.word = id => {
+  const n = USE[id]; if (!n) return A.go("which");
+  const u = A.UNIT[n.unit], g = n.gram && A.GRAM[n.gram];
+  if (n.blocks) meet(id);
+  A.$app.innerHTML = `${A.backBtn("which", "Which word, when?")}
+  <section><p class="eyebrow">${esc(n.level)}${u ? " · " + esc(u.title) : ""}</p><h1>${esc(n.title)}</h1><p class="muted">${esc(n.sub)}</p></section>
+  <article class="g-body">${noteBody(n)}</article>
+  ${n.blocks ? `<section class="tips"><h3>Check yourself</h3><p class="muted">${n.quiz.length} situations, each with an explanation.</p><button class="btn primary" data-go="wquiz-${id}">Start</button></section>`
+    : g ? `<section class="tips"><h3>From the grammar course</h3><p class="muted">${esc(g.title)}. Its check is in the chapter.</p><button class="btn primary" data-go="gram-${g.id}">Open the chapter</button></section>` : ""}`;
+};
+VIEWS.wquiz = id => {
+  const mix = id === "mix", n = USE[id]; if (!mix && !(n && n.quiz)) return A.go("which");
+  const metNotes = NOTES.filter(x => met(x.id)), pool = mix ? (metNotes.length ? metNotes : NOTES.slice(0, 4)) : [n];
+  const qs = shuffle(pool.flatMap(x => x.quiz.map((q, i) => ({ ...q, on: ok => { um(x.id).q[i] = ok ? 1 : 0; } })))).slice(0, mix ? 10 : 99);
+  if (!qs.length) return A.go("which");
+  const back = mix ? "which" : "word-" + id, label = mix ? "Which word, when?" : n.title;
+  A.mcq({ title: label, qs, back, backLabel: label, onDone: (right, total) => {
+    const pass = right / total >= 0.8;
+    if (!mix && right === total) { const m = um(id); m.r = (m.r || 0) + 1; m.due = Date.now() + GAPS[Math.min(m.r, GAPS.length) - 1] * 864e5; }
+    A.addXP(right); A.save();
+    A.$app.innerHTML = `${A.backBtn(back, label)}<div class="stage">${A.cheerHTML(pass ? "good" : "bad")}<h1>${right} of ${total} right</h1>
+      <p class="muted">${pass ? "These are settling in. Their questions will come back in your daily sessions." : "Have another look at the notes, then try again."}</p>
+      <div class="row" style="justify-content:center"><button class="btn primary" data-go="${back}">${mix ? "All notes" : "Back to the note"}</button><button class="btn" data-go="wquiz-${id}">Try again</button></div></div>`;
+    if (pass) { A.celebrate(40); Sfx.win(); }
+  } });
+};
+HOOKS.unit = id => { const ns = (C.usage || []).filter(n => n.unit === id); return ns.length ? `<section><h2>Which word, when?</h2><div class="list">${ns.map(useRow).join("")}</div></section>` : ""; };
 
 /* ---------- role-plays ---------- */
 function getRP(id) {
@@ -456,9 +614,9 @@ HOOKS.home = () => {
   const gram = [...new Set(st.filter(s => s.t === "gram").map(s => s.g))].map(id => A.GRAM[id]).filter(Boolean);
   const rps = st.filter(s => s.t === "rp").map(s => getRP(s.id)).filter(Boolean);
   const nWords = st.filter(s => s.t === "new" && (A.BY_ID[s.id] || {}).pack).length;
-  const mins = Math.max(3, Math.round(st.reduce((a, s) => a + ({ rev: 0.4, echo: 0.5, new: 0.8, gram: 2, gq: 0.5, order: 0.8, rp: 3, fact: 0.3 }[s.t] || 0), 0)));
-  const mix = [cnt("rev") && `${cnt("rev")} reviews`, cnt("new") - nWords && `${cnt("new") - nWords} new phrases`, nWords && `${nWords} new word${nWords > 1 ? "s" : ""}`, ...gram.map(g => "Grammar: " + g.title.replace(/<[^>]+>/g, "")),
-    cnt("echo") && "Speaking from English", cnt("order") && "Word order", ...rps.map(r => "Role-play: " + r.title), cnt("fact") && "Culture moment", cnt("unit") && "Unit finish"].filter((x, i, all) => x && all.indexOf(x) === i);
+  const mins = Math.max(3, Math.round(st.reduce((a, s) => a + ({ rev: 0.4, echo: 0.5, new: 0.8, gram: 2, gq: 0.5, use: 1.5, uq: 0.5, read: 0.4, order: 0.8, rp: 3, fact: 0.3 }[s.t] || 0), 0)));
+  const mix = [cnt("rev") && `${cnt("rev")} reviews`, cnt("new") - nWords && `${cnt("new") - nWords} new phrases`, nWords && `${nWords} new word${nWords > 1 ? "s" : ""}`, ...gram.map(g => "Grammar: " + g.title.replace(/<[^>]+>/g, "")), ...st.filter(s => s.t === "use" && USE[s.id]).map(s => "Which word: " + USE[s.id].title),
+    cnt("echo") && "Speaking from English", cnt("order") && "Word order", cnt("read") && "Reading Devanagari", ...rps.map(r => "Role-play: " + r.title), cnt("fact") && "Culture moment", cnt("unit") && "Unit finish"].filter((x, i, all) => x && all.indexOf(x) === i);
   const sz = A.S.settings.size || "normal", mk = monthKey();
   return `<section class="daily-card ${T.done ? "ok" : ""}">
     <div class="row split"><p class="eyebrow">Today's session · about ${mins} min${T.round > 1 ? " · round " + T.round : ""}</p>

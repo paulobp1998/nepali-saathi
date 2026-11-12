@@ -35,7 +35,7 @@ if orphans:
     warnings.append(f"{len(orphans)} recordings are no longer used: run python3 tools/fetch_audio.py to remove them")
 
 # 3. Every Nepali text comes with romanization and English; style checks.
-EN_REQUIRED = {"content.js", "content-more.js", "vocab.js", "listening.js", "content-adv.js", "grammar-a.js", "grammar-b.js", "grammar-c.js"}
+EN_REQUIRED = {"content.js", "content-more.js", "vocab.js", "listening.js", "content-adv.js", "grammar-a.js", "grammar-b.js", "grammar-c.js", "usage-a.js", "usage-b.js", "usage-c.js"}
 for f in SOURCES:
     src = read(f)
     for m in re.finditer(r'\bne: "([^"]+)"', src):

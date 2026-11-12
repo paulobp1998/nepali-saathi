@@ -23,9 +23,18 @@
 .wchip b i { font-style: normal; color: var(--accent); }
 .wchip small { font-size: 0.74rem; color: var(--muted); line-height: 1.25; max-width: 16ch; }
 .wchip.v { border-color: var(--accent); background: var(--accent-soft); }
+button.wchip { font: inherit; color: inherit; cursor: pointer; }
+.wchip.link { border-style: dashed; border-color: var(--accent); }
+.wnote-hint { margin: 0; text-align: center; }
+.modal-in.sheet { max-width: 640px; max-height: 88vh; overflow: auto; justify-items: stretch; text-align: left; }
+.modal-in.sheet h2 { margin: 0; font-family: var(--display); }
+.modal-in.sheet > .btn { justify-self: center; position: sticky; bottom: 0; box-shadow: 0 0 0 10px var(--surface); }
+.find { font: inherit; width: 100%; max-width: 420px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: inherit; }
+.li[hidden], section[hidden] { display: none; }
 .why { width: 100%; max-width: 52ch; text-align: left; background: var(--bg); border-left: 4px solid var(--accent); border-radius: 10px; padding: 10px 14px; display: grid; gap: 6px; }
 .why p { margin: 0; }
 .why.tip { border-left-color: var(--good); }
+.read-ne { font-size: clamp(1.8rem, 7.5vw, 2.6rem); color: inherit; line-height: 1.5; margin: 0; }
 .fact-text { font-size: 1.1rem; max-width: 46ch; }
 .rp-turn { gap: 12px; }
 .rp-opt { display: grid; gap: 4px; }

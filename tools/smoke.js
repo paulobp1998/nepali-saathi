@@ -83,6 +83,22 @@ try {
   kept(A && A.S, "when the app starts");
   if (A) { A.save(); kept(JSON.parse(store[KEY] || "null"), "when the app saves after starting"); }
   check(els.app && typeof els.app.innerHTML === "string" && els.app.innerHTML.length > 200, "the home screen was not drawn for a returning learner");
+
+  // 3. The "which word, when?" notes (usage-*.js) are well formed.
+  var seenNote = {}, unitIds = G.COURSE.units.map(function (u) { return u.id; }), gramIds = (G.COURSE.grammar || []).map(function (g) { return g.id; });
+  (G.COURSE.usage || []).forEach(function (n) {
+    var w = "note " + n.id + ": ";
+    check(/^w-[a-z0-9-]+$/.test(n.id || "") && !seenNote[n.id], w + "the id is missing, malformed or used twice"); seenNote[n.id] = 1;
+    check(n.title && n.sub && n.level && Array.isArray(n.words), w + "title, sub, level or words is missing");
+    check(unitIds.indexOf(n.unit) >= 0, w + "unit " + n.unit + " does not exist");
+    if (n.gram) check(gramIds.indexOf(n.gram) >= 0, w + "grammar chapter " + n.gram + " does not exist");
+    else {
+      check(Array.isArray(n.blocks) && n.blocks.length >= 3 && Array.isArray(n.quiz) && n.quiz.length >= 3, w + "needs blocks and at least three questions");
+      (n.quiz || []).forEach(function (q, i) {
+        check(q.q && q.a && q.why && Array.isArray(q.o) && q.o.length === 2 && q.o.indexOf(q.a) < 0 && q.o[0] !== q.o[1], w + "question " + (i + 1) + " needs q, a, why and two different wrong options");
+      });
+    }
+  });
 } catch (e) {
   fails.push("the app stops with an error while starting: " + e + (e && e.stack ? "\n" + String(e.stack).split("\n").slice(0, 4).join("\n") : ""));
 }

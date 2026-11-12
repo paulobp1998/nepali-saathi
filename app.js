@@ -533,6 +533,7 @@ VIEWS.home = () => {
   <section class="cards">
     <button class="card" data-go="${nextMode}-${next.id}"><span class="k">Continue the trek</span><h3>${esc(stop.place || next.title)}</h3><span class="muted">${esc(next.title)} · ${verb}</span></button>
     <button class="card" data-go="grammar"><span class="k">How Nepali works</span><h3>Grammar</h3><span class="muted">${gramCount()} of ${(C.grammar || []).length} chapters · A1 → C2</span></button>
+    <button class="card" data-go="which"><span class="k">ahile or aba? linu or lyaaunu?</span><h3>Which word, when?</h3><span class="muted">${(C.usage || []).length} notes on words English speakers mix up</span></button>
     <button class="card" data-go="culture"><span class="k">Religion, festivals, food</span><h3>Culture</h3><span class="muted">${Object.keys(S.cult).length} of ${(C.culture || []).length} articles read</span></button>
     <button class="card" data-go="build"><span class="k">Word order</span><h3>Sentence builder</h3><span class="muted">Tap the words into Nepali order</span></button>
     <button class="card" data-go="read"><span class="k">Devanagari</span><h3>Read Nepali</h3><span class="muted">${Object.values(S.read).filter(x => x.pass).length} of ${(C.reading || []).length} letter groups</span></button>
@@ -759,6 +760,7 @@ VIEWS.unit = id => {
     <button class="card ${f[1] && !f[2] ? "lead" : ""}" data-go="speak-${id}"><span class="k">3 · Speak</span><h3>Say it in Nepali</h3><span class="muted">${Mic.ok ? "Your speech is checked" : "Say it aloud, then check"}</span></button>
   </section>
   <section class="tips"><h3>How it works</h3><ul>${u.tips.map(t => `<li>${t}</li>`).join("")}</ul></section>
+  ${HOOKS.unit ? HOOKS.unit(id) : ""}
   ${(() => { const L = (C.unitLinks || {})[id]; if (!L) return ""; const c = (C.culture || []).find(x => x.id === L.c), g = (C.grammar || []).find(x => x.id === L.g); return `<section><h2>Go deeper</h2><div class="cards">${c ? `<button class="card fact-card" data-go="cult-${c.id}">${(C.art || {})[c.art] ? `<span class="artbox thumb">${C.art[c.art]}</span>` : ""}<span class="k">Culture corner</span><h3>${esc(c.title)}</h3><span class="muted small">${esc(c.sub)}</span></button>` : ""}${g ? `<button class="card" data-go="gram-${g.id}"><span class="k">Grammar for this lesson · ${esc(g.level)}</span><h3>${esc(g.title)}</h3><span class="muted small">${esc(g.sub)}</span></button>` : ""}</div></section>`; })()}
   ${dl.length ? `<section><h2>Conversations</h2><div class="list">${dl.map(d => `<button class="li" data-go="dialogue-${d.id}"><span class="play-dot">${I.play}</span><span><span class="ro">${esc(d.title)}</span><br><span class="en">${esc(d.scene)}</span></span>${S.dlg[d.id] ? '<span class="tick">Done</span>' : "<span></span>"}</button>`).join("")}</div></section>` : ""}
   ${(() => { const pk = (C.packs || []).filter(k => k.unit === id); return pk.length ? `<section><h2>Word packs</h2><p class="muted">Extra words for this topic. Once you've met the lesson's phrases they also arrive a few at a time in your daily session.</p>${pk.map(k => `
@@ -1217,6 +1219,7 @@ function mcq({ title, qs, back, backLabel, onDone }) {
       const ok = q.opts[+b.dataset.j] === q.a;
       $app.querySelectorAll(".opt").forEach(x => { x.disabled = true; if (q.opts[+x.dataset.j] === q.a) x.classList.add("right"); });
       if (ok) { right++; Sfx.good(right); } else { b.classList.add("wrong"); Sfx.bad(); }
+      if (q.on) q.on(ok);
       if (q.after) Voice.say(q.after);
       const w = document.getElementById("gwhy"); w.hidden = false;
       w.innerHTML = `<p class="verdict ${ok ? "good" : "bad"}">${ok ? pick(["Right!", "Correct!", "Syaabaas!"]) : "Not quite"}</p>${q.why ? `<p>${q.why}</p>` : ""}<button class="btn primary" id="gnext">${k + 1 < items.length ? "Next question" : "See result"}</button>`;
@@ -1612,7 +1615,7 @@ function combine(a, b) {
   if ((a.epoch || 0) !== (b.epoch || 0)) return keepLocal((a.epoch || 0) > (b.epoch || 0) ? a : b);
   const bNewer = (b.at || 0) > (a.at || 0);
   const o = keepLocal(bNewer ? b : a); // settings and freezes follow the device used last
-  ["done", "dlg", "story", "xp", "stats", "daily", "badges", "gram", "cult", "read", "frozen", "gone", "gm", "week", "mono", "rp", "pat"].forEach(k => { o[k] = mergeVal(a[k], b[k]) || {}; });
+  ["done", "dlg", "story", "xp", "stats", "daily", "badges", "gram", "cult", "read", "frozen", "gone", "gm", "week", "mono", "rp", "pat", "use"].forEach(k => { o[k] = mergeVal(a[k], b[k]) || {}; });
   o.imm = bNewer ? { ...a.imm, ...b.imm } : { ...b.imm, ...a.imm };
   o.best = {}; new Set([...Object.keys(a.best || {}), ...Object.keys(b.best || {})]).forEach(k => { o.best[k] = mergeVal(a.best[k], b.best[k], k === "memory"); });
   o.srs = { ...b.srs }; Object.entries(a.srs).forEach(([id, r]) => { const q = o.srs[id]; if (!q || newerCard(r, q)) o.srs[id] = r; });
@@ -1623,7 +1626,7 @@ function combine(a, b) {
 }
 const pack = s => { const o = { ...s, settings: { ...s.settings } }; LOCAL_SET.forEach(k => delete o.settings[k]); delete o.remindShown; return o; };
 const canon = v => JSON.stringify(v, (k, x) => x && typeof x === "object" && !Array.isArray(x) ? Object.fromEntries(Object.keys(x).sort().map(k2 => [k2, x[k2]])) : x);
-const SAFE_VIEWS = ["roleplays", "home", "path", "badges", "games", "grammar", "culture", "read", "settings", "mine", "unit", "gram", "cult", "letters", "conj"];
+const SAFE_VIEWS = ["roleplays", "home", "path", "badges", "games", "grammar", "culture", "read", "settings", "mine", "unit", "gram", "cult", "letters", "conj", "which", "word"];
 const Sync = {
   cfg() { try { return JSON.parse(localStorage.getItem(SKEY)) || {}; } catch (e) { return {}; } },
   put(c) { try { if (c) localStorage.setItem(SKEY, JSON.stringify(c)); else localStorage.removeItem(SKEY); } catch (e) {} },
@@ -1709,7 +1712,7 @@ window.__test = { translit, key, score, normDeva, fnv };
 const API = {
   get S() { return S; }, C, $app, save, addXP, track, Voice, Mic, Sfx, celebrate, habre, cheerHTML, esc, shuffle, sleep, toast, I, backBtn, go, score, micError,
   setCleanup: f => { cleanup = f; },
-  VIEWS, HOOKS, quiz, gramBlock, GRAM, UNIT, DLG, PACK, grade, introduce, dueList, seenList, day, Rec, header, modal, ne, pick, levelNow, postcard, route, translit, normDeva,
+  VIEWS, HOOKS, quiz, mcq, gramBlock, GRAM, UNIT, DLG, PACK, grade, introduce, dueList, seenList, day, Rec, header, modal, ne, pick, levelNow, postcard, route, translit, normDeva,
   get ALL() { return ALL; }, get BY_ID() { return BY_ID; },
   pool(min = 8) { const s = seenList().filter(p => !p.own && p.en.length < 60); return s.length >= min ? s : C.units.slice(0, 3).flatMap(u => u.phrases); }
 };
