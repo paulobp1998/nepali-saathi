@@ -1,11 +1,11 @@
 // Offline support: caches the app and its recordings. Bump V when publishing changes.
-const V = "saathi-v12";
+const V = "saathi-v13";
 const AUDIO = "saathi-audio"; // recordings are named by content hash, so this cache survives updates
 const FONTS = "saathi-fonts"; // Google Fonts (including Mukta for Devanagari), saved on first use
 const TTS = "saathi-tts";
 const STATE = "saathi-state"; // reminder settings shared by the app (see Remind in app.js)
 importScripts("audio-list.js");
-const SHELL = ["./", "index.html", "app.js", "content.js", "content-more.js", "trail.js", "grammar-a.js", "grammar-b.js", "grammar-c.js", "culture.js", "reading.js", "vocab.js", "listening.js", "content-adv.js", "games.js", "usage-a.js", "daily-content.js", "daily.js", "daily.css", "audio-list.js", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png"];
+const SHELL = ["./", "index.html", "app.js", "content.js", "content-more.js", "trail.js", "grammar-a.js", "grammar-b.js", "grammar-c.js", "culture.js", "reading.js", "vocab.js", "listening.js", "content-adv.js", "games.js", "usage-a.js", "usage-b.js", "daily-content.js", "daily.js", "daily.css", "audio-list.js", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png"];
 
 self.addEventListener("install", e => {
   self.skipWaiting();

@@ -1,6 +1,6 @@
 # Nepali Saathi: notes for Claude
 Static PWA, no build step, no paid services. File map: README.md. Read only the file you need.
-- Daily session logic: daily.js. Its content: daily-content.js. Don't read app.js unless the change needs it; app.js exposes internals to modules via `API` (near the end of app.js).
+- Daily session logic: daily.js. Its content: daily-content.js. “Which word, when?” notes: usage-*.js (format at the top of usage-a.js; views and scheduling in daily.js). Don't read app.js unless the change needs it; app.js exposes internals to modules via `API` (near the end of app.js).
 - After content changes: run `python3 tools/fetch_audio.py`, then `python3 tools/validate.py` (must report 0 errors), then bump `V` in sw.js.
 - New state keys that should sync across devices: add them to the mergeVal list in `combine()` in app.js.
 - Preview: the desktop app's preview server can't read ~/Desktop or start from it. Copy the app to the scratchpad, run `python3 -m http.server <port> --bind 127.0.0.1` there with Bash in the background, and open http://localhost:<port> in the browser pane. The service worker does not register on that server, so check it on the live site.

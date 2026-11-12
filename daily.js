@@ -45,7 +45,7 @@ const dlgFor = u => C.dialogues.filter(d => d.unit === u.id);
 const USE = Object.fromEntries((C.usage || []).map(n => [n.id, n]));
 const NOTES = (C.usage || []).filter(n => n.blocks); // notes with their own text; the others point to a grammar chapter
 const flat = ro => " " + ro.toLowerCase().replace(/[^a-z\s-]/g, " ").replace(/\s+/g, " ").trim() + " ";
-const hits = (n, r) => (n.words || []).some(w => w.endsWith("-") ? r.includes(" " + w.slice(0, -1)) : r.includes(" " + w + " "));
+const hits = (n, r) => (n.words || []).some(w => w.endsWith("-") ? r.includes(" " + w.slice(0, -1)) : w[0] === "-" ? r.includes(w.slice(1) + " ") : r.includes(" " + w + " "));
 const um = id => { const m = A.S.use || (A.S.use = {}), r = m[id] || (m[id] = {}); r.q = r.q || {}; return r; };
 const met = id => !!((A.S.use || {})[id] || {}).d;
 const meet = id => { const m = um(id); if (!m.d) { m.d = A.day(); m.due = Date.now() + 20 * 36e5; A.save(); } };
@@ -227,7 +227,7 @@ const VERBS = new Set(["ho", "hoina", "chha", "chhaina", "chhu", "chhan", "hun",
 const WNOTE = new Map();
 function noteOf(w) {
   const lw = w.toLowerCase();
-  if (!WNOTE.has(lw)) WNOTE.set(lw, ((C.usage || []).find(n => (n.words || []).some(t => !t.includes(" ") && (t.endsWith("-") ? lw.startsWith(t.slice(0, -1)) : lw === t))) || {}).id || null);
+  if (!WNOTE.has(lw)) WNOTE.set(lw, ((C.usage || []).find(n => (n.words || []).some(t => !t.includes(" ") && (t.endsWith("-") ? lw.startsWith(t.slice(0, -1)) : t[0] === "-" ? lw.endsWith(t.slice(1)) : lw === t))) || {}).id || null);
   return WNOTE.get(lw);
 }
 function wordsHTML(p) {
