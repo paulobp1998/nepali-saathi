@@ -445,7 +445,7 @@ C.stories.push(
       { ne: "हिजो म आफूलाई पढाउनुभएको गुरुलाई भेट्न गएँ।", ro: "hijo ma aaphulaai padhaaunubhaeko gurulaai bhetna gaen.", en: "Yesterday I went to see the teacher who taught me." },
       { ne: "उहाँ अवकाश पाएर गाउँमा बस्दै हुनुहुन्छ।", ro: "uhaan abakaash paaera gaaunmaa basdai hunuhunchha.", en: "He has retired and is living in the village." },
       { ne: "मलाई देख्नेबित्तिकै उहाँले चिन्नुभयो।", ro: "malaai dekhnebittikai uhaanle chinnubhayo.", en: "He recognised me the moment he saw me." },
-      { ne: "गुरुआमाले आफैँले पकाउनुभएको खाना खुवाउनुभयो।", ro: "guruaamaale aaphainle pakaaunubhaeko khaanaa khuwaaunubhayo.", en: "His wife served us food she had cooked herself." },
+      { ne: "गुरुआमाले आफैँले पकाउनुभएको खाना खुवाउनुभयो।", ro: "guruaamaale aaphainle pakaaunubhaeko khaanaa khuwaaunubhayo.", en: "His wife served me food she had cooked herself." },
       { ne: "उहाँले सिकाउनुभएका कुरा म अझै सम्झन्छु।", ro: "uhaanle sikaaunubhaekaa kuraa ma ajhai samjhanchhu.", en: "I still remember the things he taught." },
       { ne: "फर्कने बेलामा उहाँले आशीर्वाद दिनुभयो।", ro: "pharkane belaamaa uhaanle aashirbaad dinubhayo.", en: "When it was time to leave, he gave me his blessing." },
       { ne: "गुरुलाई भेट्न पाउनु मेरा लागि ठूलो खुसीको कुरा हो।", ro: "gurulaai bhetna paaunu meraa laagi thulo khusiko kuraa ho.", en: "Being able to see my teacher is a great joy for me." }

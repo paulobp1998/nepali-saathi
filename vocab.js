@@ -541,7 +541,7 @@ C.packs = [
     { id: "w-pairs-12", ne: "हाँसखेल", ro: "haanskhel", en: "Fun and laughter" }
   ] },
   { id: "stance", unit: "c2nuance", title: "Attitude words", words: [
-    { id: "w-stance-1", ne: "निश्चय", ro: "nishchaya", en: "Certainly, surely" },
+    { id: "w-stance-1", ne: "निश्चय नै", ro: "nishchaya nai", en: "Certainly, surely" },
     { id: "w-stance-2", ne: "अवश्य", ro: "awashya", en: "Of course (formal)" },
     { id: "w-stance-3", ne: "झन्डै", ro: "jhandai", en: "Almost, nearly" },
     { id: "w-stance-4", ne: "बल्ल", ro: "balla", en: "At last, only just" },

@@ -246,7 +246,7 @@ C.usage = (C.usage || []).concat([
     { table: { head: ["Say", "When", "Example"], rows: [
       ["<b>saknu</b>", "you finish something: it needs an object, and <b>-le</b> in the past", "maile kaam <b>saken</b>"],
       ["<b>sakinu</b>", "it is over, or it has run out, by itself", "baithak <b>sakiyo</b> · paisaa <b>sakiyo</b>"],
-      ["<b>siddhinu</b>", "be used up, come to an end, often for good", "chini <b>siddhiyo</b> · jaado <b>siddhiyo</b>"],
+      ["<b>siddhinu</b>", "be used up, come to an end, often for good", "chini <b>siddhiyo</b> · chaamal <b>siddhiyo</b>"],
       ["<b>puraa garnu</b>", "complete in full: a course, a form, a number of years", "padhaai <b>puraa garen</b>"],
       ["verb + <b>-isaknu</b>", "already: the helper that says the action is complete", "khaa<b>isaken</b> · ga<b>isakyo</b>"]
     ] } },
@@ -257,13 +257,13 @@ C.usage = (C.usage || []).concat([
       { ne: "ग्यास सिद्धियो, नयाँ सिलिन्डर ल्याउनुपर्छ।", ro: "gyaas siddhiyo, nayaan silindar lyaaunuparchha.", en: "The gas has run out; we need to get a new cylinder." },
       { ne: "उसले पढाइ पूरा गरिसक्यो।", ro: "usle padhaai puraa garisakyo.", en: "He has already completed his studies." }
     ] },
-    { warn: "<b>kaam sakyo</b> for “the work is finished” is a common slip: without a doer it must be <b>kaam sakiyo</b>. Keep the two helpers apart as well: <b>jaana sakina</b> = I couldn't go, <b>gaisaken</b> = I've already gone. In shops, <b>sakiyo</b> is the usual “sold out, none left”." }
+    { warn: "For the plain statement “the work is finished”, with no doer in mind, say <b>kaam sakiyo</b>. <b>kaam sakyo?</b> is heard too, but it asks whether someone has finished it. Keep the two helpers apart as well: <b>jaana sakina</b> = I couldn't go, <b>gaisaken</b> = I've already gone. In shops, <b>sakiyo</b> is the usual “sold out, none left”." }
   ],
   quiz: [
     { q: "You hand in a report. “I've finished the work.”", a: "maile kaam saken", o: ["maile kaam sakiyo", "ma kaam sakinchhu"], why: "You are the doer and there is an object → <b>saknu</b> with <b>maile</b>: <b>maile kaam saken</b>." },
     { q: "At a shop: “The milk has run out.”", a: "dudh sakiyo", o: ["dudh sakyo", "dudhle sakyo"], why: "Nobody finishes it; it is simply gone → <b>sakinu</b>: <b>dudh sakiyo</b>." },
     { q: "Your host offers lunch. “I've already eaten.”", a: "maile khaaisaken", o: ["maile khaana saken", "ma khaana sakiyo"], why: "“Already” is <b>-isaknu</b> on the verb stem: <b>khaaisaken</b>. <b>khaana saken</b> would mean “I was able to eat”." },
-    { q: "“What time does the film finish?”", a: "philim kati baje sakinchha?", o: ["philim kati baje sakchha?", "philim kati baje puraa garchha?"], why: "The film ends by itself → <b>sakinchha</b>. <b>sakchha</b> would need someone who finishes something." }
+    { q: "“What time does the film finish?”", a: "philim kati baje sakinchha?", o: ["philim kati baje sakaaunchha?", "philim kati baje puraa garchha?"], why: "The film ends by itself → <b>sakinchha</b>. The other two need someone who finishes something." }
   ] },
 
 { id: "w-help", level: "B2", unit: "b2favour", title: "“Help”: maddat, sahayog, sahaayataa, guhaar", sub: "maddat (a helping hand), sahayog (support, cooperation), sahaayataa (aid), guhaar (a cry for help), -idinu (do it for me)",
@@ -439,17 +439,17 @@ C.usage = (C.usage || []).concat([
       ["<b>traas</b>", "dread, terror: news and stories", "bhukampako <b>traas</b>"],
       ["<b>tanaab</b>", "stress, tension (many people just say <b>tension</b>)", "kaamko <b>tanaab</b>"]
     ] } },
-    { rule: "Afraid <i>of</i> → <b>-sanga dar laagchha</b>. Worried <i>about</i> → <b>-ko chintaa</b> or <b>pir</b>. The polite “I'm afraid that…” is not fear at all: say <b>maaf garnuhos</b>." },
+    { rule: "Afraid <i>of</i> → <b>-sanga</b> or <b>-ko dar laagchha</b>. Worried <i>about</i> → <b>-ko chintaa</b> or <b>pir</b>. The polite “I'm afraid that…” is not fear at all: say <b>maaf garnuhos</b>." },
     { ex: [
       { ne: "मलाई उचाइसँग डर लाग्छ।", ro: "malaai uchaaisanga dar laagchha.", en: "I'm afraid of heights." },
       { ne: "चिन्ता नगर्नुहोस्, सबै ठिक हुन्छ।", ro: "chintaa nagarnuhos, sabai thik hunchha.", en: "Don't worry, everything will be fine." },
       { ne: "आमालाई छोराको पीर छ।", ro: "aamaalaai chhoraako pir chha.", en: "The mother is anxious about her son." },
       { ne: "आजकाल कामको तनाव धेरै छ।", ro: "aajakaal kaamko tanaab dherai chha.", en: "There's a lot of stress at work these days." }
     ] },
-    { warn: "<b>ma daraaen</b> (I got scared) uses the verb <b>daraaunu</b>; <b>ma dar chhu</b> is not Nepali. Fear takes <b>-sanga</b> (or <b>-dekhi</b>), not <b>-ko</b>: <b>saapsanga dar</b>, fear of snakes. And “I'm afraid I can't come” is simply <b>maaf garnuhos, ma aauna sakdina</b>." }
+    { warn: "<b>ma daraaen</b> (I got scared) uses the verb <b>daraaunu</b>; <b>ma dar chhu</b> is not Nepali: fear “strikes” you, so the person takes <b>-laai</b>. What you fear takes <b>-sanga</b>, <b>-dekhi</b> or <b>-ko</b>: <b>saapsanga dar</b> or <b>saapko dar</b>, fear of snakes. And “I'm afraid I can't come” is simply <b>maaf garnuhos, ma aauna sakdina</b>." }
   ],
   quiz: [
-    { q: "“I'm afraid of dogs.”", a: "malaai kukursanga dar laagchha", o: ["ma kukurko dar chhu", "malaai kukurko chintaa laagchha"], why: "Fear “strikes” you (<b>malaai … dar laagchha</b>) and its object takes <b>-sanga</b>." },
+    { q: "“I'm afraid of dogs.”", a: "malaai kukursanga dar laagchha", o: ["ma kukurko dar chhu", "malaai kukurko chintaa laagchha"], why: "Fear “strikes” you: <b>malaai … dar laagchha</b>, never <b>ma … dar chhu</b>. <b>chintaa</b> is worry, not fear." },
     { q: "Your friend has an exam tomorrow. “Don't worry.”", a: "chintaa nagara", o: ["dar nagara", "traas nagara"], why: "Worry about an outcome → <b>chintaa</b> (or the homelier <b>pir nagara</b>)." },
     { q: "Declining an invitation: “I'm afraid I can't come.”", a: "maaf garnuhos, ma aauna sakdina", o: ["malaai dar laagchha, ma aauna sakdina", "malaai traas chha, ma aauna sakdina"], why: "The polite English “I'm afraid” is an apology: <b>maaf garnuhos</b>." },
     { q: "“My job is very stressful.”", a: "mero kaammaa dherai tanaab chha", o: ["mero kaammaa dherai dar chha", "mero kaammaa dherai traas chha"], why: "Pressure from work is <b>tanaab</b>." }
@@ -555,7 +555,7 @@ C.usage = (C.usage || []).concat([
       { ne: "अदालतले जग्गा फिर्ता गर्न आदेश दियो।", ro: "adaalatle jaggaa phirtaa garna aadesh diyo.", en: "The court ordered the land to be returned." },
       { ne: "उहाँले हामीलाई बिहेमा निम्तो दिनुभयो।", ro: "uhaanle haamilaai bihemaa nimto dinubhayo.", en: "He invited us to the wedding." }
     ] },
-    { warn: "Writing <b>aadesh</b>, or even <b>anurodh</b>, to a superior reads as presumptuous: a letter to an office is always a <b>nibedan</b>, and it closes with <b>nibedak</b> (the applicant) above your name. In the other direction, an office that “requests” you with <b>anurodh</b> often means that you must." }
+    { warn: "A letter to an office or a superior is always a <b>nibedan</b>, never an <b>aadesh</b>, and it closes with <b>nibedak</b> (the applicant) above your name. Inside it you may still “request”: <b>swikrit garidinuhuna anurodh gardachhu</b> (I request you to approve it) is the standard last line. In the other direction, an office that “requests” you with <b>anurodh</b> often means that you must." }
   ],
   quiz: [
     { q: "You write to the campus chief asking for a transcript. Your letter is a…", a: "nibedan", o: ["aadesh", "nimto"], why: "A request made upwards, to an office, is a <b>nibedan</b>." },
@@ -618,7 +618,7 @@ C.usage = (C.usage || []).concat([
     { q: "“My heart isn't in this job.”", a: "yo kaammaa mero man chhaina", o: ["yo kaammaa mero mutu chhaina", "yo kaammaa mero hos chhaina"], why: "Wishes and inclination → <b>man</b>." }
   ] },
 
-{ id: "w-die", level: "C1", unit: "c1precise", title: "“To die”, by degree of respect: marnu, bitnu, swargabaas hunu, nidhan hunu", sub: "marnu (die: plain, animals, blunt for people), bitnu (pass away), swargabaas / nidhan hunu (formal), khasnu (literary, respectful)",
+{ id: "w-die", level: "C1", unit: "c1precise", title: "“To die”, by degree of respect: marnu, bitnu, swargabaas hunu, nidhan hunu", sub: "marnu (die: plain, animals, blunt for people), bitnu (pass away), swargabaas hunu (go to heaven), nidhan / dehaanta hunu (news and formal writing)",
   words: ["bitnubhayo", "nidhan"],
   blocks: [
     { p: "Respect levels do not stop at death: the verb you choose shows your regard for the person. Using the plain verb for someone's parent is one of the few vocabulary mistakes that can really hurt." },
@@ -626,8 +626,8 @@ C.usage = (C.usage || []).concat([
       ["<b>marnu</b>", "die: animals, plants, enemies, statistics; blunt for a person", "kukur <b>maryo</b> · bhokle <b>marnu</b>"],
       ["<b>bitnu</b>", "pass away: the normal respectful verb in speech (literally to pass, as time does)", "hajurbaa <b>bitnubhayo</b>"],
       ["<b>swargabaas hunu</b> / <b>swargiya</b>", "go to heaven / the late…: obituaries, formal talk", "<b>swargiya</b> pitaaji (my late father)"],
-      ["<b>mrityu</b> / <b>nidhan hunu</b>", "death (the neutral noun) / decease: news and official language", "kabiko <b>nidhan</b> bhayo"],
-      ["<b>khasnu</b>", "pass away: literary and very respectful (literally to fall)", "aamaa <b>khasnubhayo</b>"]
+      ["<b>mrityu</b>", "death: the neutral noun, in news and statistics", "tin janaako <b>mrityu</b> bhayo"],
+      ["<b>nidhan</b> / <b>dehaanta hunu</b>", "decease: respectful, in news and formal writing", "kabiko <b>nidhan</b> bhayo"]
     ] } },
     { rule: "For anyone you would call <b>tapaain</b> or <b>uhaan</b>, say <b>bitnubhayo</b>. Keep <b>marnu</b> for animals, numbers and figures of speech (<b>bhokle maren</b>, I'm starving)." },
     { ex: [
@@ -657,7 +657,7 @@ C.usage = (C.usage || []).concat([
       ["<b>jhut</b> bolnu", "to tell a lie", "usle <b>jhut</b> bolyo"],
       ["<b>galat</b>", "wrong, incorrect: the adjective", "<b>galat</b> nambar"]
     ] } },
-    { rule: "What you did wrong → <b>galti</b>. Who is to blame → <b>dosh</b>. Said knowing it was untrue → <b>jhut</b>. The adjective “wrong” is <b>galat</b>, never <b>galti</b>." },
+    { rule: "What you did wrong → <b>galti</b>. Who is to blame → <b>dosh</b>. Said knowing it was untrue → <b>jhut</b>. The standard adjective “wrong” is <b>galat</b>; <b>galti</b> is the noun." },
     { ex: [
       { ne: "गल्ती मेरो हो, माफ गर्नुहोस्।", ro: "galti mero ho, maaf garnuhos.", en: "The mistake is mine, I'm sorry." },
       { ne: "यसमा उसको कुनै दोष छैन।", ro: "yasmaa usko kunai dosh chhaina.", en: "He is not to blame for this at all." },
@@ -669,7 +669,7 @@ C.usage = (C.usage || []).concat([
   quiz: [
     { q: "You sent the email to the wrong person. Apologising to your boss:", a: "galti bhayo, maaf garnuhos", o: ["dosh bhayo, maaf garnuhos", "jhut bhayo, maaf garnuhos"], why: "The normal apology: a mistake “happened”, <b>galti bhayo</b>." },
     { q: "The bus was late, so you missed the meeting. “It's not my fault.”", a: "mero dosh hoina", o: ["mero jhut hoina", "mero galat hoina"], why: "Blame and responsibility → <b>dosh</b>." },
-    { q: "“That answer is wrong.”", a: "tyo jawaaph galat chha", o: ["tyo jawaaph galti chha", "tyo jawaaph dosh chha"], why: "The adjective is <b>galat</b>; <b>galti</b> is the noun." },
+    { q: "“That answer is wrong.”", a: "tyo jawaaph galat chha", o: ["tyo jawaaph bhul garchha", "tyo jawaaph dosh chha"], why: "The adjective is <b>galat</b>. <b>bhul</b> and <b>dosh</b> are nouns: a slip, and blame." },
     { q: "He said he was ill, but he was at the cinema. “He lied.”", a: "usle jhut bolyo", o: ["usle galti bolyo", "usle bhul bhanyo"], why: "A lie is “spoken”: <b>jhut bolnu</b>." }
   ] },
 
@@ -728,12 +728,12 @@ C.usage = (C.usage || []).concat([
     { q: "In court, the two lawyers…", a: "bahas garchhan", o: ["gaph garchhan", "kuraakaani haalchhan"], why: "Arguing positions before a judge is <b>bahas</b>." }
   ] },
 
-{ id: "w-really", level: "C2", unit: "c2nuance", title: "“Really?”: ho ra?, e ho?, saanchchai?, hagi?, ki kaso?", sub: "ho ra? (surely not?), e ho? (oh, is that so?), saanchchai? (truly?), hagi? (isn't it?), ki kaso? (or what do you say?)",
+{ id: "w-really", level: "C2", unit: "c2nuance", title: "“Really?”: ho ra?, e ho?, saanchchai?, hagi?, ki kaso?", sub: "ho ra? (really? surely not?), e ho? (oh, is that so?), saanchchai? (truly?), hagi? (isn't it?), ki kaso? (or what do you say?)",
   words: ["parchha ra", "ho ra", "hagi", "saanchchai"],
   blocks: [
     { p: "A listener in Nepali is never silent: little questions show doubt, interest, surprise or a wish for agreement. They all translate as “really?” or “right?”, but they are not interchangeable." },
     { table: { head: ["Say", "When", "Example"], rows: [
-      ["<b>ho ra?</b>", "doubt: “surely not?”, “is that really so?”", "bholi bidaa? <b>ho ra?</b>"],
+      ["<b>ho ra?</b>", "surprise or doubt, depending on the tone: “really?”, “surely not?”", "bholi bidaa? <b>ho ra?</b>"],
       ["<b>e ho?</b>", "new information accepted: “oh, is that so?”", "<b>e ho?</b> malaai thaahaa thiena"],
       ["<b>saanchchai?</b>", "real astonishment, glad or shocked: “truly?”", "<b>saanchchai?</b> badhaai chha!"],
       ["<b>hagi?</b>", "seeking agreement: “isn't it?”, “don't you think?”", "kasto raamro, <b>hagi?</b>"],
@@ -746,11 +746,11 @@ C.usage = (C.usage || []).concat([
       { ne: "आज कस्तो रमाइलो भयो, हगि?", ro: "aaja kasto ramaailo bhayo, hagi?", en: "Today was such fun, wasn't it?" },
       { ne: "अब घर फर्कौँ, कि कसो?", ro: "aba ghar pharkaun, ki kaso?", en: "Shall we head home now, or what do you say?" }
     ] },
-    { warn: "<b>ho ra?</b> after someone's good news sounds as if you don't believe them: for a promotion or a baby say <b>saanchchai?</b> or <b>e, badhaai chha!</b>. The <b>ra</b> here is not “and”: at the end of a sentence it turns a statement into a sceptical question, as in <b>khaanai parchha ra?</b>" }
+    { warn: "The tone decides what <b>ho ra?</b> means: said flat, it questions what you were told; said warmly, often as <b>e ho ra?</b>, it is friendly surprise and goes well with good news (<b>e ho ra? badhaai chha!</b>). The <b>ra</b> here is not “and”: at the end of a sentence it turns a statement into a sceptical question, as in <b>khaanai parchha ra?</b>" }
   ],
   quiz: [
-    { q: "Your friend announces she is getting married. You are delighted.", a: "saanchchai? badhaai chha!", o: ["ho ra? badhaai chha!", "ki kaso? badhaai chha!"], why: "Glad astonishment → <b>saanchchai?</b>. <b>ho ra?</b> would sound like doubt." },
-    { q: "A colleague claims the office is closed tomorrow. You doubt it.", a: "ho ra?", o: ["hagi?", "e ho, dhanyabaad"], why: "Doubt → <b>ho ra?</b>" },
+    { q: "Your friend announces she is getting married. You are delighted.", a: "saanchchai? badhaai chha!", o: ["hagi? badhaai chha!", "ki kaso? badhaai chha!"], why: "Glad astonishment → <b>saanchchai?</b>. <b>hagi?</b> and <b>ki kaso?</b> ask for agreement or an opinion; they do not react to news." },
+    { q: "A colleague claims the office is closed tomorrow. You doubt it.", a: "ho ra?", o: ["hagi?", "e ho, dhanyabaad"], why: "Doubt → <b>ho ra?</b>, said flat." },
     { q: "Watching the sunrise at Sarangkot with a friend: “Beautiful, isn't it?”", a: "kasto raamro, hagi?", o: ["kasto raamro, ho ra?", "kasto raamro, ki kaso?"], why: "Inviting agreement → <b>hagi?</b>" },
     { q: "Proposing a plan and inviting a view: “Let's leave at six, or what do you think?”", a: "chha baje hindaun, ki kaso?", o: ["chha baje hindaun, ho ra?", "chha baje hindaun, saanchchai?"], why: "A proposal left open → <b>ki kaso?</b>" }
   ] },
