@@ -322,7 +322,7 @@ R.use = (st, done) => {
   const n = USE[st.id]; if (!n || !n.blocks) return done();
   A.$app.innerHTML = `${top()}
   <section><p class="eyebrow">Which word, when? · ${esc(n.level)}</p><h1>${esc(n.title)}</h1><p class="muted">${esc(n.sub)}</p></section>
-  <article class="g-body">${noteBody(n)}</article>
+  <article class="g-body${n.level === "Script" ? " script" : ""}">${noteBody(n)}</article>
   <div class="row end"><button class="btn primary" id="next">Got it</button></div>`;
   $("next").onclick = () => { meet(n.id); A.addXP(2); done(); };
 };
@@ -338,7 +338,7 @@ function noteSheet(id) {
   const n = USE[id]; if (!n) return;
   const m = document.createElement("div"); m.className = "modal";
   m.innerHTML = `<div class="modal-in sheet" role="dialog" aria-modal="true"><p class="eyebrow">Which word, when?</p><h2>${esc(n.title)}</h2><p class="muted">${esc(n.sub)}</p>
-    <article class="g-body">${noteBody(n)}</article><button class="btn primary" data-close>Close</button></div>`;
+    <article class="g-body${n.level === "Script" ? " script" : ""}">${noteBody(n)}</article><button class="btn primary" data-close>Close</button></div>`;
   document.body.appendChild(m); m.querySelector("[data-close]").focus();
   m.addEventListener("click", e => { if (e.target === m || e.target.closest("[data-close]")) m.remove(); });
 }
@@ -435,7 +435,7 @@ VIEWS.word = id => {
   if (n.blocks) meet(id);
   A.$app.innerHTML = `${A.backBtn("which", "Which word, when?")}
   <section><p class="eyebrow">${esc(n.level)}${u ? " · " + esc(u.title) : ""}</p><h1>${esc(n.title)}</h1><p class="muted">${esc(n.sub)}</p></section>
-  <article class="g-body">${noteBody(n)}</article>
+  <article class="g-body${n.level === "Script" ? " script" : ""}">${noteBody(n)}</article>
   ${n.blocks ? `<section class="tips"><h3>Check yourself</h3><p class="muted">${n.quiz.length} situations, each with an explanation.</p><button class="btn primary" data-go="wquiz-${id}">Start</button></section>`
     : g ? `<section class="tips"><h3>From the grammar course</h3><p class="muted">${esc(g.title)}. Its check is in the chapter.</p><button class="btn primary" data-go="gram-${g.id}">Open the chapter</button></section>` : ""}`;
 };
