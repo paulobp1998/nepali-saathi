@@ -664,14 +664,15 @@ VIEWS.path = () => {
 };
 
 /* Stories: one voice, sentence by sentence, then comprehension questions */
-VIEWS.story = id => {
-  const s = STORY[id]; if (!s) return go("home");
+// ses: set when the story is a step of the daily session (daily.js): { top, done }.
+VIEWS.story = (id, ses) => {
+  const s = STORY[id]; if (!s) return ses ? ses.done(0, 0) : go("home");
   let showWords = false, showEn = false, now = -1, gen = 0, answers = {};
   const qs = s.questions.map(q => ({ ...q, opts: shuffle([q.a, ...q.o]) }));
   const draw = () => {
     const nAns = Object.keys(answers).length, right = Object.values(answers).filter(Boolean).length;
     $app.innerHTML = `
-    ${backBtn("home", "Home")}
+    ${ses ? ses.top() : backBtn("home", "Home")}
     <section><p class="eyebrow">${esc(s.level)} · Listening story</p><h1>${esc(s.title)}</h1><p class="muted">${esc(s.intro)}</p></section>
     <div class="banner">Listen twice with the words hidden, answer the questions, then show the words and listen once more.</div>
     <div class="row split">
@@ -683,11 +684,12 @@ VIEWS.story = id => {
       <div class="tips"><h3>${esc(q.q)}</h3><div class="opts">${q.opts.map(o => {
         const st = answers[qi] === undefined ? "" : o === q.a ? "right" : (answers[qi] === false && o === q.picked ? "wrong" : "");
         return `<button class="opt ${st}" data-q="${qi}" data-o="${esc(o)}" ${answers[qi] !== undefined ? "disabled" : ""}>${esc(o)}</button>`; }).join("")}</div></div>`).join("")}
-      ${nAns === qs.length ? `<p class="verdict ${right === qs.length ? "good" : right ? "ok" : "bad"}">${right} of ${qs.length} right</p>` : ""}
+      ${nAns === qs.length ? `<p class="verdict ${right === qs.length ? "good" : right ? "ok" : "bad"}">${right} of ${qs.length} right</p>${ses ? `<div class="row end"><button class="btn primary" id="snext">Continue</button></div>` : ""}` : ""}
     </section>`;
     const $ = x => document.getElementById(x);
     $("tw").onclick = () => { showWords = !showWords; draw(); };
     $("te").onclick = () => { showEn = !showEn; draw(); };
+    if ($("snext")) $("snext").onclick = () => { gen++; Voice.stop(); ses.done(right, qs.length); };
     $("all").onclick = () => { if (gen && now >= 0) { gen++; now = -1; Voice.stop(); draw(); } else play(); };
     $app.querySelectorAll(".bubble").forEach(b => b.onclick = () => { now = +b.dataset.k; draw(); Voice.say(s.lines[now].ne); });
     $app.querySelectorAll("[data-q]").forEach(b => b.onclick = () => {

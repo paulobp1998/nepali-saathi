@@ -1,5 +1,6 @@
 // B2, C1 and C2 lessons, with their conversations and stories. Each lesson practises one chapter of the
 // advanced grammar course (see gplan in daily-content.js). Same shapes as in content.js.
+// A story's `unit` is the lesson whose last daily session plays it (finale() in daily.js).
 (function () {
 const C = window.COURSE;
 C.units.push(
@@ -314,11 +315,95 @@ C.dialogues.push(
       { who: "A", ne: "विदेश जाने रे।", ro: "bidesh jaane re.", en: "Going abroad, they say." },
       { who: "B", ne: "जे होस्, राम्रै होस्।", ro: "je hos, raamrai hos.", en: "Whatever happens, I hope it goes well." }
     ]
+  },
+  {
+    id: "d35", unit: "b2feel", title: "How was the trek?",
+    scene: "A friend asks about your trek to Poon Hill.",
+    lines: [
+      { who: "A", ne: "पुन हिल कस्तो लाग्यो?", ro: "pun hil kasto laagyo?", en: "How did you like Poon Hill?" },
+      { who: "B", ne: "असाध्यै राम्रो लाग्यो। तर उकालो चढ्दा सास फुल्यो।", ro: "asaadhyai raamro laagyo. tara ukaalo chadhdaa saas phulyo.", en: "I loved it. But climbing uphill I got out of breath." },
+      { who: "A", ne: "पुग्न कति दिन लाग्यो?", ro: "pugna kati din laagyo?", en: "How many days did it take to get there?" },
+      { who: "B", ne: "दुई दिन लाग्यो। दोस्रो दिन पानी पर्‍यो।", ro: "dui din laagyo. dosro din paani paryo.", en: "It took two days. On the second day it rained." },
+      { who: "A", ne: "जुका लागेन?", ro: "jukaa laagena?", en: "Didn't you get leeches?" },
+      { who: "B", ne: "लाग्यो नि! खुट्टाभरि जुका लागेर आपत पर्‍यो।", ro: "laagyo ni! khuttaabhari jukaa laagera aapat paryo.", en: "I did! Leeches all over my legs: I was in a real fix." },
+      { who: "A", ne: "फेरि जान मन लाग्छ त?", ro: "pheri jaana man laagchha ta?", en: "So do you feel like going again?" },
+      { who: "B", ne: "लाग्छ। अर्को पटक तपाईं पनि जानुपर्छ।", ro: "laagchha. arko patak tapaain pani jaanuparchha.", en: "I do. Next time you have to come too." }
+    ]
+  },
+  {
+    id: "d36", unit: "b2respect", title: "Meeting a friend's grandfather",
+    scene: "Your friend Bikash takes you home. His grandfather is sitting on the veranda.",
+    lines: [
+      { who: "A", ne: "आउनुहोस्, आउनुहोस्। बस्नुहोस् न।", ro: "aaunuhos, aaunuhos. basnuhos na.", en: "Come in, come in. Do sit down." },
+      { who: "B", ne: "नमस्कार, हजुरबुबा। हजुरलाई सन्चै छ?", ro: "namaskaar, hajurbubaa. hajurlaai sanchai chha?", en: "Greetings, Grandfather. Are you keeping well?" },
+      { who: "A", ne: "सन्चै छु। तिमी कहाँबाट आएको?", ro: "sanchai chhu. timi kahaanbaata aaeko?", en: "I'm well. Where have you come from?" },
+      { who: "B", ne: "म पोर्चुगलबाट आएको हुँ, हजुर।", ro: "ma porchugalbaata aaeko hun, hajur.", en: "I'm from Portugal, sir." },
+      { who: "A", ne: "ए, धेरै टाढाबाट! नेपाली कहाँ सिक्यौ?", ro: "e, dherai taadhaabaata! nepaali kahaan sikyau?", en: "Oh, from so far away! Where did you learn Nepali?" },
+      { who: "B", ne: "विकासले सिकाइदिएको हो। अझै सिक्दै छु, हजुर।", ro: "bikaasle sikaaidieko ho. ajhai sikdai chhu, hajur.", en: "Bikash taught me. I'm still learning, sir." },
+      { who: "A", ne: "राम्रो बोल्छौ। खाना खाएर मात्र जानू है।", ro: "raamro bolchhau. khaanaa khaaera maatra jaanu hai.", en: "You speak well. Don't leave without eating, will you?" },
+      { who: "B", ne: "हजुरलाई कष्ट हुन्छ कि?", ro: "hajurlaai kashta hunchha ki?", en: "Wouldn't that be a trouble for you?" },
+      { who: "A", ne: "के को कष्ट! पाहुना भनेका देवता हुन्।", ro: "ke ko kashta! paahunaa bhanekaa debataa hun.", en: "What trouble! Guests are gods." }
+    ]
+  },
+  {
+    id: "d37", unit: "b2ideas", title: "Looking for a room",
+    scene: "You ask a tea-shop owner in Patan about a place to rent.",
+    lines: [
+      { who: "B", ne: "दिदी, यता बस्ने कोठा पाइन्छ?", ro: "didi, yataa basne kothaa paainchha?", en: "Excuse me, is there a room to rent around here?" },
+      { who: "A", ne: "पाइन्छ। कति जना बस्ने?", ro: "paainchha. kati janaa basne?", en: "There is. For how many people?" },
+      { who: "B", ne: "म एक्लै बस्ने हो। खाना पकाउने ठाउँ चाहिन्छ।", ro: "ma eklai basne ho. khaanaa pakaaune thaaun chaahinchha.", en: "Just me. I need somewhere to cook." },
+      { who: "A", ne: "माथिल्लो तलामा भर्खर खाली भएको कोठा छ। भान्सा पनि छ।", ro: "maathillo talaamaa bharkhar khaali bhaeko kothaa chha. bhaansaa pani chha.", en: "There's a room upstairs that has just become free. It has a kitchen too." },
+      { who: "B", ne: "भाडा कति तिर्नुपर्ने हो?", ro: "bhaadaa kati tirnuparne ho?", en: "How much is the rent?" },
+      { who: "A", ne: "महिनाको बाह्र हजार। बत्ती-पानीको छुट्टै लाग्छ।", ro: "mahinaako baahra hajaar. batti-paaniko chhuttai laagchha.", en: "Twelve thousand a month. Electricity and water are extra." },
+      { who: "B", ne: "हेर्ने बेला कहिले मिल्छ?", ro: "herne belaa kahile milchha?", en: "When would be a good time to see it?" },
+      { who: "A", ne: "अहिल्यै हेर्नुहोस् न, साँचो मसँगै छ।", ro: "ahilyai hernuhos na, saancho masangai chha.", en: "See it right now; I have the key with me." }
+    ]
+  },
+  {
+    id: "d38", unit: "c1idiom", title: "Letting off steam",
+    scene: "Over tea, a friend complains about a new boss. Answer in the same idiomatic style.",
+    lines: [
+      { who: "A", ne: "त्यो नयाँ हाकिमले त मेरो टाउको खायो।", ro: "tyo nayaan haakimle ta mero taauko khaayo.", en: "That new boss is driving me mad." },
+      { who: "B", ne: "किन, के भयो?", ro: "kina, ke bhayo?", en: "Why, what happened?" },
+      { who: "A", ne: "मुखले मीठो बोल्छ, तर पेटमा अर्कै कुरा छ।", ro: "mukhle mitho bolchha, tara petmaa arkai kuraa chha.", en: "He talks sweetly, but he means something else." },
+      { who: "B", ne: "आँखा चिम्लेर विश्वास नगर न त।", ro: "aankhaa chimlera bishwaas nagara na ta.", en: "Then don't trust him blindly." },
+      { who: "A", ne: "हिजो सबैको अगाडि मेरो नाक काट्यो।", ro: "hijo sabaiko agaadi mero naak kaatyo.", en: "Yesterday he humiliated me in front of everyone." },
+      { who: "B", ne: "त्यो सुनेर मेरो पनि मन दुख्यो।", ro: "tyo sunera mero pani man dukhyo.", en: "Hearing that hurts me too." },
+      { who: "A", ne: "उसको गनगन सुन्दा-सुन्दा कान पाकिसक्यो।", ro: "usko gangan sundaa-sundaa kaan paakisakyo.", en: "I'm sick to death of listening to his grumbling." },
+      { who: "B", ne: "मन ठूलो बनाऊ, यार। यो पनि बितेर जान्छ।", ro: "man thulo banaau, yaar. yo pani bitera jaanchha.", en: "Be big-hearted, mate. This too will pass." }
+    ]
+  },
+  {
+    id: "d39", unit: "c1precise", title: "Know, can, may",
+    scene: "A colleague wants to visit Ramesh, a mutual acquaintance. Choose your verbs with care.",
+    lines: [
+      { who: "A", ne: "तपाईं रमेशजीलाई चिन्नुहुन्छ?", ro: "tapaain rameshjilaai chinnuhunchha?", en: "Do you know Ramesh?" },
+      { who: "B", ne: "चिन्छु, तर उहाँको घर कहाँ हो, थाहा छैन।", ro: "chinchhu, tara uhaanko ghar kahaan ho, thaahaa chhaina.", en: "I know him, but I don't know where his house is." },
+      { who: "A", ne: "मैले हिजो फोन गरेँ, उहाँले उठाउनुभएन।", ro: "maile hijo phon garen, uhaanle uthaaunubhaena.", en: "I phoned yesterday; he didn't pick up." },
+      { who: "B", ne: "सुन्नुभएन होला। उहाँ अलि कम सुन्नुहुन्छ।", ro: "sunnubhaena holaa. uhaan ali kam sunnuhunchha.", en: "He probably didn't hear. He's a little hard of hearing." },
+      { who: "A", ne: "म भोलि भेट्न जान सक्दिनँ, बिदा पाइनँ।", ro: "ma bholi bhetna jaana sakdina, bidaa paaina.", en: "I can't go to see him tomorrow; I didn't get leave." },
+      { who: "B", ne: "म सोधिदिन्छु, अनि तपाईंलाई भन्छु।", ro: "ma sodhidinchhu, ani tapaainlaai bhanchhu.", en: "I'll ask for you and then tell you." },
+      { who: "A", ne: "तपाईंलाई मोटरसाइकल चलाउन आउँछ? सँगै जाऔँ न।", ro: "tapaainlaai motarsaaikal chalaauna aaunchha? sangai jaaun na.", en: "Do you know how to ride a motorbike? Let's go together." },
+      { who: "B", ne: "आउँछ, तर यहाँ चलाउन पाइँदैन, लाइसेन्स छैन।", ro: "aaunchha, tara yahaan chalaauna paaindaina, laaisens chhaina.", en: "I do, but I'm not allowed to ride here; I have no licence." }
+    ]
+  },
+  {
+    id: "d40", unit: "c2echo", title: "Packing for the village",
+    scene: "You are off to a friend's village for Dashain. His mother checks that you are ready.",
+    lines: [
+      { who: "A", ne: "लुगा-सुगा सबै हाल्यौ?", ro: "lugaa-sugaa sabai haalyau?", en: "Have you packed your clothes and things?" },
+      { who: "B", ne: "हालेँ। अरू के-के लानुपर्छ?", ro: "haalen. aru ke-ke laanuparchha?", en: "I have. What else do I need to take?" },
+      { who: "A", ne: "बाटोमा खाजा-साजा पाइँदैन, केही बोकेर जानू।", ro: "baatomaa khaajaa-saajaa paaindaina, kehi bokera jaanu.", en: "You won't find snacks or anything on the way; take something with you." },
+      { who: "B", ne: "बिस्कुट-सिस्कुट किनिसकेँ। गाउँमा को-को हुनुहुन्छ?", ro: "biskut-siskut kinisaken. gaaunmaa ko-ko hunuhunchha?", en: "I've already bought biscuits and so on. Who is there in the village?" },
+      { who: "A", ne: "हजुरबा, हजुरआमा, काका-काकी सबै। घर-घरमा पिङ हालेका होलान्।", ro: "hajurbaa, hajuraamaa, kaakaa-kaaki sabai. ghar-gharmaa ping haalekaa holaan.", en: "Grandfather, grandmother, uncle and aunt, everyone. There'll be swings put up at every house." },
+      { who: "B", ne: "कति रमाइलो! म बिस्तारै-बिस्तारै सबैसँग चिनजान गर्छु।", ro: "kati ramaailo! ma bistaarai-bistaarai sabaisanga chinjaan garchhu.", en: "What fun! I'll get to know everyone bit by bit." },
+      { who: "A", ne: "ल, हाँस्दै-खेल्दै जाऊ। पुगेपछि फोन-सोन गर्नू है।", ro: "la, haansdai-kheldai jaau. pugepachhi phon-son garnu hai.", en: "Right, off you go and enjoy yourselves. Give us a ring or something when you get there." }
+    ]
   }
 );
 C.stories.push(
   {
-    id: "s10", level: "B2", title: "Getting the roof fixed",
+    id: "s10", level: "B2", unit: "b2favour", title: "Getting the roof fixed",
     intro: "A family story about a storm and two builders. Listen for the -idinu forms.",
     lines: [
       { ne: "गएको हप्ताको हावाहुरीले हाम्रो छानो बिगारिदियो।", ro: "gaeko haptaako haawaahurile haamro chhaano bigaaridiyo.", en: "Last week's storm damaged our roof." },
@@ -336,7 +421,43 @@ C.stories.push(
     ]
   },
   {
-    id: "s11", level: "C1", title: "The headteacher's speech",
+    id: "s13", level: "B2", unit: "b2rules", title: "The trekking permit",
+    intro: "A trekker explains the rules for the Annapurna area. Listen for what is needed and what is not allowed.",
+    lines: [
+      { ne: "अन्नपूर्ण क्षेत्रमा जान अनुमतिपत्र लिनुपर्छ।", ro: "annapurna kshetramaa jaana anumatipatra linuparchha.", en: "To go into the Annapurna area you have to get a permit." },
+      { ne: "अनुमतिपत्र पोखराको कार्यालयमा पाइन्छ।", ro: "anumatipatra pokharaako kaaryaalayamaa paainchha.", en: "The permit is available at the office in Pokhara." },
+      { ne: "त्यसका लागि दुईवटा फोटो र राहदानी चाहिन्छ।", ro: "tyaskaa laagi duiwataa photo ra raahadaani chaahinchha.", en: "For it you need two photos and your passport." },
+      { ne: "विदेशीलाई तीन हजार रुपैयाँ लाग्छ।", ro: "bideshilaai tin hajaar rupaiyaan laagchha.", en: "For foreigners it costs three thousand rupees." },
+      { ne: "बाटोमा ठाउँ-ठाउँमा अनुमतिपत्र जाँचिन्छ।", ro: "baatomaa thaaun-thaaunmaa anumatipatra jaanchinchha.", en: "Along the trail the permit is checked at various places." },
+      { ne: "जङ्गलमा आगो बाल्न र फोहोर फाल्न पाइँदैन।", ro: "jangalmaa aago baalna ra phohor phaalna paaindaina.", en: "Lighting fires and dropping litter in the forest are not allowed." },
+      { ne: "नियम नमान्नेले जरिवाना तिर्नुपर्छ।", ro: "niyam namaannele jariwaanaa tirnuparchha.", en: "Anyone who breaks the rules has to pay a fine." }
+    ],
+    questions: [
+      { q: "Where do you get the permit?", a: "At the office in Pokhara", o: ["At the airport", "On the trail", "In the forest"] },
+      { q: "How much does it cost for foreigners?", a: "3,000 rupees", o: ["300 rupees", "2,000 rupees", "5,000 rupees"] },
+      { q: "What is not allowed in the forest?", a: "Lighting fires and dropping litter", o: ["Taking photos", "Walking alone", "Camping"] }
+    ]
+  },
+  {
+    id: "s14", level: "B2", unit: "b2respect", title: "A visit to my old teacher",
+    intro: "A former student visits a retired teacher. Notice the respect forms on every verb about him.",
+    lines: [
+      { ne: "हिजो म आफूलाई पढाउनुभएको गुरुलाई भेट्न गएँ।", ro: "hijo ma aaphulaai padhaaunubhaeko gurulaai bhetna gaen.", en: "Yesterday I went to see the teacher who taught me." },
+      { ne: "उहाँ अवकाश पाएर गाउँमा बस्दै हुनुहुन्छ।", ro: "uhaan abakaash paaera gaaunmaa basdai hunuhunchha.", en: "He has retired and is living in the village." },
+      { ne: "मलाई देख्नेबित्तिकै उहाँले चिन्नुभयो।", ro: "malaai dekhnebittikai uhaanle chinnubhayo.", en: "He recognised me the moment he saw me." },
+      { ne: "गुरुआमाले आफैँले पकाउनुभएको खाना खुवाउनुभयो।", ro: "guruaamaale aaphainle pakaaunubhaeko khaanaa khuwaaunubhayo.", en: "His wife served me food she had cooked herself." },
+      { ne: "उहाँले सिकाउनुभएका कुरा म अझै सम्झन्छु।", ro: "uhaanle sikaaunubhaekaa kuraa ma ajhai samjhanchhu.", en: "I still remember the things he taught." },
+      { ne: "फर्कने बेलामा उहाँले आशीर्वाद दिनुभयो।", ro: "pharkane belaamaa uhaanle aashirbaad dinubhayo.", en: "When it was time to leave, he gave me his blessing." },
+      { ne: "गुरुलाई भेट्न पाउनु मेरा लागि ठूलो खुसीको कुरा हो।", ro: "gurulaai bhetna paaunu meraa laagi thulo khusiko kuraa ho.", en: "Being able to see my teacher is a great joy for me." }
+    ],
+    questions: [
+      { q: "Where does the teacher live now?", a: "In the village", o: ["In Kathmandu", "Abroad", "At the school"] },
+      { q: "Who cooked the food?", a: "The teacher's wife", o: ["The narrator", "The teacher", "A neighbour"] },
+      { q: "What did the teacher give when the visitor left?", a: "His blessing", o: ["A book", "Money", "A letter"] }
+    ]
+  },
+  {
+    id: "s11", level: "C1", unit: "c1formal", title: "The headteacher's speech",
     intro: "A short formal speech at a school prize day. Notice the formal vocabulary.",
     lines: [
       { ne: "आदरणीय अभिभावकज्यू, शिक्षक साथीहरू र प्यारा विद्यार्थी भाइबहिनीहरू।", ro: "aadaraniya abhibhaawakjyu, shikshak saathiharu ra pyaaraa bidyaarthi bhaaibahiniharu.", en: "Respected parents, fellow teachers and dear students." },
@@ -353,7 +474,76 @@ C.stories.push(
     ]
   },
   {
-    id: "s12", level: "C2", title: "Grandmother's proverbs",
+    id: "s15", level: "C1", unit: "c1casual", title: "A voice message",
+    intro: "A friend's voice message, in the short forms friends use. Listen for bho, bhanyaa and khoi.",
+    lines: [
+      { ne: "ओइ, के छ यार? धेरै भो कुरा नभएको।", ro: "oi, ke chha yaar? dherai bho kuraa nabhaeko.", en: "Hey, how's it going, mate? It's been ages since we talked." },
+      { ne: "हिजो तिमीलाई फोन गर्‍या थिएँ, उठाएनौ त।", ro: "hijo timilaai phon garyaa thien, uthaaenau ta.", en: "I rang you yesterday; you didn't pick up." },
+      { ne: "शनिबार हामी सबै जना नगरकोट जाने भन्या छ।", ro: "shanibaar haami sabai janaa nagarkot jaane bhanyaa chha.", en: "On Saturday we're all planning to go to Nagarkot." },
+      { ne: "गाडी-साडीको टेन्सन नलेऊ, रमेशले मिलाइहाल्छ।", ro: "gaadi-saadiko tensan naleu, rameshle milaaihaalchha.", en: "Don't stress about transport and all that; Ramesh will sort it out." },
+      { ne: "खोइ, पानी पर्छ कि भन्ने डर चाहिँ छ।", ro: "khoi, paani parchha ki bhanne dar chaahin chha.", en: "Dunno, I am a bit afraid it might rain, though." },
+      { ne: "ल, आउने भए आजै भन है। पछि कुरा गरौँला।", ro: "la, aaune bhae aajai bhana hai. pachhi kuraa garaunlaa.", en: "Right, if you're coming, tell me today, OK? Talk later." }
+    ],
+    questions: [
+      { q: "Where are the friends going on Saturday?", a: "Nagarkot", o: ["Pokhara", "Bhaktapur", "Chitwan"] },
+      { q: "Who will sort out the transport?", a: "Ramesh", o: ["The speaker", "The listener", "A travel agent"] },
+      { q: "What is the speaker a little worried about?", a: "Rain", o: ["The cost", "The traffic", "Getting leave"] }
+    ]
+  },
+  {
+    id: "s16", level: "C1", unit: "c1idiom", title: "The interview",
+    intro: "A young man tells his sister about a job interview. Listen for the heart, the nose and the right word for “know”.",
+    lines: [
+      { ne: "आज मेरो अन्तर्वार्ता थियो, दिदी।", ro: "aaja mero antarbaartaa thiyo, didi.", en: "I had my interview today, sister." },
+      { ne: "सुरुमा त डरले मुटु ढुकढुक भयो।", ro: "surumaa ta darle mutu dhukdhuk bhayo.", en: "At first my heart was pounding with fear." },
+      { ne: "एउटा प्रश्नको जवाफ मलाई आएन, झूट बोल्न पनि मन लागेन।", ro: "eutaa prashnako jawaaph malaai aaena, jhut bolna pani man laagena.", en: "There was one question I couldn't answer, and I didn't feel like lying either." },
+      { ne: "त्यसैले थाहा छैन भनेर सीधै भनिदिएँ।", ro: "tyasaile thaahaa chhaina bhanera sidhai bhanidien.", en: "So I told them straight that I didn't know." },
+      { ne: "हाकिमले मेरो कुरा मन पराउनुभयो जस्तो लाग्यो।", ro: "haakimle mero kuraa man paraaunubhayo jasto laagyo.", en: "The boss seemed to like what I said." },
+      { ne: "जागिर पाएँ भने बुबाको नाक राख्न पाउँछु।", ro: "jaagir paaen bhane bubaako naak raakhna paaunchhu.", en: "If I get the job, I'll be able to do Father proud." },
+      { ne: "नतिजा भोलि थाहा हुन्छ रे।", ro: "natijaa bholi thaahaa hunchha re.", en: "They say the result will be known tomorrow." }
+    ],
+    questions: [
+      { q: "How did he feel at the start?", a: "Very nervous", o: ["Bored", "Confident", "Angry"] },
+      { q: "What did he do about the question he couldn't answer?", a: "Said honestly that he didn't know", o: ["Made up an answer", "Asked for more time", "Changed the subject"] },
+      { q: "When will he know the result?", a: "Tomorrow", o: ["Today", "Next week", "In a month"] }
+    ]
+  },
+  {
+    id: "s17", level: "C2", unit: "c2echo", title: "Dashain in the village",
+    intro: "Memories of Dashain in the village, full of echo words and doubled words.",
+    lines: [
+      { ne: "दसैँ आउनुअघि घर-घरमा लिपपोत गरिन्छ।", ro: "dasain aaunuaghi ghar-gharmaa lippot garinchha.", en: "Before Dashain every house is given a fresh coat of mud and clay." },
+      { ne: "केटाकेटीहरू नयाँ लुगा-सुगा लगाएर यता-उता दौडन्छन्।", ro: "ketaaketiharu nayaan lugaa-sugaa lagaaera yataa-utaa daudanchhan.", en: "The children put on their new clothes and things and run here and there." },
+      { ne: "आफन्तहरू टाढा-टाढाबाट आउँछन्।", ro: "aaphantaharu taadhaa-taadhaabaata aaunchhan.", en: "Relatives come from far and wide." },
+      { ne: "खानपिन, नाचगान र गफगाफले रात बित्छ।", ro: "khaanpin, naachgaan ra gaphgaaphle raat bitchha.", en: "The night passes in eating and drinking, singing and dancing, and chit-chat." },
+      { ne: "ठूलाबडाले टीका लगाइदिँदै आशीर्वाद दिनुहुन्छ।", ro: "thulaabadaale tikaa lagaaidindai aashirbaad dinuhunchha.", en: "The elders put on the tika and give their blessing." },
+      { ne: "अलि-अलि दक्षिणा पाउँदा केटाकेटी मख्ख पर्छन्।", ro: "ali-ali dakshinaa paaundaa ketaaketi makkha parchhan.", en: "Getting a little gift of money each, the children are thrilled." }
+    ],
+    questions: [
+      { q: "What is done to the houses before Dashain?", a: "They are freshly plastered", o: ["They are locked up", "They are sold", "They are painted blue"] },
+      { q: "How does the night pass?", a: "Eating, singing, dancing and chatting", o: ["In silence and prayer", "Watching television", "Working in the fields"] },
+      { q: "What thrills the children?", a: "A little gift of money", o: ["A day off school", "A trip to town", "A new bicycle"] }
+    ]
+  },
+  {
+    id: "s18", level: "C2", unit: "c2nuance", title: "The rumour",
+    intro: "A rumour goes round the village and turns out differently. Listen for re, kyaare, po and rahechha.",
+    lines: [
+      { ne: "गाउँमा नयाँ डाक्टर आउनुभएको छ रे।", ro: "gaaunmaa nayaan daaktar aaunubhaeko chha re.", en: "They say a new doctor has come to the village." },
+      { ne: "उहाँ विदेशमा पढेर आउनुभएको हो क्यारे।", ro: "uhaan bideshmaa padhera aaunubhaeko ho kyaare.", en: "He studied abroad, I think." },
+      { ne: "कसैले भने, उहाँ त एक महिना मात्र बस्नुहुन्छ रे।", ro: "kasaile bhane, uhaan ta ek mahinaa maatra basnuhunchha re.", en: "Some said he would only stay a month." },
+      { ne: "म आफैँ भेट्न गएँ; उहाँ त हाम्रै गाउँको छोरा पो हुनुहुँदो रहेछ!", ro: "ma aaphain bhetna gaen; uhaan ta haamrai gaaunko chhoraa po hunuhundo rahechha!", en: "I went to meet him myself; he turned out to be a son of our own village!" },
+      { ne: "एक महिना होइन, सधैँका लागि फर्कनुभएको रहेछ।", ro: "ek mahinaa hoina, sadhainkaa laagi pharkanubhaeko rahechha.", en: "Not for a month: it turns out he has come back for good." },
+      { ne: "हल्ला त हल्लै हो नि; आफैँले नबुझी पत्याउनु हुँदैन।", ro: "hallaa ta hallai ho ni; aaphainle nabujhi patyaaunu hundaina.", en: "A rumour is just a rumour, you know; you shouldn't believe things without finding out for yourself." }
+    ],
+    questions: [
+      { q: "What was the first rumour?", a: "A new doctor had come", o: ["The clinic was closing", "A road would be built", "A teacher had left"] },
+      { q: "Who did the doctor turn out to be?", a: "A son of the village", o: ["A foreigner", "The narrator's brother", "A government inspector"] },
+      { q: "How long is he staying?", a: "For good", o: ["One month", "One year", "Until Dashain"] }
+    ]
+  },
+  {
+    id: "s12", level: "C2", unit: "c2proverb", title: "Grandmother's proverbs",
     intro: "A grandchild looks back on a grandmother's sayings. Listen for po and kyaare.",
     lines: [
       { ne: "हजुरआमा कुरैपिच्छे उखान हाल्नुहुन्छ।", ro: "hajuraamaa kuraipichchhe ukhaan haalnuhunchha.", en: "Grandmother drops a proverb into everything she says." },

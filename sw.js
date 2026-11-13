@@ -1,5 +1,5 @@
 // Offline support: caches the app and its recordings. Bump V when publishing changes.
-const V = "saathi-v14";
+const V = "saathi-v15";
 const AUDIO = "saathi-audio"; // recordings are named by content hash, so this cache survives updates
 const FONTS = "saathi-fonts"; // Google Fonts (including Mukta for Devanagari), saved on first use
 const TTS = "saathi-tts";
