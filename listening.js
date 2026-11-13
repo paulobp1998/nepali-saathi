@@ -225,7 +225,7 @@ C.dialogues.push(
 );
 C.stories.push(
   {
-    id: "s5", level: "A1", title: "Ram's tea shop",
+    id: "s5", level: "A1", unit: "time", title: "Ram's tea shop",
     intro: "A very short portrait. Listen for the place and the price.",
     lines: [
       { ne: "रामको एउटा सानो चिया पसल छ।", ro: "raamko eutaa saano chiyaa pasal chha.", en: "Ram has a small tea shop." },
@@ -242,7 +242,7 @@ C.stories.push(
     ]
   },
   {
-    id: "s6", level: "A1", title: "Maya's family",
+    id: "s6", level: "A1", unit: "fam", title: "Maya's family",
     intro: "Maya introduces her family. Listen for who does what.",
     lines: [
       { ne: "मेरो नाम माया हो।", ro: "mero naam maayaa ho.", en: "My name is Maya." },
@@ -260,7 +260,7 @@ C.stories.push(
     ]
   },
   {
-    id: "s7", level: "A2", title: "The lost bag",
+    id: "s7", level: "A2", unit: "weather", title: "The lost bag",
     intro: "Someone tells you what happened on a bus trip yesterday.",
     lines: [
       { ne: "हिजो म बसमा भक्तपुर गएँ।", ro: "hijo ma basmaa bhaktapur gaen.", en: "Yesterday I went to Bhaktapur by bus." },
@@ -278,7 +278,7 @@ C.stories.push(
     ]
   },
   {
-    id: "s8", level: "B1", title: "The new road",
+    id: "s8", level: "B1", unit: "ifthen", title: "The new road",
     intro: "A villager explains how a road changed village life.",
     lines: [
       { ne: "हाम्रो गाउँमा दुई वर्षअघि सडक आयो।", ro: "haamro gaaunmaa dui barshaaghi sadak aayo.", en: "A road reached our village two years ago." },
@@ -296,7 +296,7 @@ C.stories.push(
     ]
   },
   {
-    id: "s9", level: "B1", title: "A brother in Qatar",
+    id: "s9", level: "B1", unit: "work", title: "A brother in Qatar",
     intro: "A family with a son working abroad.",
     lines: [
       { ne: "मेरो दाइ तीन वर्षदेखि कतारमा काम गर्नुहुन्छ।", ro: "mero daai tin barshadekhi kataarmaa kaam garnuhunchha.", en: "My older brother has been working in Qatar for three years." },

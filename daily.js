@@ -1,6 +1,6 @@
 // Daily session: one mixed lesson a day. Reviews, new phrases with word-by-word help, grammar in small
 // parts with quick checks, "which word, when?" notes, listening, speaking from English, word order, a culture
-// moment and, at the end of each unit, a spoken role-play. Also: the notes to browse, role-plays, weekly
+// moment and, at the end of each unit, a spoken role-play and the unit's listening story (if it has one). Also: the notes to browse, role-plays, weekly
 // real-world tasks and the monthly recording. Content lives in daily-content.js and usage-*.js. app.js passes its internals in through API (see MODULES there).
 window.MODULES = (window.MODULES || []).concat(function (A) {
 const { C, VIEWS, HOOKS, esc, I, shuffle, Voice, Mic, Sfx } = A;
@@ -40,6 +40,7 @@ function evalChapter(id) {
 }
 const rpFor = u => (C.roleplays || []).find(r => r.unit === u.id);
 const dlgFor = u => C.dialogues.filter(d => d.unit === u.id);
+const storyFor = u => (C.stories || []).find(s => s.unit === u.id && !A.S.story[s.id]);
 
 /* ---------- which word, when? (usage-*.js) ---------- */
 const USE = Object.fromEntries((C.usage || []).map(n => [n.id, n]));
@@ -126,6 +127,7 @@ function finale(u) {
   if (r) out.push({ t: "rp", id: r.id });
   const d = ds.find(x => !A.S.dlg[x.id]) || ds[0];
   if (d) out.push({ t: "rp", id: d.id });
+  const s = storyFor(u); if (s) out.push({ t: "story", id: s.id });
   if (!r && !d) shuffle(u.phrases).slice(0, 4).forEach(p => out.push({ t: "echo", id: p.id, m: "speak" }));
   out.push({ t: "unit", u: u.id });
   return out;
@@ -378,6 +380,7 @@ R.fact = (st, done) => {
 };
 
 R.rp = (st, done) => playRP(st.id, { inSession: true, onDone: done });
+R.story = (st, done) => A.VIEWS.story(st.id, { top, done: (r, n) => { const T = A.S.td; T.ok += r; T.n += n; done(); } });
 
 R.unit = (st, done) => {
   const u = A.UNIT[st.u]; if (!u) return done();

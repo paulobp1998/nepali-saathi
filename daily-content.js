@@ -201,6 +201,67 @@ C.roleplays = [
       { ne: "माफ गर्नुहोस्, आज बैठक छ।", ro: "maaf garnuhos, aaja baithak chha.", en: "Apologise: you have a meeting", go: "tomorrow" }] },
     seven: { say: { ne: "सात बजे। होटलमा भेटौँला।", ro: "saat baje. hotalmaa bhetaunlaa.", en: "Seven o'clock. We'll meet at the hotel." }, end: true },
     tomorrow: { say: { ne: "ठिक छ, भोलि भेटौँला।", ro: "thik chha, bholi bhetaunlaa.", en: "All right, see you tomorrow." }, end: true }
+  } },
+  { id: "tailor", unit: "b2service", title: "At the tailor's", scene: "A tailor's shop in Patan. You need clothes made or altered.", start: "a", nodes: {
+    a: { say: { ne: "नमस्ते, के सिलाउनुपर्‍यो?", ro: "namaste, ke silaaunuparyo?", en: "Hello, what do you need sewn?" }, opts: [
+      { ne: "एउटा कुर्ता सिलाउनु थियो।", ro: "eutaa kurtaa silaaunu thiyo.", en: "Say you'd like a kurta made", go: "cloth" },
+      { ne: "यो पाइन्ट छोट्याइदिनुहोस् न।", ro: "yo paaint chhotyaaidinuhos na.", en: "Ask to have these trousers shortened", go: "short" }] },
+    cloth: { say: { ne: "कपडा ल्याउनुभएको छ कि यहीँ हेर्नुहुन्छ?", ro: "kapadaa lyaaunubhaeko chha ki yahin hernuhunchha?", en: "Have you brought cloth, or will you look here?" }, opts: [
+      { ne: "ल्याएको छु। यो हेर्नुहोस्।", ro: "lyaaeko chhu. yo hernuhos.", en: "Say you've brought it", go: "measure" },
+      { ne: "यहीँ देखाइदिनुहोस् न।", ro: "yahin dekhaaidinuhos na.", en: "Ask to be shown some here", go: "show" }] },
+    show: { say: { ne: "यो सुती कपडा राम्रो छ। गर्मीमा सजिलो हुन्छ।", ro: "yo suti kapadaa raamro chha. garmimaa sajilo hunchha.", en: "This cotton is good. It's comfortable in the heat." }, opts: [
+      { ne: "हुन्छ, यही राखिदिनुहोस्।", ro: "hunchha, yahi raakhidinuhos.", en: "Agree: take this one", go: "measure" }] },
+    measure: { say: { ne: "ल, नाप लिन्छु। सीधा उभिनुहोस् है।", ro: "la, naap linchhu. sidhaa ubhinuhos hai.", en: "Right, I'll take your measurements. Stand straight, please." }, opts: [
+      { ne: "अलि खुकुलो बनाइदिनुहोस्।", ro: "ali khukulo banaaidinuhos.", en: "Ask for it a bit loose", go: "when" },
+      { ne: "ठ्याक्क मिल्ने बनाइदिनुहोस्।", ro: "thyaakka milne banaaidinuhos.", en: "Ask for an exact fit", go: "when" }] },
+    when: { say: { ne: "हुन्छ। एक हप्तामा तयार हुन्छ।", ro: "hunchha. ek haptaamaa tayaar hunchha.", en: "Fine. It will be ready in a week." }, opts: [
+      { ne: "शुक्रबारसम्म बनाइदिन सक्नुहुन्छ? बिहे छ।", ro: "shukrabaarsamma banaaidina saknuhunchha? bihe chha.", en: "Ask if it can be done by Friday: there's a wedding", go: "rush" },
+      { ne: "हुन्छ। सिलाइ कति लाग्छ?", ro: "hunchha. silaai kati laagchha?", en: "Agree and ask the sewing charge", go: "price" }] },
+    rush: { say: { ne: "गाह्रो छ, तर गरिदिन्छु। बिहीबार बेलुका लिन आउनुहोस्।", ro: "gaahro chha, tara garidinchhu. bihibaar belukaa lina aaunuhos.", en: "It's difficult, but I'll do it for you. Come and collect it on Thursday evening." }, opts: [
+      { ne: "धन्यवाद! सिलाइ कति लाग्छ?", ro: "dhanyabaad! silaai kati laagchha?", en: "Thank them and ask the charge", go: "price" }] },
+    price: { say: { ne: "आठ सय रुपैयाँ। अलिकति बैना दिनुपर्छ।", ro: "aath saya rupaiyaan. alikati bainaa dinuparchha.", en: "Eight hundred rupees. You need to pay a small deposit." }, opts: [
+      { ne: "ल, दुई सय राख्नुहोस्। रसिद दिनुहोस् न।", ro: "la, dui saya raakhnuhos. rasid dinuhos na.", en: "Pay two hundred and ask for a receipt", go: "end" }] },
+    end: { say: { ne: "लिनुहोस् रसिद। तयार भएपछि फोन गरिदिन्छु।", ro: "linuhos rasid. tayaar bhaepachhi phon garidinchhu.", en: "Here's the receipt. I'll phone you when it's ready." }, end: true },
+    short: { say: { ne: "कति छोट्याउने? लगाएर देखाउनुहोस् त।", ro: "kati chhotyaaune? lagaaera dekhaaunuhos ta.", en: "How much shorter? Put them on and show me." }, opts: [
+      { ne: "दुई इन्च जति छोट्याइदिनुहोस्।", ro: "dui inch jati chhotyaaidinuhos.", en: "About two inches", go: "wait" }] },
+    wait: { say: { ne: "यो त सानो काम हो। आधा घण्टा कुर्नुहोस्, अहिल्यै गरिदिन्छु।", ro: "yo ta saano kaam ho. aadhaa ghantaa kurnuhos, ahilyai garidinchhu.", en: "That's a small job. Wait half an hour, I'll do it right now." }, opts: [
+      { ne: "हुन्छ, म यहीँ कुर्छु। कति लाग्छ?", ro: "hunchha, ma yahin kurchhu. kati laagchha?", en: "Say you'll wait here and ask the price", go: "fifty" },
+      { ne: "म एक घण्टापछि लिन आउँछु। कति लाग्छ?", ro: "ma ek ghantaapachhi lina aaunchhu. kati laagchha?", en: "Say you'll come back in an hour and ask the price", go: "fifty" }] },
+    fifty: { say: { ne: "पचास रुपैयाँ मात्र।", ro: "pachaas rupaiyaan maatra.", en: "Just fifty rupees." }, end: true }
+  } },
+  { id: "office", unit: "c1formal", title: "Calling the campus office", scene: "You phone a university office in Kathmandu about a guest lecture. Keep it formal.", start: "a", nodes: {
+    a: { say: { ne: "नमस्कार, त्रिभुवन विश्वविद्यालय, प्रशासन शाखा। भन्नुहोस्।", ro: "namaskaar, tribhuwan bishwabidyaalaya, prashaasan shaakhaa. bhannuhos.", en: "Good day, Tribhuvan University, administration section. Go ahead." }, opts: [
+      { ne: "नमस्कार। म पोर्चुगलबाट बोल्दै छु। प्रमुखज्यूसँग कुरा गर्न सकिन्छ?", ro: "namaskaar. ma porchugalbaata boldai chhu. pramukhjyusanga kuraa garna sakinchha?", en: "Say you're calling from Portugal and ask to speak to the head", go: "who" },
+      { ne: "नमस्कार। अतिथि प्रवचनबारे जानकारी लिनु थियो।", ro: "namaskaar. atithi prabachanbaare jaankaari linu thiyo.", en: "Say you'd like information about a guest lecture", go: "info" }] },
+    who: { say: { ne: "प्रमुखज्यू अहिले बैठकमा हुनुहुन्छ। के कामले सम्झनुभएको होला?", ro: "pramukhjyu ahile baithakmaa hunuhunchha. ke kaamle samjhanubhaeko holaa?", en: "The head is in a meeting at the moment. May I ask what it is regarding?" }, opts: [
+      { ne: "अतिथि प्रवचनका लागि निमन्त्रणा पाएको थिएँ। मिति पक्का गर्नु थियो।", ro: "atithi prabachankaa laagi nimantranaa paaeko thien. miti pakkaa garnu thiyo.", en: "Explain: you were invited to give a guest lecture and want to confirm the date", go: "date" }] },
+    info: { say: { ne: "अवश्य। कुन कार्यक्रमको बारेमा होला?", ro: "awashya. kun kaaryakramko baaremaa holaa?", en: "Certainly. Which programme would that be about?" }, opts: [
+      { ne: "म पोर्चुगलको एक विश्वविद्यालयमा पढाउँछु। मलाई प्रवचनका लागि निमन्त्रणा आएको छ।", ro: "ma porchugalko ek bishwabidyaalayamaa padhaaunchhu. malaai prabachankaa laagi nimantranaa aaeko chha.", en: "Say you teach at a university in Portugal and have been invited to lecture", go: "date" }] },
+    date: { say: { ne: "ए, हजुर। कार्यक्रम आगामी शुक्रबार दिउँसो दुई बजे हुनेछ। उपस्थित हुन सक्नुहुन्छ?", ro: "e, hajur. kaaryakram aagaami shukrabaar diunso dui baje hunechha. upasthit huna saknuhunchha?", en: "Ah, yes. The programme will be next Friday at two in the afternoon. Will you be able to attend?" }, opts: [
+      { ne: "अवश्य उपस्थित हुनेछु।", ro: "awashya upasthit hunechhu.", en: "Confirm formally that you will attend", go: "need" },
+      { ne: "माफ गर्नुहोला, त्यस दिन सम्भव छैन। मिति सार्न सकिन्छ कि?", ro: "maaf garnuholaa, tyas din sambhab chhaina. miti saarna sakinchha ki?", en: "Apologise: that day is not possible; ask if the date can be moved", go: "move" }] },
+    move: { say: { ne: "म प्रमुखज्यूसँग सोधेर इमेलमार्फत जानकारी गराउँछु।", ro: "ma pramukhjyusanga sodhera imelmaarphat jaankaari garaaunchhu.", en: "I will ask the head and inform you by email." }, opts: [
+      { ne: "हुन्छ, म प्रतीक्षा गर्नेछु। सहयोगका लागि धन्यवाद।", ro: "hunchha, ma pratikshaa garnechhu. sahayogkaa laagi dhanyabaad.", en: "Say you'll await it and thank them for their help", go: "bye" }] },
+    need: { say: { ne: "धन्यवाद। तपाईंलाई केही आवश्यक पर्छ? प्रोजेक्टर, माइक?", ro: "dhanyabaad. tapaainlaai kehi aawashyak parchha? projektar, maaik?", en: "Thank you. Will you need anything? A projector, a microphone?" }, opts: [
+      { ne: "प्रोजेक्टरको व्यवस्था गरिदिनुभए आभारी हुनेछु।", ro: "projektarko byabasthaa garidinubhae aabhaari hunechhu.", en: "Say you'd be grateful if a projector were arranged", go: "bye" },
+      { ne: "केही पर्दैन, धन्यवाद।", ro: "kehi pardaina, dhanyabaad.", en: "Say you need nothing", go: "bye" }] },
+    bye: { say: { ne: "हुन्छ। थप जानकारी इमेलमा पठाइनेछ। नमस्कार।", ro: "hunchha. thap jaankaari imelmaa pathaainechha. namaskaar.", en: "Very well. Further information will be sent by email. Goodbye." }, end: true }
+  } },
+  { id: "ukhaan", unit: "c2proverb", title: "The right proverb", scene: "Tea with Kaka, an elderly neighbour, who shares the local news and his worries. Answer with a proverb that fits.", start: "a", nodes: {
+    a: { say: { ne: "सुन्नुभयो? हाम्रो टोलको त्यो सानो पसलले ठूलो सुपरमार्केटलाई नै टक्कर दियो रे।", ro: "sunnubhayo? haamro tolko tyo saano pasalle thulo suparmaarketlaai nai takkar diyo re.", en: "Have you heard? They say that little shop in our neighbourhood has given the big supermarket a run for its money." }, opts: [
+      { ne: "नपत्याउने खोलाले बगाउँछ भन्छन् नि।", ro: "napatyaaune kholaale bagaaunchha bhanchhan ni.", en: "Reply: it's the stream you underestimate that sweeps you away", go: "b" },
+      { ne: "हो र? मैले त पत्याउनै सकिनँ।", ro: "ho ra? maile ta patyaaunai sakina.", en: "Doubt it: really? I can hardly believe it", go: "sure" }] },
+    sure: { say: { ne: "साँच्चै हो। नपत्याउने खोलाले बगाउँछ भनेको यही हो।", ro: "saanchchai ho. napatyaaune kholaale bagaaunchha bhaneko yahi ho.", en: "It's true. This is what they mean by: the stream you underestimate sweeps you away." }, opts: [
+      { ne: "ठिक भन्नुभयो।", ro: "thik bhannubhayo.", en: "Agree: well said", go: "b" }] },
+    b: { say: { ne: "अनि मेरा दुई छोरा फेरि झगडा गर्दै छन्। दुवै एकअर्कालाई दोष दिन्छन्।", ro: "ani meraa dui chhoraa pheri jhagadaa gardai chhan. duwai ekarkaalaai dosh dinchhan.", en: "And my two sons are quarrelling again. Each blames the other." }, opts: [
+      { ne: "एक हातले ताली बज्दैन, काका।", ro: "ek haatle taali bajdaina, kaakaa.", en: "Say: you can't clap with one hand, uncle", go: "c" },
+      { ne: "आफ्नो आङको भैँसी देख्दैन, अर्काको आङको जुम्रा देख्छ।", ro: "aaphno aangko bhainsi dekhdaina, arkaako aangko jumraa dekhchha.", en: "Say: they miss the buffalo on their own back and see the louse on the other's", go: "c" }] },
+    c: { say: { ne: "हो नि! अनि सानो छोरो त ठूलो सरकारी जागिर मात्र खोज्छ, सानो काम गर्दै गर्दैन।", ro: "ho ni! ani saano chhoro ta thulo sarkaari jaagir maatra khojchha, saano kaam gardai gardaina.", en: "Exactly! And the younger one only wants a big government job; he won't touch a small one." }, opts: [
+      { ne: "आकाशको फल आँखा तरी मर् भनेजस्तै भयो।", ro: "aakaashko phal aankhaa tari mar bhanejastai bhayo.", en: "Say: it's like the fruit in the sky: stare and die", go: "d" }] },
+    d: { say: { ne: "ठ्याक्कै! तपाईंलाई त नेपाली उखान कति आउँदो रहेछ! कसले सिकायो?", ro: "thyaakkai! tapaainlaai ta nepaali ukhaan kati aaundo rahechha! kasle sikaayo?", en: "Exactly! How many Nepali proverbs you turn out to know! Who taught you?" }, opts: [
+      { ne: "अलि-अलि गर्दै सिकेको, काका।", ro: "ali-ali gardai sikeko, kaakaa.", en: "Say you learned little by little", go: "e" },
+      { ne: "जहाँ इच्छा, त्यहाँ उपाय भन्छन् नि।", ro: "jahaan ichchhaa, tyahaan upaaya bhanchhan ni.", en: "Say: where there's a will, there's a way", go: "e" }] },
+    e: { say: { ne: "स्याबास! ल, अर्को कप चिया खाऔँ। हुने हार, दैव नटार; छोराहरूको कुरा पछि हेरौँला।", ro: "syaabaas! la, arko kap chiyaa khaaun. hune haar, daiba nataar; chhoraaharuko kuraa pachhi heraunlaa.", en: "Well done! Come, let's have another cup of tea. What will be, will be; we'll see about the boys later." }, end: true }
   } }
 ];
 
@@ -238,6 +299,8 @@ C.monologue = {
   A1: { t: "Introduce yourself", d: "Your name, where you're from, where you live, your work, your family.", hints: ["mero naam … ho", "ma … baata aaeko hun", "ma …maa baschhu", "ma … garchhu"] },
   A2: { t: "Yesterday", d: "What you did yesterday, from morning to night.", hints: ["hijo bihaan ma … uthen", "tyaspachhi …", "belukaa …", "raati …"] },
   B1: { t: "Your work", d: "What you do, why you chose it, what you like and what is hard.", hints: ["ma … kaam garchhu", "kinabhane …", "malaai … man parchha", "tara … gaahro chha"] },
-  B2: { t: "An opinion", d: "Pick a topic (social media, travel, cities vs villages) and argue your view with an example.", hints: ["mero bichaarmaa …", "udaaharanko laagi …", "tyasaile …", "jasto laagchha"] }
+  B2: { t: "An opinion", d: "Pick a topic (social media, travel, cities vs villages) and argue your view with an example.", hints: ["mero bichaarmaa …", "udaaharanko laagi …", "tyasaile …", "jasto laagchha"] },
+  C1: { t: "A short speech", d: "Welcome guests to an event at your work, thank the people who helped and say what happens next, all in formal Nepali.", hints: ["aadaraniya …", "haardik swaagat gardachhu", "… hunechha", "… laai dhanyabaad dina chaahanchhu"] },
+  C2: { t: "A story with a moral", d: "Tell something that happened to you, with what people said and how it turned out, and close with a proverb that fits.", hints: ["ek din …", "… re", "… po rahechha", "bhanchhan ni, …"] }
 };
 })();

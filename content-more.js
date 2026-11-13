@@ -414,7 +414,7 @@ C.dialogues.push(
 
 // Listening stories: one voice, played sentence by sentence, then questions.
 C.stories = [
-  { id: "s1", level: "A2", title: "Sita's day", intro: "Listen to a day in a teacher's life. Note: verbs for women end in -chhin.",
+  { id: "s1", level: "A2", unit: "routine", title: "Sita's day", intro: "Listen to a day in a teacher's life. Note: verbs for women end in -chhin.",
     lines: [
       { ne: "सीता बिहान पाँच बजे उठ्छिन्।", ro: "sitaa bihaan paanch baje uthchhin.", en: "Sita gets up at five in the morning." },
       { ne: "पहिले उनी चिया बनाउँछिन्।", ro: "pahile uni chiyaa banaaunchhin.", en: "First she makes tea." },
@@ -428,7 +428,7 @@ C.stories = [
       { q: "What does she do first?", a: "Makes tea", o: ["Goes to the temple", "Teaches", "Listens to music"] },
       { q: "What is her job?", a: "Teacher", o: ["Nurse", "Shopkeeper", "Driver"] }
     ] },
-  { id: "s2", level: "A2", title: "A trip to Pokhara", intro: "Someone tells you about last week's trip.",
+  { id: "s2", level: "A2", unit: "past", title: "A trip to Pokhara", intro: "Someone tells you about last week's trip.",
     lines: [
       { ne: "गएको हप्ता म पोखरा गएँ।", ro: "gaeko haptaa ma pokharaa gaen.", en: "Last week I went to Pokhara." },
       { ne: "काठमाडौंबाट बसमा सात घण्टा लाग्यो।", ro: "kaathmaadaunbaata basmaa saat ghantaa laagyo.", en: "By bus from Kathmandu it took seven hours." },
@@ -443,7 +443,7 @@ C.stories = [
       { q: "What was the weather like on the way?", a: "Rainy", o: ["Snowy", "Sunny", "Windy"] },
       { q: "What did they do at the lake?", a: "Went on a boat and took photos", o: ["Went swimming", "Went fishing", "Slept"] }
     ] },
-  { id: "s3", level: "B1", title: "Growing up in Ilam", intro: "A man remembers his childhood in the tea hills of eastern Nepal.",
+  { id: "s3", level: "B1", unit: "tell", title: "Growing up in Ilam", intro: "A man remembers his childhood in the tea hills of eastern Nepal.",
     lines: [
       { ne: "जब म सानो थिएँ, म इलामको एउटा सानो गाउँमा बस्थेँ।", ro: "jaba ma saano thien, ma ilaamko eutaa saano gaaunmaa basthen.", en: "When I was little, I lived in a small village in Ilam." },
       { ne: "त्यतिबेला गाउँमा बिजुली थिएन।", ro: "tyatibelaa gaaunmaa bijuli thiena.", en: "Back then the village had no electricity." },
@@ -458,7 +458,7 @@ C.stories = [
       { q: "How did the children study at night?", a: "By an oil lamp", o: ["With electric light", "On phones", "They didn't study"] },
       { q: "Why is the village quiet now?", a: "Many young people went abroad", o: ["There was a flood", "There is no road", "The tea estate closed"] }
     ] },
-  { id: "s4", level: "B1", title: "The health camp", intro: "A villager describes a free health camp.",
+  { id: "s4", level: "B1", unit: "health", title: "The health camp", intro: "A villager describes a free health camp.",
     lines: [
       { ne: "गएको महिना हाम्रो गाउँमा निःशुल्क स्वास्थ्य शिविर लाग्यो।", ro: "gaeko mahinaa haamro gaaunmaa nihshulka swaasthya shibir laagyo.", en: "Last month there was a free health camp in our village." },
       { ne: "काठमाडौंबाट डाक्टर र नर्सहरू आउनुभयो।", ro: "kaathmaadaunbaata daaktar ra narsharu aaunubhayo.", en: "Doctors and nurses came from Kathmandu." },
